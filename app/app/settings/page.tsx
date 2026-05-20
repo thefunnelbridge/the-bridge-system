@@ -19,6 +19,7 @@ const nextFeatures = [
 ];
 
 const systemStatus = [
+  ["Bridge Trends™", "active demo"],
   ["Bridge Pulse™", "active demo"],
   ["Live Goals™", "active"],
   ["Notification Engine", "simulated"],
@@ -31,6 +32,15 @@ const systemStatus = [
   ["Bridge Companion™", "active"],
   ["Bridge Service Standard™", "active"],
   ["Strategic Scorecard™", "active"],
+];
+
+const differentiators = [
+  "Se alimenta de la empresa.",
+  "Se alimenta del mundo.",
+  "Traduce todo a acción.",
+  "Notifica al equipo.",
+  "Tiene capa humana.",
+  "Mejora con cada empresa.",
 ];
 
 export default function SettingsPage() {
@@ -107,8 +117,25 @@ export default function SettingsPage() {
         <Card>
           <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Posicionamiento operativo</p>
           <p className="mt-3 text-sm leading-7 text-fog">
-            The Bridge System™ está diseñado para uso continuo. No se completa una vez: se instala como capa de inteligencia aplicada sobre la operación diaria de la empresa. Cada dato, tarea, feedback, meta y notificación alimenta el sistema para mejorar la precisión de sus recomendaciones.
+            The Bridge System™ es una capa de inteligencia operativa para empresas que necesitan decidir y actuar más rápido. No se completa una vez: se instala como capa viva sobre la operación diaria. Cada dato, tendencia, tarea y feedback alimenta la próxima decisión.
           </p>
+          <p className="mt-4 rounded-md bg-bone-2 p-4 text-sm leading-6 text-fog">
+            No es inteligencia artificial por moda. Es inteligencia aplicada al momento exacto en que una empresa necesita decidir, actuar y mejorar.
+          </p>
+        </Card>
+        <Card>
+          <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Qué hace distinto a The Bridge System™</p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {differentiators.map((item) => (
+              <div key={item} className="rounded-md border border-[color:var(--line)] bg-bone p-3 text-sm font-semibold text-ink">{item}</div>
+            ))}
+          </div>
+          <div className="mt-5 space-y-2 text-sm leading-6 text-fog">
+            <p>No muestra solo datos. Traduce señales en acción.</p>
+            <p>El sistema no reemplaza al equipo. Le devuelve foco.</p>
+            <p>Antes de automatizar, hacemos visible la operación.</p>
+            <p>La próxima mejor acción no debería depender de memoria humana.</p>
+          </div>
         </Card>
         <Card>
           <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Próximas funciones</p>

@@ -5,6 +5,7 @@ import { integrationCatalog } from "@/lib/integrations";
 import { generateInternalComms } from "@/lib/internal-comms";
 import { getLiveGoals } from "@/lib/live-goals";
 import { generateNotifications, getCriticalNotifications } from "@/lib/notification-engine";
+import { getTrendsForCompany } from "@/lib/trends";
 import type { AdvancedScores, CompanyProfile, DataRoom, Leak, MatrixItem, Recommendation, TrackerTask } from "@/lib/types";
 
 export function ReportPreview({
@@ -42,6 +43,7 @@ export function ReportPreview({
   const activity = getRecentActivity(generateActivityFeed(company, company.industry, tasks, goals), 4);
   const criticalNotifications = getCriticalNotifications(notifications);
   const comms = generateInternalComms(company, scores, tasks);
+  const trends = getTrendsForCompany(company);
 
   return (
     <article className="rounded-lg border border-[color:var(--line)] bg-[#fbf8f2] p-6 shadow-[0_22px_70px_rgba(10,10,10,.06)] print:border-0 print:bg-white print:p-0 print:shadow-none">
@@ -58,7 +60,7 @@ export function ReportPreview({
         <div className="mt-12 max-w-3xl rounded-lg bg-bone-2 p-6">
           <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">Tesis operativa</p>
           <p className="mt-3 text-xl leading-8 text-ink">
-            Las empresas no pierden crecimiento por falta de herramientas. Lo pierden por puntos de fuga invisibles entre ventas, comunicación, operación y equipo.
+            The Bridge System™ es una capa viva de inteligencia operativa: conecta datos internos, tendencias externas y ejecución diaria para que la empresa decida y actúe más rápido.
           </p>
         </div>
       </section>
@@ -102,6 +104,22 @@ export function ReportPreview({
               <p className="font-mono text-xs uppercase tracking-[0.12em] text-copper">{item.name}</p>
               <p className="mt-2 text-3xl font-semibold">{item.score}</p>
               <p className="mt-2 text-sm leading-6 text-fog">{item.priorityAction}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="break-after-page py-8">
+        <h3 className="font-display text-4xl font-semibold">Bridge Trends™</h3>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-fog">Señales externas aplicadas a la operación: tendencias de industria, cambios de comportamiento, herramientas, benchmarks y prioridades que el equipo puede convertir en acción.</p>
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          {trends.slice(0, 4).map((trend) => (
+            <div key={trend.id} className="rounded-lg border border-[color:var(--line)] bg-bone p-4">
+              <p className="font-mono text-xs uppercase tracking-[0.12em] text-copper">{trend.urgency} · impacto {trend.impact}</p>
+              <h4 className="mt-2 text-xl font-semibold">{trend.title}</h4>
+              <p className="mt-2 text-sm leading-6 text-fog">{trend.meaning}</p>
+              <p className="mt-3 text-sm leading-6 text-fog"><strong className="text-ink">Acción:</strong> {trend.recommendedAction}</p>
+              <p className="mt-2 text-sm leading-6 text-fog"><strong className="text-ink">KPI:</strong> {trend.kpi}</p>
             </div>
           ))}
         </div>

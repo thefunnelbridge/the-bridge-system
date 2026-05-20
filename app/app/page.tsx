@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, Brain, Clock, Database, Flame, Route, Users } from "lucide-react";
+import { AlertTriangle, Brain, Clock, Database, Flame, Route, TrendingUp, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AreaScoreChart } from "@/components/area-score-chart";
 import { BridgeCompanionPanel } from "@/components/bridge-companion-panel";
@@ -20,6 +20,7 @@ import { getIndustryRules } from "@/lib/industry-rules";
 import { getLiveGoals, getTodayFocus } from "@/lib/live-goals";
 import { calculateAdvancedScores, createImpactUrgencyMatrix, getExecutiveDiagnosis, getTopLeaks } from "@/lib/scoring";
 import { getCompanyProfile, getDataRoom, getScanResponses, getTrackerTasks } from "@/lib/storage";
+import { getPrimaryTrend } from "@/lib/trends";
 import type { AdvancedScores, CompanyProfile, DataRoom, TrackerTask } from "@/lib/types";
 
 export default function CommandCenterPage() {
@@ -49,20 +50,44 @@ export default function CommandCenterPage() {
   const isBrokerage = company.industry === "Corredores de propiedades / Brokerage inmobiliario";
   const liveGoals = getLiveGoals(company, scores, tasks, dataRoom);
   const todayFocus = getTodayFocus(liveGoals);
+  const primaryTrend = getPrimaryTrend(company);
 
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <SectionHeader
           eyebrow="Command Center"
-          title={company.name}
-          description="Las empresas no pierden crecimiento por falta de herramientas. Lo pierden por puntos de fuga invisibles entre ventas, comunicación, operación y equipo."
+          title="Command Center"
+          description="El centro operativo donde The Bridge System™ conecta datos internos, tendencias externas y ejecución diaria."
         />
         <div className="flex flex-wrap gap-2">
           <Button href="/app/data-room" variant="secondary"><Database className="size-4" /> Alimentar Data Room</Button>
+          <Button href="/app/trends" variant="secondary"><TrendingUp className="size-4" /> Ver Trends</Button>
           <Button href="/app/insight"><Brain className="size-4" /> Ver Insight</Button>
         </div>
       </div>
+
+      <Card>
+        <div className="grid gap-5 xl:grid-cols-[.9fr_1.1fr]">
+          <div>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Operational Intelligence Layer</p>
+            <h2 className="mt-2 text-3xl font-semibold">{company.name}</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-fog">
+              La capa viva que convierte datos, tendencias y fricción interna en acciones diarias para el equipo. No se completa una vez: se alimenta todos los días.
+            </p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            <DailyItem label="Qué está pasando hoy" value={todayFocus.title} />
+            <DailyItem label="Qué está en riesgo" value={leaks[0]?.title ?? "Seguimiento sin sistema visible"} />
+            <DailyItem label="Qué tendencia aplica" value={primaryTrend.title} />
+            <DailyItem label="Qué debe hacer el equipo" value={liveGoals[0]?.companionRecommendation ?? "Registrar próxima acción en oportunidades abiertas."} />
+            <DailyItem label="Qué oportunidad está dormida" value={isBrokerage ? "compradores sin próxima acción por corredor" : "oportunidades sin seguimiento visible"} />
+            <DailyItem label="Quién necesita claridad" value={tasks.find((task) => task.status === "Bloqueado")?.owner ?? "responsable de área"} />
+            <DailyItem label="Qué proceso estandarizar" value={isBrokerage ? "seguimiento post visita y post tasación" : "primera respuesta y seguimiento comercial"} />
+            <DailyItem label="Antes de las 17:00" value="Cerrar una fuga concreta y dejar dueño visible." />
+          </div>
+        </div>
+      </Card>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Fuga comercial" value={`${scores.commercialLeakIndex}%`} detail="Riesgo combinado en ventas, mensaje y experiencia." icon={Flame} />

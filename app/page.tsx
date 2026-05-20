@@ -3,12 +3,23 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 const cards = [
-  ["Diagnostica", "Bridge Scan™ por áreas críticas del negocio."],
-  ["Prioriza", "Detecta puntos de fuga y urgencias de implementación."],
-  ["Recomienda", "Genera acciones por industria, fuga y responsable."],
-  ["Entrena", "Activa microlecciones para equipos y roles."],
-  ["Mide", "Monitorea índices, hábitos y oportunidades dormidas."],
-  ["Aprende", "Convierte feedback en mejora continua."],
+  ["Se alimenta de la empresa", "Datos, ventas, procesos, canales, comunicación, equipo, tareas, cultura y fricciones internas."],
+  ["Se alimenta del mundo", "Tendencias de industria, cambios de comportamiento, nuevas herramientas, benchmarks y señales de mercado."],
+  ["Interpreta lo que pasa", "Detecta puntos de fuga, oportunidades dormidas, procesos débiles, riesgos y prioridades."],
+  ["Traduce en acción", "No solo muestra dashboards. Dice qué hacer hoy, esta semana y en los próximos 30 días."],
+  ["Activa al equipo", "Envía metas, alertas, notificaciones, microentrenamientos y mensajes internos."],
+  ["Mejora con cada uso", "Mientras más datos, tareas y feedback recibe, más preciso se vuelve el sistema."],
+];
+
+const liveSystemItems = [
+  "Se alimenta de la empresa",
+  "Se alimenta del mundo",
+  "Detecta fugas activas",
+  "Interpreta señales",
+  "Recomienda acciones diarias",
+  "Notifica al equipo",
+  "Entrena colaboradores",
+  "Mejora con cada uso",
 ];
 
 export default function WelcomePage() {
@@ -25,23 +36,29 @@ export default function WelcomePage() {
 
         <div className="grid gap-10 py-12 lg:grid-cols-[1.1fr_.9fr] lg:items-end">
           <div>
-            <p className="font-mono text-[0.72rem] font-bold uppercase tracking-[0.18em] text-copper">Bridge Scan™ + Bridge Flow™</p>
+            <p className="font-mono text-[0.72rem] font-bold uppercase tracking-[0.18em] text-copper">OPERATIONAL INTELLIGENCE LAYER</p>
             <h1 className="mt-5 max-w-5xl font-display text-5xl font-semibold leading-[0.98] text-ink md:text-7xl">
-              Inteligencia aplicada para detectar puntos de fuga y transformar procesos en decisiones.
+              Convierte datos, tendencias y fricción interna en acciones diarias para tu equipo.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-fog">
-              Completa un Bridge Scan™, alimenta el sistema con datos reales o demo, recibe tu Bridge Score™, visualiza fugas críticas y activa rutas de mejora con el Paula Engine™.
+              The Bridge System™ es una capa viva de inteligencia operativa para empresas que necesitan ver qué está pasando, entender qué significa y saber qué hacer hoy.
+            </p>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-fog">
+              No reemplaza tus herramientas. Las conecta, las interpreta y las traduce en decisiones, alertas, metas, microentrenamientos y acciones concretas para líderes y trabajadores.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button href="/app">Entrar a demo <ArrowRight className="size-4" /></Button>
-              <Button href="/app/scan" variant="secondary">Iniciar Bridge Scan™</Button>
+              <Button href="/the-bridge-system#como-funciona" variant="secondary">Ver cómo funciona</Button>
             </div>
+            <p className="mt-8 max-w-2xl border-l-2 border-copper pl-4 font-mono text-[0.78rem] uppercase leading-6 tracking-[0.12em] text-ink">
+              The Bridge System™ no responde preguntas. Observa la operación, interpreta señales y activa decisiones.
+            </p>
           </div>
 
           <Card className="bg-[#10100f] p-6 text-bone">
-            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#d6a27a]">Demo funcional</p>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#d6a27a]">Sistema vivo en funcionamiento</p>
             <div className="mt-8 grid gap-4">
-              {["Bridge Scan™ activo", "Data Room demo", "Dashboard de fugas", "Bridge Flow™", "Paula Engine™ demo", "Reporte ejecutivo"].map((item) => (
+              {liveSystemItems.map((item) => (
                 <div key={item} className="flex items-center gap-3 border-b border-white/10 pb-3">
                   <CheckCircle2 className="size-5 text-[#FF3B1F]" />
                   <span>{item}</span>

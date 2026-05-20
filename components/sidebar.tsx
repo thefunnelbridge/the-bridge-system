@@ -15,6 +15,7 @@ import {
   Radio,
   Settings,
   Sparkles,
+  TrendingUp,
   Users,
 } from "lucide-react";
 
@@ -22,6 +23,7 @@ const items = [
   { href: "/app", label: "Command Center", icon: Home },
   { href: "/app/company", label: "Empresa", icon: Building2 },
   { href: "/app/data-room", label: "Data Room", icon: Database },
+  { href: "/app/trends", label: "Bridge Trends™", icon: TrendingUp },
   { href: "/app/pulse", label: "Bridge Pulse™", icon: Radio },
   { href: "/app/scan", label: "Bridge Scan™", icon: ClipboardList },
   { href: "/app/insight", label: "Bridge Insight™", icon: BarChart3 },

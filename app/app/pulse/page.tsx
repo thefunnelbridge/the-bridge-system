@@ -62,8 +62,8 @@ export default function BridgePulsePage() {
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <SectionHeader
           eyebrow="Bridge Pulse™"
-          title="Pulso operativo diario"
-          description="Qué está pasando hoy, qué está en riesgo, qué debe hacerse ahora y qué punto de fuga se está activando en la operación."
+          title="Pulso vivo diario de la empresa"
+          description="Metas, alertas, tareas críticas, oportunidades dormidas, trabajadores bloqueados, notificaciones y actividad reciente en una sola lectura operacional."
         />
         <div className="flex flex-wrap gap-2">
           <Button href="/app/workers/today" variant="secondary"><Smartphone className="size-4" /> Vista trabajador</Button>
@@ -72,6 +72,27 @@ export default function BridgePulsePage() {
       </div>
 
       <BridgePulsePanel />
+
+      <Card>
+        <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Metas del día</p>
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          {goals.filter((goal) => goal.cadence === "Diaria").map((goal) => (
+            <div key={goal.id} className="rounded-md border border-[color:var(--line)] bg-bone p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="font-semibold text-ink">{goal.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-fog">{goal.description}</p>
+                </div>
+                <span className="rounded bg-bone-2 px-2 py-1 font-mono text-[0.58rem] uppercase tracking-[0.1em] text-copper">{goal.status}</span>
+              </div>
+              <div className="mt-4 h-2 overflow-hidden rounded-full bg-bone-2">
+                <div className="h-full bg-copper" style={{ width: `${goal.progress}%` }} />
+              </div>
+              <p className="mt-2 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{goal.progress}% · {goal.metric}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
 
       <Card>
         <div className="flex items-start gap-3">
