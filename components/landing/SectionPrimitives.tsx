@@ -20,7 +20,7 @@ export function SectionHeader({
       <Kicker>{kicker}</Kicker>
       <h2 className="tfb-h2">{title}</h2>
       {children ? (
-        <div className="max-w-3xl space-y-5 text-lg leading-8 text-ink/75 sm:text-xl">
+        <div className="max-w-3xl space-y-5 text-lg leading-8 text-[rgba(10,10,10,0.75)] sm:text-xl">
           {children}
         </div>
       ) : null}

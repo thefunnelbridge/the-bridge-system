@@ -2,6 +2,7 @@ import { academyLessons } from "@/lib/academy";
 import { generateActivityFeed, getRecentActivity } from "@/lib/activity-feed";
 import { calculateBridgeExcellenceScore, getContinuousImprovementLoop, getServiceStandardScore, getStrategicScorecard } from "@/lib/excellence-library";
 import { integrationCatalog } from "@/lib/integrations";
+import { generateInternalComms } from "@/lib/internal-comms";
 import { getLiveGoals } from "@/lib/live-goals";
 import { generateNotifications, getCriticalNotifications } from "@/lib/notification-engine";
 import type { AdvancedScores, CompanyProfile, DataRoom, Leak, MatrixItem, Recommendation, TrackerTask } from "@/lib/types";
@@ -40,6 +41,7 @@ export function ReportPreview({
   });
   const activity = getRecentActivity(generateActivityFeed(company, company.industry, tasks, goals), 4);
   const criticalNotifications = getCriticalNotifications(notifications);
+  const comms = generateInternalComms(company, scores, tasks);
 
   return (
     <article className="rounded-lg border border-[color:var(--line)] bg-[#fbf8f2] p-6 shadow-[0_22px_70px_rgba(10,10,10,.06)] print:border-0 print:bg-white print:p-0 print:shadow-none">
@@ -153,6 +155,20 @@ export function ReportPreview({
         <div className="mt-5 rounded-lg bg-bone-2 p-5">
           <h4 className="text-xl font-semibold">Plan de uso diario</h4>
           <p className="mt-3 text-sm leading-7 text-fog">Instalar la vista móvil en equipos clave, revisar Bridge Pulse™ cada mañana, cerrar bloqueos antes de las 17:00 y usar Academy para entrenar la fuga prioritaria de la semana.</p>
+        </div>
+      </section>
+
+      <section className="break-after-page py-8">
+        <h3 className="font-display text-4xl font-semibold">Internal Comms™</h3>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-fog">Mensajes sugeridos para alinear dirección, líderes y equipo sin instalar una cultura de presión. La comunicación convierte el diagnóstico en acción diaria.</p>
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          {comms.map((item) => (
+            <div key={item.title} className="rounded-lg border border-[color:var(--line)] bg-bone p-4">
+              <p className="font-mono text-xs uppercase tracking-[0.12em] text-copper">{item.audience} · {item.tone}</p>
+              <h4 className="mt-2 text-xl font-semibold">{item.title}</h4>
+              <p className="mt-2 text-sm leading-6 text-fog">{item.message}</p>
+            </div>
+          ))}
         </div>
       </section>
 

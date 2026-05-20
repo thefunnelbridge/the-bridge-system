@@ -35,7 +35,7 @@ function CTAButtons({
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[color:var(--line)] bg-bone/82 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[color:var(--line)] bg-[rgba(245,241,234,0.82)] backdrop-blur-xl">
       <nav className="tfb-container flex min-h-20 items-center justify-between gap-5">
         <Link href="/the-bridge-system" className="shrink-0 leading-none">
           <span className="block font-mono text-[0.7rem] font-bold uppercase tracking-[0.16em] text-ink">
@@ -50,7 +50,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-ink/65 transition hover:text-ember"
+              className="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[rgba(10,10,10,0.65)] transition hover:text-ember"
             >
               {link.label}
             </Link>
@@ -80,7 +80,7 @@ export function HeroSection() {
               empresa pierde ventas, tiempo y claridad.
             </h1>
           </div>
-          <div className="max-w-2xl space-y-5 text-lg leading-8 text-ink/75 sm:text-xl">
+          <div className="max-w-2xl space-y-5 text-lg leading-8 text-[rgba(10,10,10,0.75)] sm:text-xl">
             <p>Tu empresa no necesita otra herramienta desconectada.</p>
             <p>No necesita otro chatbot.</p>
             <p>No necesita más datos que nadie interpreta.</p>
@@ -123,7 +123,7 @@ export function ThesisSection() {
           kicker="◢ LA TESIS"
           title="La transformación digital no falló por falta de herramientas. Falló por falta de sistema."
         />
-        <div className="space-y-6 text-lg leading-8 text-ink/75 sm:text-xl">
+        <div className="space-y-6 text-lg leading-8 text-[rgba(10,10,10,0.75)] sm:text-xl">
           <p>
             Durante años, las empresas compraron plataformas, contrataron
             agencias, instalaron CRMs, abrieron canales digitales,
@@ -184,7 +184,7 @@ export function ProblemSection() {
               <h3 className="font-display text-2xl font-semibold text-ink">
                 {card.title}
               </h3>
-              <p className="mt-4 leading-7 text-ink/70">{card.text}</p>
+              <p className="mt-4 leading-7 text-[rgba(10,10,10,0.7)]">{card.text}</p>
             </article>
           ))}
         </div>
@@ -217,7 +217,7 @@ export function ProductSection() {
             <p className="font-mono text-[0.7rem] font-bold uppercase tracking-[0.14em] text-copper">
               El sistema ayuda a responder preguntas críticas:
             </p>
-            <div className="mt-5 grid gap-3 text-lg leading-7 text-ink/75 sm:grid-cols-2">
+            <div className="mt-5 grid gap-3 text-lg leading-7 text-[rgba(10,10,10,0.75)] sm:grid-cols-2">
               {[
                 "¿Dónde estamos perdiendo oportunidades?",
                 "¿Qué proceso está frenando la venta?",
@@ -259,7 +259,7 @@ export function ComparisonSection() {
               key={left}
               className="grid border-b border-[color:var(--line)] last:border-b-0 lg:grid-cols-2"
             >
-              <p className="p-5 text-lg leading-7 text-ink/65">{left}</p>
+              <p className="p-5 text-lg leading-7 text-[rgba(10,10,10,0.65)]">{left}</p>
               <p className="border-t border-[color:var(--line)] p-5 text-lg font-semibold leading-7 text-ink lg:border-l lg:border-t-0">
                 {right}
               </p>
@@ -307,7 +307,7 @@ export function HowItWorksSection() {
                   <h3 className="font-display text-2xl font-semibold text-ink">
                     {step.title}
                   </h3>
-                  <p className="mt-3 leading-7 text-ink/70">{step.text}</p>
+                  <p className="mt-3 leading-7 text-[rgba(10,10,10,0.7)]">{step.text}</p>
                 </div>
               </div>
             </article>
@@ -344,7 +344,7 @@ export function ModulesSection() {
                 {module.title}
               </h3>
               <p className="mt-2 font-semibold text-copper">{module.subtitle}</p>
-              <p className="mt-5 leading-7 text-ink/70">{module.text}</p>
+              <p className="mt-5 leading-7 text-[rgba(10,10,10,0.7)]">{module.text}</p>
               <p className="mt-6 border-t border-[color:var(--line)] pt-5 font-mono text-[0.72rem] font-bold uppercase leading-relaxed tracking-[0.1em] text-ink">
                 Pregunta clave: {module.question}
               </p>
@@ -376,7 +376,7 @@ export function DeliverablesSection() {
                 <h3 className="font-display text-2xl font-semibold">
                   {item.title}
                 </h3>
-                <p className="mt-3 leading-7 text-ink/70">{item.text}</p>
+                <p className="mt-3 leading-7 text-[rgba(10,10,10,0.7)]">{item.text}</p>
               </article>
             ))}
           </div>
@@ -400,8 +400,8 @@ export function StrategicEngineSection() {
     <section className="tfb-section bg-bone">
       <div className="tfb-container grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <BridgeImage
-          src="/images/bridge-system/paula-roa.png"
-          alt="Paula Roa"
+          src="/images/bridge-system/bridge-flow-light.png"
+          alt="Bridge Flow y Paula Engine"
           label="Paula Engine"
           className="min-h-[520px]"
         />
@@ -476,7 +476,7 @@ export function IntegrationsSection() {
               <h3 className="font-display text-2xl font-semibold">
                 {group.title}
               </h3>
-              <p className="mt-3 leading-7 text-ink/70">{group.items}</p>
+              <p className="mt-3 leading-7 text-[rgba(10,10,10,0.7)]">{group.items}</p>
             </article>
           ))}
         </div>
@@ -520,7 +520,7 @@ export function IndustriesSection() {
               <h3 className="font-display text-2xl font-semibold">
                 {industry.title}
               </h3>
-              <p className="mt-4 leading-7 text-ink/70">{industry.problem}</p>
+              <p className="mt-4 leading-7 text-[rgba(10,10,10,0.7)]">{industry.problem}</p>
               <p className="mt-4 font-semibold leading-7 text-copper">
                 {industry.result}
               </p>
@@ -553,7 +553,7 @@ export function AudienceSection() {
               </div>
             ))}
           </div>
-          <p className="mt-8 text-xl leading-8 text-ink/75">
+          <p className="mt-8 text-xl leading-8 text-[rgba(10,10,10,0.75)]">
             Es para pymes, empresas medianas, instituciones y equipos que saben
             que la inteligencia artificial no sirve de mucho si la operación
             sigue desordenada.
@@ -578,7 +578,7 @@ export function BenefitsSection() {
               <h3 className="font-display text-3xl font-semibold">
                 {benefit.title}
               </h3>
-              <p className="mt-4 leading-7 text-ink/70">{benefit.text}</p>
+              <p className="mt-4 leading-7 text-[rgba(10,10,10,0.7)]">{benefit.text}</p>
             </article>
           ))}
         </div>
@@ -617,7 +617,7 @@ export function WorkModelSection() {
                 <h3 className="font-display text-2xl font-semibold">
                   {model.title}
                 </h3>
-                <p className="mt-3 leading-7 text-ink/70">{model.text}</p>
+                <p className="mt-3 leading-7 text-[rgba(10,10,10,0.7)]">{model.text}</p>
               </article>
             ))}
           </div>
@@ -635,37 +635,32 @@ export function WorkModelSection() {
 
 export function FounderSection() {
   return (
-    <section id="paula-roa" className="tfb-section bg-bone">
+    <section id="origen" className="tfb-section bg-bone">
       <div className="tfb-container grid gap-12 lg:grid-cols-[0.82fr_1.18fr]">
-        <BridgeImage
-          src="/images/bridge-system/paula-roa.png"
-          alt="Paula Roa, creadora de The Bridge System"
-          label="Paula Roa"
-          className="min-h-[520px] lg:sticky lg:top-28"
-        />
+        <div className="rounded-lg border border-[color:var(--line)] bg-bone-2 p-8 lg:sticky lg:top-28">
+          <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em] text-copper">Origen estratégico</p>
+          <h3 className="mt-5 font-display text-4xl font-semibold leading-tight text-ink">Una plataforma nacida desde operación real, comunicación humana e inteligencia aplicada.</h3>
+          <p className="mt-5 text-lg leading-8 text-[rgba(10,10,10,0.7)]">
+            The Bridge System™ no gira alrededor de una persona. Gira alrededor de una pregunta: qué necesita una empresa para dejar de improvisar y empezar a operar con claridad.
+          </p>
+        </div>
         <div className="space-y-8">
           <SectionHeader
-            kicker="◢ CREADO POR PAULA ROA"
-            title="La mente estratégica detrás del sistema."
+            kicker="◢ CREADO POR THE FUNNEL BRIDGE™"
+            title="El criterio detrás del sistema."
           >
             <p>
-              The Bridge System™ fue creado por Paula Roa, periodista,
-              estratega de comunicación, arquitecta de negocios digitales y
-              fundadora de The Funnel Bridge SpA en Temuco, Chile.
-            </p>
-            <p>
-              Durante años, Paula ha trabajado en la intersección entre
-              comunicación, marketing, ventas, automatización, embudos digitales,
+              The Bridge System™ fue creado por The Funnel Bridge SpA desde la
+              intersección entre comunicación, ventas, automatización,
               estrategia empresarial y comportamiento humano.
             </p>
             <p>
-              En ese recorrido detectó un patrón que se repetía una y otra vez:
+              Durante años apareció un patrón que se repetía una y otra vez:
+              muchas empresas no fallan por falta de talento, tecnología o
+              esfuerzo.
             </p>
-            <p>las empresas no siempre fallan porque les falte talento.</p>
-            <p>No siempre fallan porque les falte tecnología.</p>
-            <p>No siempre fallan porque les falte esfuerzo.</p>
             <p>
-              Muchas veces fallan porque no logran ver el sistema completo.
+              Fallan porque no logran ver el sistema completo.
             </p>
             <p>No ven dónde se fuga la venta.</p>
             <p>No ven dónde se rompe el mensaje.</p>
@@ -677,9 +672,8 @@ export function FounderSection() {
             </p>
             <p>The Bridge System™ nace de esa lectura.</p>
             <p>
-              Es la forma en que Paula convierte su criterio estratégico en una
-              plataforma tecnológica capaz de diagnosticar, priorizar y acompañar
-              procesos de mejora dentro de empresas reales.
+              Es una plataforma tecnológica capaz de diagnosticar, priorizar y
+              acompañar procesos de mejora dentro de empresas reales.
             </p>
             <p>No es una herramienta creada desde la moda de la IA.</p>
             <p>
@@ -701,7 +695,7 @@ export function FounderSection() {
 
 export function VisionSection() {
   return (
-    <section className="tfb-section bg-bone-2">
+    <section id="vision" className="tfb-section bg-bone-2">
       <div className="tfb-container space-y-12">
         <SectionHeader
           kicker="◢ UNA PLATAFORMA VIVA"
@@ -728,7 +722,7 @@ export function VisionSection() {
               <h3 className="font-display text-2xl font-semibold">
                 {card.title}
               </h3>
-              <p className="mt-3 leading-7 text-ink/70">{card.text}</p>
+              <p className="mt-3 leading-7 text-[rgba(10,10,10,0.7)]">{card.text}</p>
             </article>
           ))}
         </div>
@@ -780,7 +774,7 @@ export function BridgeFooter() {
           title="Propiedad intelectual y uso autorizado"
           className="[&_.tfb-h2]:text-bone"
         >
-          <p className="text-bone/72">
+          <p className="text-[rgba(245,241,234,0.72)]">
             The Bridge System™, Bridge Scan™, Bridge Flow™, Bridge Insight™,
             Bridge Brain™, Bridge Culture™, Bridge Academy™, Bridge
             Integrations™, The Bridge Framework™ y Paula Engine™ son conceptos,
@@ -788,20 +782,20 @@ export function BridgeFooter() {
             estratégicos, arquitectura de producto y activos intelectuales
             desarrollados por The Funnel Bridge SpA y Paula Roa.
           </p>
-          <p className="text-bone/72">
+          <p className="text-[rgba(245,241,234,0.72)]">
             Todo el contenido presentado en esta página, incluyendo diseño
             conceptual, narrativa, estructura metodológica, diagramas, textos,
             módulos, nombres comerciales y lógica de producto, forma parte de
             los activos estratégicos de The Funnel Bridge SpA.
           </p>
-          <p className="text-bone/72">
+          <p className="text-[rgba(245,241,234,0.72)]">
             Ninguna parte de este sitio puede ser copiada, reproducida,
             adaptada, entrenada, revendida, presentada como propia o utilizada
             para desarrollar productos derivados sin autorización previa y por
             escrito.
           </p>
         </SectionHeader>
-        <div className="flex flex-col justify-between gap-4 border-t border-[color:var(--line-bone)] pt-8 font-mono text-[0.68rem] uppercase leading-relaxed tracking-[0.12em] text-bone/62 sm:flex-row">
+        <div className="flex flex-col justify-between gap-4 border-t border-[color:var(--line-bone)] pt-8 font-mono text-[0.68rem] uppercase leading-relaxed tracking-[0.12em] text-[rgba(245,241,234,0.62)] sm:flex-row">
           <p>© 2026 The Funnel Bridge SpA. Todos los derechos reservados.</p>
           <p>Built in Temuco, Chile. Designed for the world.</p>
         </div>

@@ -46,7 +46,7 @@ export function OperatingIntelligencePanel({ compact = false }: { compact?: bool
         {missions.map((mission) => (
           <Card key={mission.id}>
             <div className="flex items-start gap-3">
-              <span className="grid size-9 shrink-0 place-items-center rounded-md bg-ember/10 text-ember"><Target className="size-4" /></span>
+              <span className="grid size-9 shrink-0 place-items-center rounded-md bg-[rgba(255,59,31,0.1)] text-ember"><Target className="size-4" /></span>
               <div>
                 <p className="font-mono text-[0.64rem] font-bold uppercase tracking-[0.13em] text-copper">{mission.owner}</p>
                 <h3 className="mt-2 text-lg font-semibold">{mission.title}</h3>

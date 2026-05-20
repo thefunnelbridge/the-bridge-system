@@ -5,7 +5,7 @@ import type { AdvancedScores, CompanyProfile, DataRoom, TrackerTask } from "./ty
 
 export function getBridgeCompanion(company: CompanyProfile, scores: AdvancedScores, dataRoom: DataRoom, tasks: TrackerTask[]) {
   const rules = getIndustryRules(company.industry);
-  const goals = getLiveGoals(company, scores, tasks);
+  const goals = getLiveGoals(company, scores, tasks, dataRoom);
   const excellence = calculateBridgeExcellenceScore(scores);
   const service = getServiceStandardScore(scores);
   const loop = getContinuousImprovementLoop(company, tasks);

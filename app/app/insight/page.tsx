@@ -7,6 +7,7 @@ import { LeakCard } from "@/components/leak-card";
 import { ScoreRing } from "@/components/score-ring";
 import { SectionHeader } from "@/components/section-header";
 import { StatCard } from "@/components/stat-card";
+import { StrategicScorecardPanel } from "@/components/strategic-scorecard-panel";
 import { Card } from "@/components/ui/card";
 import { getIndustryRules } from "@/lib/industry-rules";
 import { calculateAdvancedScores, createImpactUrgencyMatrix, getExecutiveDiagnosis, getTopLeaks } from "@/lib/scoring";
@@ -50,6 +51,7 @@ export default function InsightPage() {
         <StatCard label="Human Dependency" value={`${scores.humanDependencyIndex}%`} detail="Procesos que dependen de memoria personal." icon={Users} />
       </div>
       <ExcellenceScorePanel scores={scores} />
+      <StrategicScorecardPanel scores={scores} />
       <Card>
         <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Diagnóstico ejecutivo</p>
         <p className="mt-3 text-base leading-8 text-fog">{getExecutiveDiagnosis(company, scores, dataRoom)}</p>

@@ -48,7 +48,7 @@ export function LiveGoalsPanel({ compact = false }: { compact?: boolean }) {
         {visible.map((goal) => (
           <Card key={goal.id}>
             <div className="flex items-start gap-3">
-              <span className="grid size-9 shrink-0 place-items-center rounded-md bg-ember/10 text-ember">
+              <span className="grid size-9 shrink-0 place-items-center rounded-md bg-[rgba(255,59,31,0.1)] text-ember">
                 {goal.status === "Cumplida" ? <CheckCircle2 className="size-4" /> : <Target className="size-4" />}
               </span>
               <div className="min-w-0 flex-1">

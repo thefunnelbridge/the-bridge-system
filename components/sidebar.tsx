@@ -38,7 +38,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="border-b border-[color:var(--line)] bg-bone-2/70 md:fixed md:inset-y-0 md:left-0 md:w-72 md:border-b-0 md:border-r">
+    <aside className="border-b border-[color:var(--line)] bg-[rgba(239,232,219,0.7)] md:fixed md:inset-y-0 md:left-0 md:w-72 md:border-b-0 md:border-r">
       <div className="flex h-full flex-col p-4">
         <Link href="/app" className="rounded-lg border border-[color:var(--line)] bg-bone p-4">
           <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.16em] text-copper">THE BRIDGE SYSTEM™</p>

@@ -28,7 +28,7 @@ export function BridgeCompanionPanel({ compact = false }: { compact?: boolean })
   return (
     <Card>
       <div className="flex items-start gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-md bg-ember/10 text-ember"><MessageSquare className="size-5" /></span>
+        <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[rgba(255,59,31,0.1)] text-ember"><MessageSquare className="size-5" /></span>
         <div>
           <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Companion™</p>
           <h2 className="mt-2 text-2xl font-semibold">Guía operativa para dirección, líderes y trabajadores</h2>

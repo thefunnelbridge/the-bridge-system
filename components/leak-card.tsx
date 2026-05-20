@@ -6,7 +6,7 @@ export function LeakCard({ leak }: { leak: Leak }) {
   return (
     <Card>
       <div className="flex items-start gap-3">
-        <span className="mt-1 grid size-9 shrink-0 place-items-center rounded-md bg-ember/10 text-ember">
+        <span className="mt-1 grid size-9 shrink-0 place-items-center rounded-md bg-[rgba(255,59,31,0.1)] text-ember">
           <AlertTriangle className="size-4" />
         </span>
         <div>
@@ -18,7 +18,7 @@ export function LeakCard({ leak }: { leak: Leak }) {
           <p className="mt-2 text-sm leading-6 text-fog">{leak.description}</p>
           <div className="mt-4 flex flex-wrap gap-2 font-mono text-[0.64rem] uppercase tracking-[0.12em]">
             <span className="rounded bg-bone-2 px-2 py-1 text-ink">Impacto {leak.impact}</span>
-            <span className="rounded bg-ember/10 px-2 py-1 text-ember">Urgencia {leak.urgency}</span>
+            <span className="rounded bg-[rgba(255,59,31,0.1)] px-2 py-1 text-ember">Urgencia {leak.urgency}</span>
           </div>
         </div>
       </div>

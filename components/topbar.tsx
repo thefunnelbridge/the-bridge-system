@@ -18,7 +18,7 @@ export function Topbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 border-b border-[color:var(--line)] bg-bone/90 px-4 py-3 backdrop-blur md:px-8">
+    <header className="sticky top-0 z-20 border-b border-[color:var(--line)] bg-[rgba(245,241,234,0.9)] px-4 py-3 backdrop-blur md:px-8">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.16em] text-copper">The Bridge System™</p>

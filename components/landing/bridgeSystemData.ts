@@ -4,7 +4,7 @@ export const navLinks = [
   { label: "Módulos", href: "#modulos" },
   { label: "Integraciones", href: "#integraciones" },
   { label: "Industrias", href: "#industrias" },
-  { label: "Paula Roa", href: "#paula-roa" },
+  { label: "Visión", href: "#vision" },
 ];
 
 export const problemCards = [

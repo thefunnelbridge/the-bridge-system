@@ -6,19 +6,23 @@ import { SectionHeader } from "@/components/section-header";
 import { StatCard } from "@/components/stat-card";
 import { BridgeCompanionPanel } from "@/components/bridge-companion-panel";
 import { ExcellenceScorePanel } from "@/components/excellence-score-panel";
+import { InternalCommsPanel } from "@/components/internal-comms-panel";
+import { ServiceStandardPanel } from "@/components/service-standard-panel";
 import { Card } from "@/components/ui/card";
 import { calculateAdvancedScores } from "@/lib/scoring";
-import { getCompanyProfile, getScanResponses } from "@/lib/storage";
+import { getCompanyProfile, getScanResponses, getTrackerTasks } from "@/lib/storage";
 import { brokerageOffices, getTeamRoles } from "@/lib/team-culture";
-import type { AdvancedScores, CompanyProfile } from "@/lib/types";
+import type { AdvancedScores, CompanyProfile, TrackerTask } from "@/lib/types";
 
 export default function TeamPage() {
   const [company, setCompany] = useState<CompanyProfile | null>(null);
   const [scores, setScores] = useState<AdvancedScores | null>(null);
+  const [tasks, setTasks] = useState<TrackerTask[]>([]);
 
   useEffect(() => {
     setCompany(getCompanyProfile());
     setScores(calculateAdvancedScores(getScanResponses()));
+    setTasks(getTrackerTasks());
   }, []);
 
   const roles = useMemo(() => (company ? getTeamRoles(company) : []), [company]);
@@ -62,6 +66,10 @@ export default function TeamPage() {
       </Card>
 
       <ExcellenceScorePanel scores={scores} />
+
+      <ServiceStandardPanel scores={scores} />
+
+      <InternalCommsPanel company={company} scores={scores} tasks={tasks} compact />
 
       <BridgeCompanionPanel compact />
 

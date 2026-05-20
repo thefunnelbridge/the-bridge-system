@@ -76,18 +76,18 @@ export default function WorkerTodayPage() {
           <div>
             <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.16em] text-copper">Hoy en The Bridge System™</p>
             <h1 className="mt-4 font-display text-4xl font-semibold leading-tight">Hola, {worker.name}</h1>
-            <p className="mt-3 text-sm leading-6 text-bone/70">{worker.role} · {worker.area}</p>
+            <p className="mt-3 text-sm leading-6 text-[rgba(245,241,234,0.7)]">{worker.role} · {worker.area}</p>
           </div>
-          <span className="grid size-11 shrink-0 place-items-center rounded-md bg-bone/10 text-copper"><Smartphone className="size-5" /></span>
+          <span className="grid size-11 shrink-0 place-items-center rounded-md bg-[rgba(245,241,234,0.1)] text-copper"><Smartphone className="size-5" /></span>
         </div>
-        <p className="mt-5 rounded-md bg-bone/10 p-4 text-sm leading-6 text-bone/78">
+        <p className="mt-5 rounded-md bg-[rgba(245,241,234,0.1)] p-4 text-sm leading-6 text-[rgba(245,241,234,0.78)]">
           Esta vista está diseñada para que cada colaborador revise sus metas, tareas y notificaciones desde el celular.
         </p>
       </Card>
 
       <Card>
         <div className="flex items-start gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-md bg-ember/10 text-ember"><MessageSquare className="size-5" /></span>
+          <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[rgba(255,59,31,0.1)] text-ember"><MessageSquare className="size-5" /></span>
           <div>
             <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Companion™</p>
             <p className="mt-2 text-lg font-semibold text-ink">{message || "Hoy tu foco no es hacer más cosas. Es cerrar el punto de fuga asignado y registrar avance visible."}</p>
