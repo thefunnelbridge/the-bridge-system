@@ -7,7 +7,7 @@ import { SectionHeader } from "@/components/section-header";
 import { Card } from "@/components/ui/card";
 import { generateRecommendations, getSuggestedFlow } from "@/lib/recommendations";
 import { calculateAreaScores, getTopLeaks } from "@/lib/scoring";
-import { getScanResponses, getTrackerTasks, saveTrackerTasks } from "@/lib/storage";
+import { getCompanyProfile, getScanResponses, getTrackerTasks, saveTrackerTasks } from "@/lib/storage";
 import type { Recommendation, TrackerTask } from "@/lib/types";
 
 export default function FlowPage() {
@@ -15,16 +15,27 @@ export default function FlowPage() {
   const [notice, setNotice] = useState("");
 
   useEffect(() => {
+    const company = getCompanyProfile();
     const scores = calculateAreaScores(getScanResponses());
-    setRecommendations(generateRecommendations(getTopLeaks(scores)));
+    setRecommendations(generateRecommendations(getTopLeaks(scores), company));
   }, []);
 
   function addToTracker(recommendation: Recommendation) {
     const tasks = getTrackerTasks();
     const newTask: TrackerTask = {
       id: `rec-task-${recommendation.id}`,
-      title: recommendation.firstStep,
+      title: recommendation.action72Hours,
+      description: recommendation.whyItMatters,
+      area: recommendation.area,
+      origin: "Bridge Flow™",
+      priority: recommendation.priority,
+      owner: recommendation.owner,
       status: "Pendiente",
+      suggestedDate: "72 horas",
+      kpi: recommendation.kpi,
+      expectedImpact: recommendation.impact,
+      difficulty: recommendation.difficulty,
+      createdAt: new Date().toISOString(),
     };
     const next = tasks.some((task) => task.id === newTask.id) ? tasks : [...tasks, newTask];
     saveTrackerTasks(next);

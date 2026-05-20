@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getCompanyProfile, resetDemo } from "@/lib/storage";
+import { demoCompanies } from "@/lib/demo-data";
+import { exportDemoData, getCompanyProfile, resetDemo, setSelectedCompanyId } from "@/lib/storage";
 import type { CompanyProfile } from "@/lib/types";
 
 const nextFeatures = [
@@ -15,6 +16,21 @@ const nextFeatures = [
   "OpenAI / Bridge Brain™",
   "Integraciones reales",
   "Reportes PDF avanzados",
+];
+
+const systemStatus = [
+  ["Bridge Pulse™", "active demo"],
+  ["Live Goals™", "active"],
+  ["Notification Engine", "simulated"],
+  ["Worker Mobile View", "active"],
+  ["PWA", "ready"],
+  ["Push Notifications", "planned"],
+  ["Real-time Integrations", "planned"],
+  ["Learning Loop", "active"],
+  ["Bridge Excellence Library", "active"],
+  ["Bridge Companion™", "active"],
+  ["Bridge Service Standard™", "active"],
+  ["Strategic Scorecard™", "active"],
 ];
 
 export default function SettingsPage() {
@@ -29,6 +45,16 @@ export default function SettingsPage() {
     setNotice("Demo restaurada.");
   }
 
+  function downloadJson() {
+    const blob = new Blob([JSON.stringify(exportDemoData(), null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "bridge-system-demo-data.json";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="space-y-8">
       <SectionHeader eyebrow="Configuración demo" title="Estado de la primera versión" description="La app opera sin backend obligatorio y queda preparada para conectar Supabase, OpenAI e integraciones reales." />
@@ -39,8 +65,50 @@ export default function SettingsPage() {
           <p className="mt-3 text-sm leading-6 text-fog">Persistencia inicial con localStorage. Ideal para demo funcional y despliegue inmediato en Vercel.</p>
           <div className="mt-6 flex items-center gap-3">
             <Button variant="secondary" onClick={handleReset}><RotateCcw className="size-4" /> Resetear demo</Button>
+            <Button variant="secondary" onClick={downloadJson}>Exportar data JSON</Button>
             {notice ? <span className="text-sm text-fog">{notice}</span> : null}
           </div>
+        </Card>
+        <Card>
+          <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Empresa demo seleccionada</p>
+          <select
+            className="mt-4 h-11 w-full rounded-md border border-[color:var(--line)] bg-bone px-3"
+            value={company?.id ?? ""}
+            onChange={(event) => {
+              setSelectedCompanyId(event.target.value);
+              setCompany(getCompanyProfile());
+            }}
+          >
+            {demoCompanies.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+          </select>
+          <div className="mt-4 space-y-2 text-sm text-fog">
+            <p>Estado almacenamiento: localStorage</p>
+            <p>Estado Supabase: pendiente</p>
+            <p>Estado OpenAI: pendiente</p>
+            <p>Estado integraciones reales: demo</p>
+            <p>Versión: 0.3 Research-driven</p>
+            <p>Licencia: Demo privada · The Funnel Bridge SpA · Todos los derechos reservados</p>
+          </div>
+        </Card>
+        <Card>
+          <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Uso diario y mobile</p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {systemStatus.map(([label, status]) => (
+              <div key={label} className="rounded-md border border-[color:var(--line)] bg-bone p-3">
+                <p className="font-semibold text-ink">{label}</p>
+                <p className="mt-1 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-copper">{status}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 rounded-md bg-bone-2 p-4 text-sm leading-6 text-fog">
+            The Bridge System™ está preparado para funcionar como app instalable. En esta demo las notificaciones son simuladas; en producción se activarán mediante servicios push y roles por usuario.
+          </p>
+        </Card>
+        <Card>
+          <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Posicionamiento operativo</p>
+          <p className="mt-3 text-sm leading-7 text-fog">
+            The Bridge System™ está diseñado para uso continuo. No se completa una vez: se instala como capa de inteligencia aplicada sobre la operación diaria de la empresa. Cada dato, tarea, feedback, meta y notificación alimenta el sistema para mejorar la precisión de sus recomendaciones.
+          </p>
         </Card>
         <Card>
           <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Próximas funciones</p>

@@ -22,14 +22,16 @@ export function RecommendationCard({
         <Sparkles className="mt-1 size-5 text-ember" />
       </div>
       <div className="mt-5 space-y-4 text-sm leading-6 text-fog">
+        <p><strong className="text-ink">Por qué importa:</strong> {recommendation.whyItMatters}</p>
         <p><strong className="text-ink">Acción inmediata:</strong> {recommendation.actionImmediate}</p>
-        <p><strong className="text-ink">Acción de sistema:</strong> {recommendation.actionSystem}</p>
-        <p><strong className="text-ink">Automatización/IA:</strong> {recommendation.actionAutomation}</p>
-        <p><strong className="text-ink">Impacto esperado:</strong> {recommendation.expectedImpact}</p>
-        <p><strong className="text-ink">Primer paso:</strong> {recommendation.firstStep}</p>
+        <p><strong className="text-ink">72 horas:</strong> {recommendation.action72Hours}</p>
+        <p><strong className="text-ink">7 días:</strong> {recommendation.action7Days}</p>
+        <p><strong className="text-ink">30 días:</strong> {recommendation.action30Days}</p>
+        <p><strong className="text-ink">Automatización:</strong> {recommendation.automation}</p>
+        <p><strong className="text-ink">KPI:</strong> {recommendation.kpi}</p>
       </div>
       <div className="mt-5 flex items-center justify-between gap-3 border-t border-[color:var(--line)] pt-4">
-        <span className="font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">Dificultad {recommendation.difficulty}</span>
+        <span className="font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">Impacto {recommendation.impact} · Dificultad {recommendation.difficulty}</span>
         {onAdd ? (
           <Button variant="secondary" onClick={() => onAdd(recommendation)}>
             <Plus className="size-4" /> Agregar al tracker

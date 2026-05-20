@@ -123,4 +123,14 @@ body {
   main {
     padding: 0 !important;
   }
+
+  .break-after-page {
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .break-inside-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }

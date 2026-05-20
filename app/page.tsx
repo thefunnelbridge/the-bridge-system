@@ -5,8 +5,10 @@ import { Card } from "@/components/ui/card";
 const cards = [
   ["Diagnostica", "Bridge Scan™ por áreas críticas del negocio."],
   ["Prioriza", "Detecta puntos de fuga y urgencias de implementación."],
-  ["Visualiza", "Lee el Bridge Score™ y la madurez operativa."],
-  ["Implementa", "Convierte hallazgos en tracker y mejora continua."],
+  ["Recomienda", "Genera acciones por industria, fuga y responsable."],
+  ["Entrena", "Activa microlecciones para equipos y roles."],
+  ["Mide", "Monitorea índices, hábitos y oportunidades dormidas."],
+  ["Aprende", "Convierte feedback en mejora continua."],
 ];
 
 export default function WelcomePage() {
@@ -28,7 +30,7 @@ export default function WelcomePage() {
               Inteligencia aplicada para detectar puntos de fuga y transformar procesos en decisiones.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-fog">
-              Completa un Bridge Scan™, recibe tu Bridge Score™ y visualiza qué debe corregir, automatizar y priorizar tu empresa.
+              Completa un Bridge Scan™, alimenta el sistema con datos reales o demo, recibe tu Bridge Score™, visualiza fugas críticas y activa rutas de mejora con el Paula Engine™.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button href="/app">Entrar a demo <ArrowRight className="size-4" /></Button>
@@ -39,7 +41,7 @@ export default function WelcomePage() {
           <Card className="bg-[#10100f] p-6 text-bone">
             <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#d6a27a]">Demo funcional</p>
             <div className="mt-8 grid gap-4">
-              {["Score calculado", "Datos persistidos", "Recomendaciones generadas", "Tracker de implementación"].map((item) => (
+              {["Bridge Scan™ activo", "Data Room demo", "Dashboard de fugas", "Bridge Flow™", "Paula Engine™ demo", "Reporte ejecutivo"].map((item) => (
                 <div key={item} className="flex items-center gap-3 border-b border-white/10 pb-3">
                   <CheckCircle2 className="size-5 text-[#FF3B1F]" />
                   <span>{item}</span>
@@ -49,7 +51,7 @@ export default function WelcomePage() {
           </Card>
         </div>
 
-        <div className="grid gap-4 pb-5 md:grid-cols-4">
+        <div className="grid gap-4 pb-5 md:grid-cols-3 xl:grid-cols-6">
           {cards.map(([title, text]) => (
             <Card key={title}>
               <h2 className="text-xl font-semibold text-ink">{title}</h2>

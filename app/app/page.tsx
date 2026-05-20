@@ -1,79 +1,220 @@
 "use client";
 
-import { AlertTriangle, ClipboardCheck, ListChecks, Target } from "lucide-react";
+import { AlertTriangle, Brain, Clock, Database, Flame, Route, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AreaScoreChart } from "@/components/area-score-chart";
+import { BridgeCompanionPanel } from "@/components/bridge-companion-panel";
+import { BridgePulsePanel } from "@/components/bridge-pulse-panel";
+import { ContinuousImprovementLoop } from "@/components/continuous-improvement-loop";
+import { ExcellenceScorePanel } from "@/components/excellence-score-panel";
 import { LeakCard } from "@/components/leak-card";
+import { LiveGoalsPanel } from "@/components/live-goals-panel";
 import { ScoreRing } from "@/components/score-ring";
 import { SectionHeader } from "@/components/section-header";
 import { StatCard } from "@/components/stat-card";
+import { SystemMap } from "@/components/system-map";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getCompanyProfile, getScanResponses, getTrackerTasks } from "@/lib/storage";
-import { calculateAreaScores, calculateOverallScore, getMaturityStatus, getTopLeaks } from "@/lib/scoring";
-import { generateRecommendations } from "@/lib/recommendations";
-import type { CompanyProfile, AreaScore, TrackerTask } from "@/lib/types";
+import { benchmarks } from "@/lib/benchmarks";
+import { getIndustryRules } from "@/lib/industry-rules";
+import { getLiveGoals, getTodayFocus } from "@/lib/live-goals";
+import { calculateAdvancedScores, createImpactUrgencyMatrix, getExecutiveDiagnosis, getTopLeaks } from "@/lib/scoring";
+import { getCompanyProfile, getDataRoom, getScanResponses, getTrackerTasks } from "@/lib/storage";
+import type { AdvancedScores, CompanyProfile, DataRoom, TrackerTask } from "@/lib/types";
 
-export default function DashboardPage() {
+export default function CommandCenterPage() {
   const [company, setCompany] = useState<CompanyProfile | null>(null);
-  const [scores, setScores] = useState<AreaScore[]>([]);
+  const [dataRoom, setDataRoom] = useState<DataRoom | null>(null);
+  const [scores, setScores] = useState<AdvancedScores | null>(null);
   const [tasks, setTasks] = useState<TrackerTask[]>([]);
 
   useEffect(() => {
-    setCompany(getCompanyProfile());
-    setScores(calculateAreaScores(getScanResponses()));
-    setTasks(getTrackerTasks());
+    const load = () => {
+      const nextCompany = getCompanyProfile();
+      setCompany(nextCompany);
+      setDataRoom(getDataRoom());
+      setScores(calculateAdvancedScores(getScanResponses()));
+      setTasks(getTrackerTasks());
+    };
+    load();
+    window.addEventListener("bridge-system:storage", load);
+    return () => window.removeEventListener("bridge-system:storage", load);
   }, []);
 
-  const overall = calculateOverallScore(scores);
-  const leaks = getTopLeaks(scores);
-  const recommendations = generateRecommendations(leaks);
-  const criticalAreas = scores.filter((area) => area.score < 60).length;
+  if (!company || !scores || !dataRoom) return null;
+
+  const leaks = getTopLeaks(scores.areaScores, 5);
+  const matrix = createImpactUrgencyMatrix(leaks);
+  const rules = getIndustryRules(company.industry);
+  const isBrokerage = company.industry === "Corredores de propiedades / Brokerage inmobiliario";
+  const liveGoals = getLiveGoals(company, scores, tasks, dataRoom);
+  const todayFocus = getTodayFocus(liveGoals);
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <SectionHeader
-          eyebrow="Dashboard principal"
-          title={company?.name ?? "Constructora del Sur SpA"}
-          description="Resumen ejecutivo de madurez, puntos de fuga y acciones de implementación para recuperar claridad comercial y operativa."
+          eyebrow="Command Center"
+          title={company.name}
+          description="Las empresas no pierden crecimiento por falta de herramientas. Lo pierden por puntos de fuga invisibles entre ventas, comunicación, operación y equipo."
         />
         <div className="flex flex-wrap gap-2">
-          <Button href="/app/scan" variant="secondary">Continuar diagnóstico</Button>
-          <Button href="/app/flow">Ver Bridge Flow™</Button>
+          <Button href="/app/data-room" variant="secondary"><Database className="size-4" /> Alimentar Data Room</Button>
+          <Button href="/app/insight"><Brain className="size-4" /> Ver Insight</Button>
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Puntos de fuga detectados" value={leaks.length} detail="Áreas con menor score priorizadas por urgencia." icon={AlertTriangle} />
-        <StatCard label="Recomendaciones activas" value={recommendations.length} detail="Acciones inmediatas, de sistema y automatización." icon={Target} />
-        <StatCard label="Tareas en implementación" value={tasks.filter((task) => task.status !== "Implementado").length} detail="Checklist demo persistido en localStorage." icon={ListChecks} />
-        <StatCard label="Áreas críticas" value={criticalAreas} detail="Scores bajo 60 requieren corrección prioritaria." icon={ClipboardCheck} />
+        <StatCard label="Fuga comercial" value={`${scores.commercialLeakIndex}%`} detail="Riesgo combinado en ventas, mensaje y experiencia." icon={Flame} />
+        <StatCard label="AI Readiness" value={`${scores.aiReadinessIndex}%`} detail="Datos, workflows, criterios y revisión humana." icon={Brain} />
+        <StatCard label="Dependencia humana" value={`${scores.humanDependencyIndex}%`} detail="Procesos que aún dependen de memoria personal." icon={Users} />
+        <StatCard label="Urgencia implementación" value={`${scores.implementationUrgency}%`} detail="Presión para convertir diagnóstico en acciones." icon={Clock} />
       </div>
+
+      <ExcellenceScorePanel scores={scores} />
+
+      <BridgePulsePanel compact />
+
+      <Card>
+        <div className="grid gap-5 lg:grid-cols-[.8fr_1.2fr]">
+          <div>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Daily Operating System™</p>
+            <h2 className="mt-2 text-2xl font-semibold">El día también tiene sistema</h2>
+            <p className="mt-3 text-sm leading-6 text-fog">
+              The Bridge System™ no funciona como herramienta suelta. Cada dato alimenta el sistema: Data Room mejora diagnóstico, Scan mejora score, Flow crea tareas, trabajadores entregan feedback, Academy mejora capacidades y Companion guía la siguiente acción.
+            </p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            <DailyItem label="Foco del día" value={todayFocus.title} />
+            <DailyItem label="Meta principal" value={liveGoals[0]?.title ?? "Registrar próxima acción en oportunidades abiertas"} />
+            <DailyItem label="Riesgo principal" value="Si no se asigna responsable, el seguimiento seguirá dependiendo de memoria humana." />
+            <DailyItem label="Acción antes de las 17:00" value="Revisar oportunidades dormidas y asignar responsable." />
+            <DailyItem label="Responsable" value={isBrokerage ? "líder de oficina / corredor asignado" : "líder comercial / responsable de área"} />
+            <DailyItem label="Mensaje interno" value="Hoy no buscamos hacer más por hacer más. Buscamos cerrar una fuga concreta." />
+          </div>
+        </div>
+      </Card>
+
+      <LiveGoalsPanel compact />
+
+      <BridgeCompanionPanel compact />
+
+      <Card>
+        <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Arquitectura operacional</p>
+            <h2 className="mt-2 text-2xl font-semibold">Cómo The Bridge System™ convierte señales en mejora continua</h2>
+          </div>
+          <span className="font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">Rules + Data + AI-ready</span>
+        </div>
+        <SystemMap />
+      </Card>
+
+      <ContinuousImprovementLoop company={company} tasks={tasks} />
+
+      <Card>
+        <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Por qué usar The Bridge System™ todos los días</p>
+        <div className="mt-5 grid gap-3 md:grid-cols-5">
+          {["La empresa carga datos", "El sistema detecta fugas", "Paula Engine™ prioriza", "Bridge Companion™ guía", "Trabajadores ejecutan", "Bridge Culture™ comunica", "Academy entrena", "Pulse mide el día", "El sistema aprende", "La empresa mejora"].map((step, index) => (
+            <div key={step} className="rounded-md border border-[color:var(--line)] bg-bone p-4">
+              <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.12em] text-copper">{String(index + 1).padStart(2, "0")}</p>
+              <p className="mt-2 text-sm font-semibold text-ink">{step}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-5 max-w-5xl text-sm leading-7 text-fog">
+          The Bridge System™ no es un reporte. Es un sistema operativo de mejora continua. Mientras más se usa, más contexto acumula, más precisas son sus alertas y más concretas se vuelven sus recomendaciones.
+        </p>
+      </Card>
 
       <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
         <Card>
-          <div className="mb-5 flex items-center justify-between">
+          <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Score por área</p>
-              <h2 className="mt-2 text-2xl font-semibold">Bridge Scan™</h2>
+              <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Scan™ V3</p>
+              <h2 className="mt-2 text-2xl font-semibold">Score por sistema operativo</h2>
             </div>
-            <span className="rounded bg-bone-2 px-3 py-2 font-mono text-xs uppercase tracking-[0.12em] text-fog">{getMaturityStatus(overall)}</span>
+            <span className="rounded bg-bone-2 px-3 py-2 font-mono text-xs uppercase tracking-[0.12em] text-fog">{scores.maturityLevel}</span>
           </div>
-          <AreaScoreChart scores={scores} />
+          <AreaScoreChart scores={scores.areaScores} />
         </Card>
         <Card>
-          <ScoreRing score={overall} />
-          <p className="text-center text-sm leading-6 text-fog">Estado de madurez: <strong className="text-ink">{getMaturityStatus(overall)}</strong></p>
+          <ScoreRing score={scores.overallScore} />
+          <p className="text-center text-sm leading-6 text-fog">Nivel de madurez: <strong className="text-ink">{scores.maturityLevel}</strong></p>
+          <p className="mt-4 rounded-md border border-[color:var(--line)] bg-bone-2 p-3 text-sm leading-6 text-fog">{company.industry}</p>
         </Card>
       </div>
 
-      <section>
-        <h2 className="mb-4 text-2xl font-semibold">Top 3 puntos de fuga</h2>
-        <div className="grid gap-4 lg:grid-cols-3">
-          {leaks.map((leak) => <LeakCard key={leak.areaId} leak={leak} />)}
-        </div>
+      <Card>
+        <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Diagnóstico ejecutivo</p>
+        <p className="mt-3 max-w-5xl text-base leading-8 text-fog">{getExecutiveDiagnosis(company, scores, dataRoom)}</p>
+      </Card>
+
+      <section className="grid gap-4 xl:grid-cols-5">
+        {leaks.map((leak) => <LeakCard key={leak.id} leak={leak} />)}
       </section>
+
+      <div className="grid gap-5 xl:grid-cols-[1.1fr_.9fr]">
+        <Card>
+          <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Impacto vs urgencia</p>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {matrix.map((item) => (
+              <div key={item.id} className="rounded-md border border-[color:var(--line)] bg-bone p-4">
+                <p className="font-semibold text-ink">{item.title}</p>
+                <p className="mt-2 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-copper">{item.quadrant}</p>
+                <p className="mt-3 text-sm text-fog">Impacto {item.impact} · Urgencia {item.urgency}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+        <Card>
+          <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Benchmark Lens</p>
+          <p className="mt-3 text-sm leading-6 text-fog">Basado en patrones públicos de transformación digital, lead response, CRM adoption y desafíos sectoriales.</p>
+          <div className="mt-4 space-y-3">
+            {benchmarks.slice(0, 4).map((benchmark) => (
+              <div key={benchmark.title} className="border-t border-[color:var(--line)] pt-3">
+                <p className="font-semibold text-ink">{benchmark.title}</p>
+                <p className="mt-1 text-sm leading-6 text-fog">{benchmark.productImplication}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {isBrokerage ? (
+        <Card>
+          <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Brokerage Lens™</p>
+          <div className="mt-5 grid gap-4 lg:grid-cols-3">
+            <div className="rounded-md bg-bone-2 p-4">
+              <h3 className="font-semibold">Pipeline comprador</h3>
+              <p className="mt-3 text-sm text-fog">Lead → Clasificado → Visita → Oferta → Cierre</p>
+            </div>
+            <div className="rounded-md bg-bone-2 p-4">
+              <h3 className="font-semibold">Pipeline propietario</h3>
+              <p className="mt-3 text-sm text-fog">Captación → Tasación → Publicación → Visitas → Oferta → Cierre</p>
+            </div>
+            <div className="rounded-md bg-bone-2 p-4">
+              <h3 className="font-semibold">Score hábitos por corredor</h3>
+              <p className="mt-3 text-sm text-fog">Respuesta · Seguimiento · Registro · Visitas · Ofertas</p>
+            </div>
+          </div>
+        </Card>
+      ) : null}
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <StatCard label="Riesgos activos" value={rules.riskSignals.length} detail={rules.riskSignals[0]} icon={AlertTriangle} />
+        <StatCard label="Oportunidades" value={rules.opportunitySignals.length} detail={rules.opportunitySignals[0]} icon={Route} />
+        <StatCard label="Tareas abiertas" value={tasks.filter((task) => task.status !== "Implementado").length} detail="Acciones de mejora en tracker." icon={Clock} />
+      </div>
+    </div>
+  );
+}
+
+function DailyItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-[color:var(--line)] bg-bone p-4">
+      <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.12em] text-copper">{label}</p>
+      <p className="mt-2 text-sm leading-6 text-fog">{value}</p>
     </div>
   );
 }

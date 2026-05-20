@@ -1,75 +1,52 @@
-import type { Leak, Recommendation } from "./types";
+import { getIndustryRules } from "./industry-rules";
+import type { CompanyProfile, Leak, Recommendation } from "./types";
 
-const recommendationsByArea: Record<string, Omit<Recommendation, "id" | "leakTitle">> = {
-  sales: {
-    priority: "Prioridad 1",
-    actionImmediate: "Crear un protocolo de respuesta a leads en menos de 15 minutos.",
-    actionSystem: "Implementar una secuencia de seguimiento de 7 días.",
-    actionAutomation:
-      "Activar alertas automáticas para leads sin respuesta y sugerencias de mensaje por etapa.",
-    expectedImpact: "Menos leads perdidos y mayor tasa de cierre.",
-    difficulty: "Media",
-    firstStep:
-      "Mapear los últimos 30 leads recibidos y clasificar cuántos recibieron seguimiento real.",
-  },
-  marketing: {
-    priority: "Prioridad 2",
-    actionImmediate: "Unificar la propuesta de valor en web, WhatsApp, campañas y discurso comercial.",
-    actionSystem: "Crear una matriz de mensajes por canal, objeción y etapa de compra.",
-    actionAutomation:
-      "Preparar una librería de respuestas asistidas para campañas y conversaciones comerciales.",
-    expectedImpact: "Mayor claridad de compra y menos fricción entre marketing y ventas.",
-    difficulty: "Media",
-    firstStep: "Auditar 10 mensajes actuales y detectar diferencias de promesa, tono y llamado a la acción.",
-  },
-  customer: {
-    priority: "Prioridad 2",
-    actionImmediate: "Definir estándar de primera respuesta por canal.",
-    actionSystem: "Crear protocolos de atención con criterios de derivación y seguimiento.",
-    actionAutomation:
-      "Diseñar respuestas sugeridas y alertas para consultas abiertas sin cierre.",
-    expectedImpact: "Experiencia más consistente y menos oportunidades abandonadas.",
-    difficulty: "Baja/Media",
-    firstStep: "Recolectar preguntas frecuentes y objeciones de los últimos 15 días.",
-  },
-  operations: {
-    priority: "Prioridad 1",
-    actionImmediate: "Documentar los procesos críticos que hoy dependen de una persona.",
-    actionSystem: "Asignar responsables por etapa y crear checklists operativos.",
-    actionAutomation:
-      "Convertir tareas repetitivas en flujos con recordatorios y estados visibles.",
-    expectedImpact: "Menos dependencia de memoria humana y más libertad operativa.",
-    difficulty: "Media/Alta",
-    firstStep: "Elegir un proceso crítico y mapear entradas, responsables, decisiones y salida esperada.",
-  },
-  technology: {
-    priority: "Prioridad 1",
-    actionImmediate: "Centralizar oportunidades y clientes en una fuente de verdad inicial.",
-    actionSystem: "Definir campos mínimos, estados y reglas de actualización de datos.",
-    actionAutomation:
-      "Preparar la arquitectura agéntica para futuras integraciones con Bridge Brain™.",
-    expectedImpact: "Datos confiables para medir, priorizar y activar inteligencia aplicada.",
-    difficulty: "Media",
-    firstStep: "Consolidar una planilla maestra con leads, canal, responsable, estado y próxima acción.",
-  },
-  team: {
-    priority: "Prioridad 3",
-    actionImmediate: "Instalar una revisión semanal de seguimiento, aprendizajes y bloqueos.",
-    actionSystem: "Crear rutinas de entrenamiento breve para ventas, atención y uso de datos.",
-    actionAutomation:
-      "Generar resúmenes semanales de tareas abiertas, métricas y decisiones pendientes.",
-    expectedImpact: "Equipos que vuelven a pensar con métricas, feedback y mejora continua.",
-    difficulty: "Baja",
-    firstStep: "Definir una reunión de 30 minutos con tres métricas y tres decisiones obligatorias.",
-  },
-};
+export function generateRecommendations(topLeaks: Leak[], company?: CompanyProfile): Recommendation[] {
+  const rules = company ? getIndustryRules(company.industry) : null;
+  const brokerage = company?.industry === "Corredores de propiedades / Brokerage inmobiliario";
 
-export function generateRecommendations(topLeaks: Leak[]): Recommendation[] {
-  return topLeaks.map((leak) => ({
-    id: `rec-${leak.areaId}`,
-    leakTitle: leak.title,
-    ...recommendationsByArea[leak.areaId],
-  }));
+  return topLeaks.map((leak, index) => {
+    if (brokerage) {
+      return {
+        id: `rec-${leak.areaId}`,
+        leakTitle: leak.title,
+        area: leak.areaName,
+        priority: `Prioridad ${index + 1}`,
+        whyItMatters: leak.whyItMatters,
+        actionImmediate: "Crear SLA de respuesta de máximo 15 minutos para leads de portales, web y WhatsApp.",
+        action72Hours: "Clasificar los últimos 100 leads compradores por presupuesto, comuna, urgencia y tipo de propiedad.",
+        action7Days: "Implementar secuencia de seguimiento para comprador: día 1, día 3, día 7, día 14 y día 30.",
+        action30Days: "Crear tablero de oportunidades dormidas por corredor y oficina.",
+        automation: "Alertar al líder de oficina cuando un lead comprador no tenga próxima acción registrada en 72 horas.",
+        script:
+          "Hola, [Nombre]. Te escribo porque hace unos días consultaste por propiedades en [Zona]. Vi que hay nuevas opciones que podrían calzar con lo que buscabas. ¿Sigues mirando alternativas o ya encontraste algo?",
+        kpi: "tiempo de primera respuesta, lead a visita, visita a oferta y oportunidades dormidas por corredor",
+        owner: "corredor asignado + líder de oficina",
+        difficulty: "Media",
+        impact: "Alto",
+        riskOfInaction: leak.riskOfInaction,
+      };
+    }
+
+    return {
+      id: `rec-${leak.areaId}`,
+      leakTitle: leak.title,
+      area: leak.areaName,
+      priority: `Prioridad ${index + 1}`,
+      whyItMatters: leak.whyItMatters,
+      actionImmediate: `Definir un estándar visible para ${leak.areaName.toLowerCase()} con responsable y primera métrica.`,
+      action72Hours: "Revisar los últimos casos reales, clasificar dónde se pierden y asignar próxima acción.",
+      action7Days: "Crear un flujo operativo simple con etapas, responsables, mensajes base y revisión semanal.",
+      action30Days: "Medir cumplimiento, ajustar scripts y entrenar al equipo con aprendizaje de casos reales.",
+      automation: rules?.recommendedAutomations[index] ?? "Alerta automática para oportunidades sin próxima acción.",
+      script: rules?.recommendedScripts[index] ?? "Mensaje de primer contacto y retoma adaptado por etapa.",
+      kpi: rules?.kpisToWatch[index] ?? "oportunidades con próxima acción",
+      owner: index === 0 ? "Dirección / líder comercial" : "Responsable de área",
+      difficulty: index === 0 ? "Media" : "Baja/Media",
+      impact: leak.impact,
+      riskOfInaction: leak.riskOfInaction,
+    };
+  });
 }
 
 export function getSuggestedFlow() {

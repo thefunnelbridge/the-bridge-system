@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { areaIds, areaLabels, scaleLabels, scanQuestions } from "@/lib/scan-questions";
+import { areaIds, areaLabels, areaMicrocopy, scaleLabels, scanQuestions } from "@/lib/scan-questions";
 import { getScanResponses, saveScanResponses } from "@/lib/storage";
 import type { AreaId, ScanResponses } from "@/lib/types";
 
@@ -29,7 +29,7 @@ export default function ScanPage() {
 
   function finish() {
     saveScanResponses(responses);
-    router.push("/app/results");
+    router.push("/app/insight");
   }
 
   return (
@@ -53,6 +53,7 @@ export default function ScanPage() {
 
       <Card>
         <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">{areaLabels[currentArea]}</p>
+        <p className="mt-2 text-sm leading-6 text-fog">{areaMicrocopy[currentArea]}</p>
         <div className="mt-5 space-y-6">
           {scanQuestions[currentArea].map((question, index) => (
             <div key={question} className="border-b border-[color:var(--line)] pb-5 last:border-b-0">
