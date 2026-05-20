@@ -34,7 +34,7 @@ export default function WelcomePage() {
           <Button href="/app" variant="secondary">Entrar</Button>
         </header>
 
-        <div className="grid gap-10 py-12 lg:grid-cols-[1.1fr_.9fr] lg:items-end">
+        <div className="grid gap-10 py-12 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
           <div>
             <p className="font-mono text-[0.72rem] font-bold uppercase tracking-[0.18em] text-copper">OPERATIONAL INTELLIGENCE LAYER</p>
             <h1 className="mt-5 max-w-5xl font-display text-5xl font-semibold leading-[0.98] text-ink md:text-7xl">
@@ -55,7 +55,7 @@ export default function WelcomePage() {
             </p>
           </div>
 
-          <Card className="bg-[#10100f] p-6 text-bone">
+          <Card className="bg-[#10100f] p-6 text-bone lg:-translate-y-8">
             <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#d6a27a]">Sistema vivo en funcionamiento</p>
             <div className="mt-8 grid gap-4">
               {liveSystemItems.map((item) => (
