@@ -1,0 +1,126 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..800,40,0..1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0A0A0A;
+  --ink-2: #141414;
+  --ink-3: #1A1A1A;
+
+  --bone: #F5F1EA;
+  --bone-2: #EFE8DB;
+  --bone-3: #DDD6C6;
+
+  --ember: #FF3B1F;
+  --ember-dim: #C92A14;
+
+  --copper: #B87547;
+  --copper-dim: #8F5A36;
+
+  --fog: #8A837A;
+  --line: rgba(10,10,10,0.12);
+  --line-bone: rgba(245,241,234,0.12);
+
+  --display: 'Fraunces', Georgia, serif;
+  --body: 'Inter Tight', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--body);
+  text-rendering: geometricPrecision;
+}
+
+::selection {
+  background: var(--ember);
+  color: var(--bone);
+}
+
+@layer components {
+  .tfb-container {
+    @apply mx-auto w-full max-w-[1180px] px-5 sm:px-8 lg:px-10;
+  }
+
+  .tfb-kicker {
+    @apply font-mono text-[0.68rem] font-bold uppercase leading-relaxed tracking-[0.18em] text-copper;
+  }
+
+  .tfb-h2 {
+    @apply max-w-4xl font-display text-[2.35rem] font-semibold leading-[0.96] text-ink sm:text-[3.4rem] lg:text-[4.35rem];
+  }
+
+  .tfb-section {
+    @apply relative overflow-hidden py-20 sm:py-24 lg:py-32;
+  }
+
+  .tfb-card {
+    @apply rounded-lg border border-[color:var(--line)] bg-bone/80 p-6 shadow-[0_18px_60px_rgba(10,10,10,0.055)] transition duration-300 ease-out;
+  }
+
+  .tfb-card-hover {
+    @apply hover:-translate-y-1 hover:border-copper/45 hover:bg-bone hover:shadow-soft;
+  }
+
+  .tfb-button {
+    @apply inline-flex items-center justify-center gap-3 rounded-full border border-ink bg-ink px-5 py-3 font-mono text-[0.68rem] font-bold uppercase tracking-[0.12em] text-bone transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-ember hover:text-bone;
+  }
+
+  .tfb-button-secondary {
+    @apply border-[color:var(--line)] bg-transparent text-ink hover:border-ember hover:bg-bone-2 hover:text-ink;
+  }
+}
+
+@keyframes tfbFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tfb-reveal {
+  animation: tfbFadeUp 0.78s ease-out both;
+}
+
+.tfb-reveal-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.tfb-reveal-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.tfb-reveal-delay-3 {
+  animation-delay: 0.3s;
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  aside,
+  header {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+}
