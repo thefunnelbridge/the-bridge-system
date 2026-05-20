@@ -67,12 +67,20 @@ body {
   }
 
   .tfb-card {
-    @apply rounded-lg border border-[color:var(--line)] bg-bone/80 p-6 shadow-[0_18px_60px_rgba(10,10,10,0.055)] transition duration-300 ease-out;
-  }
+  border-radius: 0.5rem;
+  border: 1px solid var(--line);
+  background: rgba(245, 241, 234, 0.8);
+  padding: 1.5rem;
+  box-shadow: 0 18px 60px rgba(10, 10, 10, 0.055);
+  transition: all 300ms ease-out;
+}
 
-  .tfb-card-hover {
-    @apply hover:-translate-y-1 hover:border-copper/45 hover:bg-bone hover:shadow-soft;
-  }
+.tfb-card-hover:hover {
+  transform: translateY(-0.25rem);
+  border-color: rgba(184, 117, 71, 0.45);
+  background: var(--bone);
+  box-shadow: 0 20px 70px rgba(10, 10, 10, 0.08);
+}
 
   .tfb-button {
     @apply inline-flex items-center justify-center gap-3 rounded-full border border-ink bg-ink px-5 py-3 font-mono text-[0.68rem] font-bold uppercase tracking-[0.12em] text-bone transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-ember hover:text-bone;
