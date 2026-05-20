@@ -1,6 +1,6 @@
 "use client";
 
-import { FileDown, RotateCcw } from "lucide-react";
+import { Compass, FileDown, RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { demoCompanies } from "@/lib/demo-data";
 import { getCompanyProfile, setSelectedCompanyId } from "@/lib/storage";
@@ -37,6 +37,7 @@ export function Topbar() {
               <option key={item.id} value={item.id}>{item.name}</option>
             ))}
           </select>
+          <Button href="/app/intro" variant="secondary"><Compass className="size-4" /> Empieza aquí</Button>
           <Button href="/app/report" variant="secondary"><FileDown className="size-4" /> Exportar informe</Button>
           <Button href="/app/scan"><RotateCcw className="size-4" /> Nuevo Scan</Button>
         </div>

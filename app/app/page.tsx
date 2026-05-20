@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, Brain, Clock, Database, Flame, Inbox, Route, TrendingUp, Users } from "lucide-react";
+import { AlertTriangle, Brain, Clock, Compass, Database, Flame, Inbox, Play, Route, TrendingUp, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AreaScoreChart } from "@/components/area-score-chart";
 import { BridgeCompanionPanel } from "@/components/bridge-companion-panel";
@@ -19,6 +19,7 @@ import { benchmarks } from "@/lib/benchmarks";
 import { getIndustryRules } from "@/lib/industry-rules";
 import { getInboxMetrics } from "@/lib/inbox";
 import { getLiveGoals, getTodayFocus } from "@/lib/live-goals";
+import { onboardingSteps } from "@/lib/onboarding";
 import { calculateAdvancedScores, createImpactUrgencyMatrix, getExecutiveDiagnosis, getTopLeaks } from "@/lib/scoring";
 import { getCompanyProfile, getDataRoom, getInboxConversations, getScanResponses, getTrackerTasks } from "@/lib/storage";
 import { getPrimaryTrend } from "@/lib/trends";
@@ -53,9 +54,37 @@ export default function CommandCenterPage() {
   const todayFocus = getTodayFocus(liveGoals);
   const primaryTrend = getPrimaryTrend(company);
   const inboxMetrics = getInboxMetrics(getInboxConversations());
+  const firstSteps = onboardingSteps.slice(0, 4);
 
   return (
     <div className="space-y-8">
+      <Card className="relative overflow-hidden bg-[#10100f] text-bone">
+        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(120deg,rgba(184,117,71,0.2),transparent_38%,rgba(255,59,31,0.12)_78%,transparent)]" />
+        <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
+        <div className="relative grid gap-6 xl:grid-cols-[1fr_420px] xl:items-center">
+          <div>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em] text-copper">Start Here · Operational Intelligence</p>
+            <h1 className="mt-3 max-w-4xl font-display text-5xl font-semibold leading-[0.96]">Primero entiende el sistema. Después úsalo todos los días.</h1>
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-[rgba(245,241,234,0.76)]">
+              Si alguien entra sin contexto, esta ruta le enseña qué hace cada capa, qué debe completar, qué mirar y cómo convertir señales en tareas para el equipo.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button href="/app/intro" className="border-bone bg-bone text-ink hover:border-ember hover:bg-ember hover:text-bone"><Play className="size-4" /> Empezar introducción</Button>
+              <Button href="/app/pulse" variant="secondary"><Compass className="size-4" /> Ver pulso del día</Button>
+            </div>
+          </div>
+          <div className="grid gap-3">
+            {firstSteps.map((step, index) => (
+              <div key={step.id} className="rounded-md border border-[rgba(245,241,234,0.14)] bg-[rgba(245,241,234,0.08)] p-4">
+                <p className="font-mono text-[0.58rem] font-bold uppercase tracking-[0.12em] text-copper">Paso {index + 1} · {step.duration}</p>
+                <p className="mt-2 font-semibold text-bone">{step.title}</p>
+                <p className="mt-1 text-sm leading-6 text-[rgba(245,241,234,0.68)]">{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
+
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <SectionHeader
           eyebrow="Command Center"

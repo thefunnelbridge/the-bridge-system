@@ -102,6 +102,42 @@ body {
   }
 }
 
+@keyframes bridgeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bridgeFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes bridgeScan {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  18%,
+  72% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
 .tfb-reveal {
   animation: tfbFadeUp 0.78s ease-out both;
 }
@@ -116,6 +152,18 @@ body {
 
 .tfb-reveal-delay-3 {
   animation-delay: 0.3s;
+}
+
+.animate-bridge-slide-up {
+  animation: bridgeSlideUp 0.42s ease-out both;
+}
+
+.animate-bridge-float {
+  animation: bridgeFloat 4.8s ease-in-out infinite;
+}
+
+.animate-bridge-scan {
+  animation: bridgeScan 5.8s ease-in-out infinite;
 }
 
 @media print {

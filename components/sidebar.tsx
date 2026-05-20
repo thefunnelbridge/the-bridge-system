@@ -6,6 +6,7 @@ import {
   BarChart3,
   Building2,
   ClipboardList,
+  Compass,
   Database,
   FileText,
   GitBranch,
@@ -21,6 +22,7 @@ import {
 } from "lucide-react";
 
 const items = [
+  { href: "/app/intro", label: "Empieza aquí", icon: Compass },
   { href: "/app", label: "Command Center", icon: Home },
   { href: "/app/company", label: "Empresa", icon: Building2 },
   { href: "/app/data-room", label: "Data Room", icon: Database },
