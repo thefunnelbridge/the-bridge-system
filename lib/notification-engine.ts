@@ -115,6 +115,19 @@ export function generateNotifications({ company, scores, dataRoom, tasks, goals 
       ctaRoute: "/app/data-room",
     },
     {
+      id: "bridge-inbox-warning",
+      title: "Conversaciones requieren orden operativo",
+      description: "Bridge Inbox™ recomienda revisar chats abiertos, archivos dispersos y conversaciones sin próxima acción.",
+      type: "alert",
+      priority: "high",
+      area: "Bridge Inbox™",
+      recipientRole: "ventas / atención",
+      createdAt: timeAgo(194),
+      status: "unread",
+      ctaLabel: "Abrir Inbox",
+      ctaRoute: "/app/inbox",
+    },
+    {
       id: "ai-readiness-warning",
       title: "Automatización requiere proceso base",
       description: scores.aiReadinessIndex < 65

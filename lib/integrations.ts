@@ -44,12 +44,12 @@ export const integrationCatalog: IntegrationItem[] = [
   {
     name: "WhatsApp Business",
     category: "WhatsApp",
-    status: "Conectado demo",
-    reads: ["tiempos de respuesta", "mensajes frecuentes", "consultas abiertas", "etiquetas"],
-    actions: ["sugerir respuesta", "activar retoma", "alertar conversación sin cierre"],
-    expectedImpact: "Convertir WhatsApp en proceso, no caos.",
+    status: "Preparado para integración",
+    reads: ["mensajes entrantes", "etiquetas", "responsables", "tiempos de respuesta", "archivos", "conversaciones abiertas"],
+    actions: ["crear alertas", "generar tareas", "sugerir scripts", "activar recordatorios", "levantar reportes", "detectar oportunidades dormidas"],
+    expectedImpact: "Convertir WhatsApp en parte del sistema operativo de la empresa, sin reemplazarlo.",
     difficulty: "Media",
-    nextAction: "Definir plantillas y reglas de consentimiento.",
+    nextAction: "Definir etiquetas base, responsables y reglas de próxima acción antes de conectar API.",
   },
   {
     name: "Google Sheets",

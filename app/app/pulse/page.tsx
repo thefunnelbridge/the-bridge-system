@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Bell, CheckCircle2, Clock, GraduationCap, Radio, Smartphone, Target, Users } from "lucide-react";
+import { AlertCircle, Bell, CheckCircle2, Clock, FileText as FileTextIcon, GraduationCap, MessageSquare as MessageSquareIcon, Radio, Smartphone, Target, Users } from "lucide-react";
 import type { ElementType } from "react";
 import { useEffect, useState } from "react";
 import { BridgePulsePanel } from "@/components/bridge-pulse-panel";
@@ -9,10 +9,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { generateActivityFeed } from "@/lib/activity-feed";
 import { getBridgeCompanion } from "@/lib/bridge-companion";
+import { getInboxMetrics, getInboxPulse } from "@/lib/inbox";
 import { getLiveGoals, getTodayFocus, type LiveGoal } from "@/lib/live-goals";
 import { generateNotifications, getCriticalNotifications, markNotificationRead, resolveNotification, type BridgeNotification } from "@/lib/notification-engine";
 import { calculateAdvancedScores } from "@/lib/scoring";
-import { getCompanyProfile, getDataRoom, getScanResponses, getTrackerTasks } from "@/lib/storage";
+import { getCompanyProfile, getDataRoom, getInboxConversations, getScanResponses, getTrackerTasks } from "@/lib/storage";
 import type { AdvancedScores, CompanyProfile, DataRoom, TrackerTask } from "@/lib/types";
 
 function numberFrom(value: unknown, fallback: number) {
@@ -56,6 +57,9 @@ export default function BridgePulsePage() {
   const blockedTasks = tasks.filter((task) => task.status === "Bloqueado");
   const riskyGoals = goals.filter((goal) => goal.status === "En riesgo" || goal.status === "Bloqueada");
   const unfollowed = numberFrom(dataRoom.leads.porcentajeSinSeguimiento, 30);
+  const inbox = getInboxConversations();
+  const inboxMetrics = getInboxMetrics(inbox);
+  const inboxPulse = getInboxPulse(inbox);
 
   return (
     <div className="space-y-8">
@@ -112,6 +116,34 @@ export default function BridgePulsePage() {
           <Metric icon={GraduationCap} label="Microlecciones pendientes" value="3" />
           <Metric icon={CheckCircle2} label="Metas cumplidas" value={goals.filter((goal) => goal.status === "Cumplida").length} />
           <Metric icon={Radio} label="Oportunidades dormidas" value={`${unfollowed}%`} />
+        </div>
+      </Card>
+
+      <Card>
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+          <div>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Pulso de conversaciones</p>
+            <h2 className="mt-2 text-2xl font-semibold">Clientes esperando respuesta, documentos pendientes y oportunidades dormidas.</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-fog">{inboxPulse.nextBestAction}</p>
+          </div>
+          <Button href="/app/inbox" variant="secondary">Abrir Bridge Inbox™</Button>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
+          <Metric icon={MessageSquareIcon} label="Críticas hoy" value={inboxMetrics.criticalToday} />
+          <Metric icon={Bell} label="Esperando respuesta" value={inboxMetrics.unansweredMessages} />
+          <Metric icon={FileTextIcon} label="Documentos pendientes" value={inboxMetrics.pendingDocuments} />
+          <Metric icon={Clock} label="Dormidas" value={inboxMetrics.dormantOpportunities} />
+          <Metric icon={Users} label="Sin responsable" value={inboxMetrics.unassigned} />
+          <Metric icon={AlertCircle} label="Sin próxima acción" value={inboxMetrics.withoutNextAction} />
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          {inboxPulse.criticalConversations.map((conversation) => (
+            <div key={conversation.id} className="rounded-md border border-[color:var(--line)] bg-bone p-4">
+              <p className="font-semibold text-ink">{conversation.customer}</p>
+              <p className="mt-2 text-sm leading-6 text-fog">{conversation.detectedLeak}</p>
+              <p className="mt-2 font-mono text-[0.6rem] uppercase tracking-[0.1em] text-copper">{conversation.channel} · {conversation.status}</p>
+            </div>
+          ))}
         </div>
       </Card>
 

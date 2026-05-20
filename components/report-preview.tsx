@@ -1,6 +1,7 @@
 import { academyLessons } from "@/lib/academy";
 import { generateActivityFeed, getRecentActivity } from "@/lib/activity-feed";
 import { calculateBridgeExcellenceScore, getContinuousImprovementLoop, getServiceStandardScore, getStrategicScorecard } from "@/lib/excellence-library";
+import { getDemoInboxConversations, getInboxFlowRecommendation, getInboxMetrics, type BridgeInboxConversation } from "@/lib/inbox";
 import { integrationCatalog } from "@/lib/integrations";
 import { generateInternalComms } from "@/lib/internal-comms";
 import { getLiveGoals } from "@/lib/live-goals";
@@ -17,6 +18,7 @@ export function ReportPreview({
   insight,
   tasks,
   dataRoom,
+  inboxConversations,
 }: {
   company: CompanyProfile;
   scores: AdvancedScores;
@@ -26,6 +28,7 @@ export function ReportPreview({
   insight: string;
   tasks: TrackerTask[];
   dataRoom: DataRoom;
+  inboxConversations?: BridgeInboxConversation[];
 }) {
   const isBrokerage = company.industry === "Corredores de propiedades / Brokerage inmobiliario";
   const excellence = calculateBridgeExcellenceScore(scores);
@@ -44,6 +47,8 @@ export function ReportPreview({
   const criticalNotifications = getCriticalNotifications(notifications);
   const comms = generateInternalComms(company, scores, tasks);
   const trends = getTrendsForCompany(company);
+  const inboxMetrics = getInboxMetrics(inboxConversations ?? getDemoInboxConversations(company));
+  const inboxFlow = getInboxFlowRecommendation();
 
   return (
     <article className="rounded-lg border border-[color:var(--line)] bg-[#fbf8f2] p-6 shadow-[0_22px_70px_rgba(10,10,10,.06)] print:border-0 print:bg-white print:p-0 print:shadow-none">
@@ -173,6 +178,30 @@ export function ReportPreview({
         <div className="mt-5 rounded-lg bg-bone-2 p-5">
           <h4 className="text-xl font-semibold">Plan de uso diario</h4>
           <p className="mt-3 text-sm leading-7 text-fog">Instalar la vista móvil en equipos clave, revisar Bridge Pulse™ cada mañana, cerrar bloqueos antes de las 17:00 y usar Academy para entrenar la fuga prioritaria de la semana.</p>
+        </div>
+      </section>
+
+      <section className="break-after-page py-8">
+        <h3 className="font-display text-4xl font-semibold">Orden de conversaciones y WhatsApp</h3>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-fog">
+          Bridge Inbox™ no reemplaza WhatsApp. Lo convierte en parte del sistema: cada conversación debe tener responsable, estado, archivo asociado y próxima acción.
+        </p>
+        <div className="mt-5 grid gap-4 md:grid-cols-5">
+          <div className="rounded-lg bg-bone-2 p-4"><p className="font-mono text-xs text-copper">Sin próxima acción</p><p className="mt-2 text-3xl font-semibold">{inboxMetrics.withoutNextAction}</p></div>
+          <div className="rounded-lg bg-bone-2 p-4"><p className="font-mono text-xs text-copper">Sin responsable</p><p className="mt-2 text-3xl font-semibold">{inboxMetrics.unassigned}</p></div>
+          <div className="rounded-lg bg-bone-2 p-4"><p className="font-mono text-xs text-copper">Archivos dispersos</p><p className="mt-2 text-3xl font-semibold">{inboxMetrics.scatteredFiles}</p></div>
+          <div className="rounded-lg bg-bone-2 p-4"><p className="font-mono text-xs text-copper">Mensajes sin respuesta</p><p className="mt-2 text-3xl font-semibold">{inboxMetrics.unansweredMessages}</p></div>
+          <div className="rounded-lg bg-bone-2 p-4"><p className="font-mono text-xs text-copper">Clientes dormidos</p><p className="mt-2 text-3xl font-semibold">{inboxMetrics.dormantOpportunities}</p></div>
+        </div>
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="rounded-lg border border-[color:var(--line)] bg-bone p-5">
+            <h4 className="text-xl font-semibold">Riesgo ejecutivo</h4>
+            <p className="mt-3 text-sm leading-7 text-fog">El cliente no debería perderse dentro de un chat. Los archivos no deberían vivir enterrados en conversaciones, y el seguimiento no debería depender de memoria personal.</p>
+          </div>
+          <div className="rounded-lg border border-[color:var(--line)] bg-bone p-5">
+            <h4 className="text-xl font-semibold">Plan de orden en 7 días</h4>
+            <p className="mt-3 text-sm leading-7 text-fog">{inboxFlow.immediate} Luego: {inboxFlow.action72Hours} Finalmente: {inboxFlow.action7Days}</p>
+          </div>
         </div>
       </section>
 

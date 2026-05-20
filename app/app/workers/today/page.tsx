@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getBridgeCompanion } from "@/lib/bridge-companion";
+import type { BridgeInboxConversation } from "@/lib/inbox";
 import { getLiveGoals, updateGoalProgress, type LiveGoal } from "@/lib/live-goals";
 import { generateNotifications, type BridgeNotification } from "@/lib/notification-engine";
 import { calculateAdvancedScores } from "@/lib/scoring";
-import { getCompanyProfile, getDataRoom, getScanResponses, getTrackerTasks, saveTrackerTasks } from "@/lib/storage";
+import { getCompanyProfile, getDataRoom, getInboxConversations, getScanResponses, getTrackerTasks, saveInboxConversations, saveTrackerTasks } from "@/lib/storage";
 import type { TrackerTask } from "@/lib/types";
 
 const worker = {
@@ -21,6 +22,7 @@ export default function WorkerTodayPage() {
   const [goals, setGoals] = useState<LiveGoal[]>([]);
   const [tasks, setTasks] = useState<TrackerTask[]>([]);
   const [notifications, setNotifications] = useState<BridgeNotification[]>([]);
+  const [conversations, setConversations] = useState<BridgeInboxConversation[]>([]);
   const [lessonDone, setLessonDone] = useState(false);
   const [message, setMessage] = useState("");
   const [workerNotice, setWorkerNotice] = useState("");
@@ -35,6 +37,7 @@ export default function WorkerTodayPage() {
     setGoals(nextGoals.filter((goal) => goal.cadence === "Diaria").slice(0, 3));
     setTasks(nextTasks.filter((task) => task.status !== "Implementado").slice(0, 4));
     setNotifications(generateNotifications({ company, scores, dataRoom, tasks: nextTasks, goals: nextGoals }).slice(0, 4));
+    setConversations(getInboxConversations().filter((item) => item.status !== "Cerrado").slice(0, 3));
     setMessage(companion.workerGuidance);
     setLessonDone(window.localStorage.getItem("bridge-system.worker.lessonDone") === "true");
   }, []);
@@ -67,6 +70,14 @@ export default function WorkerTodayPage() {
     };
     window.localStorage.setItem("bridge-system.worker.clarityRequest", JSON.stringify(request));
     setWorkerNotice("Solicitud de claridad registrada.");
+  }
+
+  function updateConversation(conversation: BridgeInboxConversation, patch: Partial<BridgeInboxConversation>, text: string) {
+    const all = getInboxConversations();
+    const updated = all.map((item) => (item.id === conversation.id ? { ...item, ...patch } : item));
+    saveInboxConversations(updated);
+    setConversations(updated.filter((item) => item.status !== "Cerrado").slice(0, 3));
+    setWorkerNotice(text);
   }
 
   return (
@@ -138,6 +149,32 @@ export default function WorkerTodayPage() {
       </section>
 
       {workerNotice ? <p className="rounded-md bg-bone-2 p-3 text-center text-sm text-fog">{workerNotice}</p> : null}
+
+      <section className="space-y-3">
+        <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Mis conversaciones de hoy</p>
+        {conversations.map((conversation) => (
+          <Card key={conversation.id}>
+            <div className="flex items-start gap-3">
+              <MessageSquare className="mt-1 size-5 shrink-0 text-copper" />
+              <div className="flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="font-semibold text-ink">{conversation.customer}</h2>
+                  <span className="rounded bg-bone-2 px-2 py-1 font-mono text-[0.56rem] uppercase tracking-[0.1em] text-copper">{conversation.channel}</span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-fog">{conversation.nextAction || "Agregar próxima acción antes de cerrar el día."}</p>
+                <p className="mt-2 rounded-md bg-bone-2 p-3 text-sm leading-6 text-fog">{conversation.suggestedScript}</p>
+                <div className="mt-4 grid gap-2">
+                  <Button variant="secondary" onClick={() => updateConversation(conversation, { unreadMessages: 0, status: "En conversación" }, "Conversación marcada como respondida.")}>Responder</Button>
+                  <Button variant="ghost" onClick={() => updateConversation(conversation, { nextAction: "Retomar cliente y registrar siguiente paso antes de las 17:00.", status: "Seguimiento pendiente" }, "Próxima acción agregada.")}>Agregar próxima acción</Button>
+                  <Button variant="ghost" onClick={() => updateConversation(conversation, { hasUnlinkedFiles: false, status: "En conversación" }, "Documento marcado como recibido.")}>Marcar documento recibido</Button>
+                  <Button variant="ghost" onClick={() => updateConversation(conversation, { status: "Requiere atención" }, "Bloqueo de conversación reportado.")}>Reportar bloqueo</Button>
+                  <Button variant="ghost" onClick={() => setWorkerNotice("Script sugerido listo para usar en la conversación.")}>Usar script sugerido</Button>
+                </div>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </section>
 
       <Card>
         <div className="flex items-start gap-3">

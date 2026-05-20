@@ -10,8 +10,9 @@ import { StatCard } from "@/components/stat-card";
 import { StrategicScorecardPanel } from "@/components/strategic-scorecard-panel";
 import { Card } from "@/components/ui/card";
 import { getIndustryRules } from "@/lib/industry-rules";
+import { getInboxMetrics } from "@/lib/inbox";
 import { calculateAdvancedScores, createImpactUrgencyMatrix, getExecutiveDiagnosis, getTopLeaks } from "@/lib/scoring";
-import { getCompanyProfile, getDataRoom, getScanResponses } from "@/lib/storage";
+import { getCompanyProfile, getDataRoom, getInboxConversations, getScanResponses } from "@/lib/storage";
 import type { AdvancedScores, CompanyProfile, DataRoom } from "@/lib/types";
 import { Brain, Database, Flame, Users } from "lucide-react";
 
@@ -36,6 +37,7 @@ export default function InsightPage() {
   const matrix = createImpactUrgencyMatrix(leaks);
   const rules = getIndustryRules(company.industry);
   const isBrokerage = company.industry === "Corredores de propiedades / Brokerage inmobiliario";
+  const inboxMetrics = getInboxMetrics(getInboxConversations());
 
   return (
     <div className="space-y-8">
@@ -52,6 +54,20 @@ export default function InsightPage() {
       </div>
       <ExcellenceScorePanel scores={scores} />
       <StrategicScorecardPanel scores={scores} />
+      <Card>
+        <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Inbox™ · WhatsApp como memoria operativa</p>
+        <p className="mt-3 text-base leading-8 text-fog">
+          El sistema detecta que WhatsApp funciona como canal de ventas, atención, archivo, agenda y coordinación interna al mismo tiempo. Esto puede generar pérdida de trazabilidad, respuestas inconsistentes, archivos dispersos y oportunidades sin próxima acción.
+        </p>
+        <div className="mt-5 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
+          <InboxMetric label="Sin próxima acción" value={inboxMetrics.withoutNextAction} />
+          <InboxMetric label="Mensajes sin respuesta" value={inboxMetrics.unansweredMessages} />
+          <InboxMetric label="Archivos no asociados" value={inboxMetrics.scatteredFiles} />
+          <InboxMetric label="Leads dormidos" value={inboxMetrics.dormantOpportunities} />
+          <InboxMetric label="Responsables pendientes" value={inboxMetrics.unassigned} />
+          <InboxMetric label="Scripts inconsistentes" value={scores.communicationLeakIndex} suffix="%" />
+        </div>
+      </Card>
       <Card>
         <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Diagnóstico ejecutivo</p>
         <p className="mt-3 text-base leading-8 text-fog">{getExecutiveDiagnosis(company, scores, dataRoom)}</p>
@@ -83,6 +99,15 @@ export default function InsightPage() {
           </div>
         </Card>
       ) : null}
+    </div>
+  );
+}
+
+function InboxMetric({ label, value, suffix = "" }: { label: string; value: string | number; suffix?: string }) {
+  return (
+    <div className="rounded-md border border-[color:var(--line)] bg-bone p-4">
+      <p className="font-mono text-[0.56rem] font-bold uppercase tracking-[0.1em] text-copper">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-ink">{value}{suffix}</p>
     </div>
   );
 }

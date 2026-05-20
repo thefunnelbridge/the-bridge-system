@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { SectionHeader } from "@/components/section-header";
 import { Card } from "@/components/ui/card";
 import { benchmarks } from "@/lib/benchmarks";
-import { getCompanyProfile, getDataRoom, saveDataRoom } from "@/lib/storage";
+import { getInboxMetrics } from "@/lib/inbox";
+import { getCompanyProfile, getDataRoom, getInboxConversations, saveDataRoom } from "@/lib/storage";
 import type { CompanyProfile, DataRoom } from "@/lib/types";
 
 const tabs = ["leads", "sales", "communication", "operations", "team", "files", "benchmarks"] as const;
@@ -43,6 +44,7 @@ export default function DataRoomPage() {
   }
 
   const current = dataRoom[active];
+  const inboxMetrics = getInboxMetrics(getInboxConversations());
 
   return (
     <div className="space-y-8">
@@ -81,6 +83,25 @@ export default function DataRoomPage() {
         )}
       </Card>
 
+      <Card>
+        <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Inbox™</p>
+        <div className="mt-4 grid gap-5 lg:grid-cols-[1fr_420px] lg:items-center">
+          <div>
+            <h2 className="text-2xl font-semibold">Conversaciones como datos operativos</h2>
+            <p className="mt-3 text-sm leading-7 text-fog">
+              Bridge Inbox™ convierte WhatsApp, emails, formularios y chats en señales que alimentan el Data Room: responsables, estados, archivos, tiempos de respuesta, scripts y próximas acciones.
+            </p>
+            <p className="mt-3 text-sm leading-7 text-fog">No reemplaza WhatsApp. Lo ordena, lo mide y lo conecta con el sistema operativo de la empresa.</p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <MiniMetric label="Sin próxima acción" value={inboxMetrics.withoutNextAction} />
+            <MiniMetric label="Sin responsable" value={inboxMetrics.unassigned} />
+            <MiniMetric label="Archivos dispersos" value={inboxMetrics.scatteredFiles} />
+            <MiniMetric label="Mensajes sin respuesta" value={inboxMetrics.unansweredMessages} />
+          </div>
+        </div>
+      </Card>
+
       {isBrokerage && dataRoom.brokerage ? (
         <Card>
           <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Brokerage Data Room</p>
@@ -96,6 +117,15 @@ export default function DataRoomPage() {
           </div>
         </Card>
       ) : null}
+    </div>
+  );
+}
+
+function MiniMetric({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded-md border border-[color:var(--line)] bg-bone p-4">
+      <p className="font-mono text-[0.58rem] font-bold uppercase tracking-[0.12em] text-copper">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-ink">{value}</p>
     </div>
   );
 }

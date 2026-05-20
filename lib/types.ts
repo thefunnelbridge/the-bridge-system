@@ -8,7 +8,8 @@ export type AreaId =
   | "leadership"
   | "experience"
   | "aiReadiness"
-  | "continuousImprovement";
+  | "continuousImprovement"
+  | "inbox";
 
 export type MaturityStatus =
   | "Fuga crítica"
@@ -161,7 +162,7 @@ export type IndustryRules = {
   opportunitySignals: string[];
 };
 
-export type IntegrationStatus = "Conectado demo" | "Disponible" | "Próximamente" | "Requiere configuración";
+export type IntegrationStatus = "Conectado demo" | "Disponible" | "Preparado para integración" | "Próximamente" | "Requiere configuración";
 
 export type IntegrationItem = {
   name: string;

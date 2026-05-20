@@ -7,7 +7,7 @@ import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { generateRecommendations } from "@/lib/recommendations";
 import { calculateAdvancedScores, createImpactUrgencyMatrix, getExecutiveDiagnosis, getTopLeaks } from "@/lib/scoring";
-import { exportDemoData, getCompanyProfile, getDataRoom, getScanResponses, getTrackerTasks } from "@/lib/storage";
+import { exportDemoData, getCompanyProfile, getDataRoom, getInboxConversations, getScanResponses, getTrackerTasks } from "@/lib/storage";
 import type { AdvancedScores, CompanyProfile } from "@/lib/types";
 
 export default function ReportPage() {
@@ -28,6 +28,7 @@ export default function ReportPage() {
   const recommendations = generateRecommendations(leaks, company);
   const insight = getExecutiveDiagnosis(company, scores, dataRoom);
   const tasks = getTrackerTasks();
+  const inboxConversations = getInboxConversations();
 
   function copySummary() {
     navigator.clipboard.writeText(insight);
@@ -55,7 +56,7 @@ export default function ReportPage() {
           {copied ? <span className="self-center text-sm text-fog">Resumen copiado.</span> : null}
         </div>
       </div>
-      <ReportPreview company={company} scores={scores} leaks={leaks} matrix={matrix} recommendations={recommendations} insight={insight} tasks={tasks} dataRoom={dataRoom} />
+      <ReportPreview company={company} scores={scores} leaks={leaks} matrix={matrix} recommendations={recommendations} insight={insight} tasks={tasks} dataRoom={dataRoom} inboxConversations={inboxConversations} />
     </div>
   );
 }

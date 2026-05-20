@@ -149,6 +149,7 @@ export const demoResponsesByCompany: Record<string, ScanResponses> = {
     experience: [3, 2, 2, 2, 2],
     aiReadiness: [2, 2, 1, 2, 1],
     continuousImprovement: [2, 2, 2, 2, 2],
+    inbox: [2, 2, 1, 2, 2, 2, 2, 2],
   },
   "clinica-aurora": {
     sales: [2, 2, 2, 2, 2],
@@ -161,6 +162,7 @@ export const demoResponsesByCompany: Record<string, ScanResponses> = {
     experience: [2, 2, 2, 2, 1],
     aiReadiness: [1, 2, 1, 1, 1],
     continuousImprovement: [2, 1, 2, 2, 1],
+    inbox: [2, 2, 1, 2, 2, 1, 2, 2],
   },
   "automotora-andes": {
     sales: [2, 2, 3, 2, 2],
@@ -173,6 +175,7 @@ export const demoResponsesByCompany: Record<string, ScanResponses> = {
     experience: [3, 2, 2, 2, 2],
     aiReadiness: [2, 2, 1, 2, 1],
     continuousImprovement: [2, 2, 2, 2, 2],
+    inbox: [2, 2, 2, 2, 2, 2, 2, 2],
   },
   "legal-montt": {
     sales: [2, 2, 2, 2, 2],
@@ -185,6 +188,7 @@ export const demoResponsesByCompany: Record<string, ScanResponses> = {
     experience: [2, 2, 2, 2, 2],
     aiReadiness: [1, 2, 1, 1, 1],
     continuousImprovement: [2, 1, 2, 2, 1],
+    inbox: [2, 2, 1, 2, 2, 2, 2, 1],
   },
   "mercado-vivo": {
     sales: [1, 2, 1, 1, 1],
@@ -197,6 +201,7 @@ export const demoResponsesByCompany: Record<string, ScanResponses> = {
     experience: [2, 1, 1, 1, 1],
     aiReadiness: [1, 1, 1, 1, 1],
     continuousImprovement: [1, 1, 1, 1, 1],
+    inbox: [1, 1, 1, 1, 1, 1, 1, 1],
   },
   "century-sur-brokers": {
     sales: [2, 2, 3, 2, 2],
@@ -209,6 +214,7 @@ export const demoResponsesByCompany: Record<string, ScanResponses> = {
     experience: [2, 2, 2, 2, 2],
     aiReadiness: [2, 2, 2, 2, 1],
     continuousImprovement: [2, 2, 2, 2, 2],
+    inbox: [2, 2, 2, 2, 2, 2, 2, 2],
   },
 };
 

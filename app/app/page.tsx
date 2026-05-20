@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, Brain, Clock, Database, Flame, Route, TrendingUp, Users } from "lucide-react";
+import { AlertTriangle, Brain, Clock, Database, Flame, Inbox, Route, TrendingUp, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AreaScoreChart } from "@/components/area-score-chart";
 import { BridgeCompanionPanel } from "@/components/bridge-companion-panel";
@@ -17,9 +17,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { benchmarks } from "@/lib/benchmarks";
 import { getIndustryRules } from "@/lib/industry-rules";
+import { getInboxMetrics } from "@/lib/inbox";
 import { getLiveGoals, getTodayFocus } from "@/lib/live-goals";
 import { calculateAdvancedScores, createImpactUrgencyMatrix, getExecutiveDiagnosis, getTopLeaks } from "@/lib/scoring";
-import { getCompanyProfile, getDataRoom, getScanResponses, getTrackerTasks } from "@/lib/storage";
+import { getCompanyProfile, getDataRoom, getInboxConversations, getScanResponses, getTrackerTasks } from "@/lib/storage";
 import { getPrimaryTrend } from "@/lib/trends";
 import type { AdvancedScores, CompanyProfile, DataRoom, TrackerTask } from "@/lib/types";
 
@@ -51,6 +52,7 @@ export default function CommandCenterPage() {
   const liveGoals = getLiveGoals(company, scores, tasks, dataRoom);
   const todayFocus = getTodayFocus(liveGoals);
   const primaryTrend = getPrimaryTrend(company);
+  const inboxMetrics = getInboxMetrics(getInboxConversations());
 
   return (
     <div className="space-y-8">
@@ -62,6 +64,7 @@ export default function CommandCenterPage() {
         />
         <div className="flex flex-wrap gap-2">
           <Button href="/app/data-room" variant="secondary"><Database className="size-4" /> Alimentar Data Room</Button>
+          <Button href="/app/inbox" variant="secondary"><Inbox className="size-4" /> Ordenar Inbox</Button>
           <Button href="/app/trends" variant="secondary"><TrendingUp className="size-4" /> Ver Trends</Button>
           <Button href="/app/insight"><Brain className="size-4" /> Ver Insight</Button>
         </div>
@@ -99,6 +102,24 @@ export default function CommandCenterPage() {
       <ExcellenceScorePanel scores={scores} />
 
       <BridgePulsePanel compact />
+
+      <Card>
+        <div className="grid gap-5 lg:grid-cols-[.8fr_1.2fr]">
+          <div>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Inbox™</p>
+            <h2 className="mt-2 text-2xl font-semibold">WhatsApp no se reemplaza. Se convierte en sistema.</h2>
+            <p className="mt-3 text-sm leading-6 text-fog">
+              Bridge Inbox™ transforma mensajes dispersos en oportunidades accionables con responsable, estado, próxima acción, archivos asociados, scripts sugeridos y alertas de seguimiento.
+            </p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-4">
+            <DailyItem label="Sin próxima acción" value={`${inboxMetrics.withoutNextAction} conversaciones`} />
+            <DailyItem label="Sin responsable" value={`${inboxMetrics.unassigned} conversaciones`} />
+            <DailyItem label="Archivos dispersos" value={`${inboxMetrics.scatteredFiles} casos`} />
+            <DailyItem label="Mensajes sin respuesta" value={`${inboxMetrics.unansweredMessages} mensajes`} />
+          </div>
+        </div>
+      </Card>
 
       <Card>
         <div className="grid gap-5 lg:grid-cols-[.8fr_1.2fr]">

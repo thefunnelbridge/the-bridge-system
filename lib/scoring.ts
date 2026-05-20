@@ -83,6 +83,14 @@ const leakMap: Record<AreaId, Omit<Leak, "id" | "areaId" | "areaName" | "score">
     whyItMatters: "La mejora continua reduce repetición de errores y dependencia del liderazgo.",
     riskOfInaction: "El equipo seguirá resolviendo síntomas sin corregir causas.",
   },
+  inbox: {
+    title: "Conversaciones sin sistema operativo",
+    description: "WhatsApp, emails y chats funcionan como ventas, atención, archivo y agenda al mismo tiempo, pero sin responsable, estado ni próxima acción visible.",
+    impact: "Alto",
+    urgency: "Alta",
+    whyItMatters: "Cada conversación sin estructura puede convertirse en oportunidad dormida, archivo perdido o respuesta inconsistente.",
+    riskOfInaction: "Más clientes perdidos dentro del chat, documentos enterrados y seguimiento dependiente de memoria personal.",
+  },
 };
 
 function avg(values: number[]) {
@@ -125,7 +133,7 @@ export function getMaturityStatus(score: number): MaturityStatus {
 export function calculateAdvancedScores(responses: ScanResponses): AdvancedScores {
   const areaScores = calculateAreaScores(responses);
   const overallScore = calculateOverallScore(areaScores);
-  const commercial = Math.round(avg([byId(areaScores, "sales"), byId(areaScores, "marketing"), byId(areaScores, "experience")]));
+  const commercial = Math.round(avg([byId(areaScores, "sales"), byId(areaScores, "marketing"), byId(areaScores, "experience"), byId(areaScores, "inbox")]));
   const ops = Math.round(avg([byId(areaScores, "operations"), byId(areaScores, "technology"), byId(areaScores, "continuousImprovement")]));
   const people = Math.round(avg([byId(areaScores, "team"), byId(areaScores, "leadership")]));
 
@@ -134,9 +142,9 @@ export function calculateAdvancedScores(responses: ScanResponses): AdvancedScore
     overallScore,
     maturityLevel: getMaturityStatus(overallScore),
     commercialLeakIndex: riskFromScore(commercial),
-    communicationLeakIndex: riskFromScore(Math.round(avg([byId(areaScores, "marketing"), byId(areaScores, "customer")]))),
+    communicationLeakIndex: riskFromScore(Math.round(avg([byId(areaScores, "marketing"), byId(areaScores, "customer"), byId(areaScores, "inbox")]))),
     operationalLeakIndex: riskFromScore(ops),
-    customerExperienceRisk: riskFromScore(Math.round(avg([byId(areaScores, "customer"), byId(areaScores, "experience")]))),
+    customerExperienceRisk: riskFromScore(Math.round(avg([byId(areaScores, "customer"), byId(areaScores, "experience"), byId(areaScores, "inbox")]))),
     aiReadinessIndex: byId(areaScores, "aiReadiness"),
     dataMaturityIndex: byId(areaScores, "technology"),
     humanDependencyIndex: riskFromScore(Math.round(avg([byId(areaScores, "operations"), byId(areaScores, "team"), byId(areaScores, "leadership")]))),

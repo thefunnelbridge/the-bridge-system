@@ -11,13 +11,13 @@ import type { AreaId, ScanResponses } from "@/lib/types";
 
 export default function ScanPage() {
   const router = useRouter();
-  const [responses, setResponses] = useState<ScanResponses>(() => Object.fromEntries(areaIds.map((id) => [id, Array(5).fill(3)])) as ScanResponses);
+  const [responses, setResponses] = useState<ScanResponses>(() => Object.fromEntries(areaIds.map((id) => [id, Array(scanQuestions[id].length).fill(3)])) as ScanResponses);
   const [currentArea, setCurrentArea] = useState<AreaId>("sales");
 
   useEffect(() => setResponses(getScanResponses()), []);
 
-  const answered = useMemo(() => areaIds.reduce((sum, id) => sum + responses[id].filter(Boolean).length, 0), [responses]);
-  const total = areaIds.length * 5;
+  const answered = useMemo(() => areaIds.reduce((sum, id) => sum + (responses[id] ?? []).filter(Boolean).length, 0), [responses]);
+  const total = areaIds.reduce((sum, id) => sum + scanQuestions[id].length, 0);
   const progress = Math.round((answered / total) * 100);
 
   function setAnswer(area: AreaId, index: number, value: number) {
@@ -34,7 +34,7 @@ export default function ScanPage() {
 
   return (
     <div className="space-y-8">
-      <SectionHeader eyebrow="Bridge Scan™" title="Diagnóstico por áreas" description="Evalúa seis áreas con escala 1 a 5. El Bridge Score™ se recalcula desde las respuestas guardadas." />
+      <SectionHeader eyebrow="Bridge Scan™" title="Diagnóstico por áreas" description="Evalúa ventas, operación, cultura, IA y Bridge Inbox™ con escala 1 a 5. El Bridge Score™ se recalcula desde las respuestas guardadas." />
       <Card>
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="h-2 flex-1 overflow-hidden rounded-full bg-bone-2">

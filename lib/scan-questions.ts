@@ -11,6 +11,7 @@ export const areaLabels: Record<AreaId, string> = {
   experience: "Experiencia del cliente",
   aiReadiness: "Preparación IA",
   continuousImprovement: "Seguimiento y mejora continua",
+  inbox: "Bridge Inbox™ y conversaciones",
 };
 
 export const areaMicrocopy: Record<AreaId, string> = {
@@ -24,6 +25,7 @@ export const areaMicrocopy: Record<AreaId, string> = {
   experience: "Evalúa claridad, tiempos de espera, fricciones y seguimiento posterior.",
   aiReadiness: "Mide si hay datos, workflows y criterio humano antes de automatizar.",
   continuousImprovement: "Verifica si los aprendizajes se documentan y se convierten en implementación.",
+  inbox: "Evalúa si WhatsApp, emails y chats tienen responsable, estado, archivos y próxima acción.",
 };
 
 export const scanQuestions: Record<AreaId, string[]> = {
@@ -96,6 +98,16 @@ export const scanQuestions: Record<AreaId, string[]> = {
     "¿Se corrigen procesos después de detectar errores?",
     "¿Se comparte feedback con el equipo?",
     "¿Hay un sistema para asegurar implementación?",
+  ],
+  inbox: [
+    "¿Cada conversación de WhatsApp tiene responsable asignado?",
+    "¿Los clientes tienen una próxima acción registrada?",
+    "¿Los archivos enviados por WhatsApp quedan ordenados fuera del chat?",
+    "¿El equipo usa respuestas aprobadas o cada persona responde distinto?",
+    "¿Se mide el tiempo de respuesta por canal?",
+    "¿Se separan conversaciones comerciales de conversaciones internas?",
+    "¿Hay etiquetas o estados claros para cada oportunidad?",
+    "¿Se detectan clientes dormidos después de 3, 7 o 14 días?",
   ],
 };
 

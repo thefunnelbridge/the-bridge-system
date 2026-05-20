@@ -1,6 +1,7 @@
 "use client";
 
 import { demoCompanies, demoCompany, demoDataRooms, demoResponsesByCompany, demoTrackerTasks } from "./demo-data";
+import { getDemoInboxConversations, type BridgeInboxConversation } from "./inbox";
 import { areaIds } from "./scan-questions";
 import type { CompanyProfile, DataRoom, ScanResponses, TrackerTask } from "./types";
 
@@ -10,6 +11,7 @@ const keys = {
   responses: "bridge-system.responses",
   tasks: "bridge-system.tasks",
   dataRoom: "bridge-system.dataRoom",
+  inbox: "bridge-system.inbox",
   liveGoals: "bridge-system.liveGoals",
   workerLesson: "bridge-system.worker.lessonDone",
 };
@@ -45,6 +47,7 @@ export function setSelectedCompanyId(companyId: string) {
   write(keys.company, company);
   write(keys.responses, demoResponsesByCompany[company.id]);
   write(keys.dataRoom, demoDataRooms[company.id]);
+  write(keys.inbox, getDemoInboxConversations(company));
 }
 
 export function getCompanyProfile(): CompanyProfile {
@@ -84,6 +87,15 @@ export function saveDataRoom(dataRoom: DataRoom) {
   write(keys.dataRoom, dataRoom);
 }
 
+export function getInboxConversations(): BridgeInboxConversation[] {
+  const company = getCompanyProfile();
+  return read(keys.inbox, getDemoInboxConversations(company));
+}
+
+export function saveInboxConversations(conversations: BridgeInboxConversation[]) {
+  write(keys.inbox, conversations);
+}
+
 export function getTrackerTasks(): TrackerTask[] {
   return read(keys.tasks, demoTrackerTasks);
 }
@@ -98,6 +110,7 @@ export function resetDemo(companyId = getSelectedCompanyId()) {
   write(keys.company, company);
   write(keys.responses, demoResponsesByCompany[company.id]);
   write(keys.dataRoom, demoDataRooms[company.id]);
+  write(keys.inbox, getDemoInboxConversations(company));
   write(keys.tasks, demoTrackerTasks);
   if (typeof window !== "undefined") {
     window.localStorage.removeItem(keys.liveGoals);
@@ -110,6 +123,7 @@ export function exportDemoData() {
     company: getCompanyProfile(),
     responses: getScanResponses(),
     dataRoom: getDataRoom(),
+    inbox: getInboxConversations(),
     tasks: getTrackerTasks(),
   };
 }

@@ -19,6 +19,7 @@ const nextFeatures = [
 ];
 
 const systemStatus = [
+  ["Bridge Inbox™", "active demo"],
   ["Bridge Trends™", "active demo"],
   ["Bridge Pulse™", "active demo"],
   ["Live Goals™", "active"],
