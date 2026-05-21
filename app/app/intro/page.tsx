@@ -47,7 +47,7 @@ export default function IntroPage() {
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Button href={nextStep.route}><Play className="size-4" /> Continuar ruta</Button>
-              <Button href="/app" variant="secondary"><Compass className="size-4" /> Ir al Command Center</Button>
+              <Button href="/app" className="border-[rgba(245,241,234,0.22)] bg-transparent text-bone hover:border-ember hover:bg-ember hover:text-bone"><Compass className="size-4" /> Ir al Command Center</Button>
             </div>
           </div>
           <div className="rounded-lg border border-[rgba(245,241,234,0.14)] bg-[rgba(245,241,234,0.08)] p-5">

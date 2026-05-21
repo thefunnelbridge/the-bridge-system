@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Bell, CheckCircle2, Clock, FileText as FileTextIcon, GraduationCap, MessageSquare as MessageSquareIcon, Radio, Smartphone, Target, Users } from "lucide-react";
+import { AlertCircle, Bell, CheckCircle2, Clock, FileText as FileTextIcon, GraduationCap, MessageSquare as MessageSquareIcon, Radio, Smartphone, Target, Users, Zap } from "lucide-react";
 import type { ElementType } from "react";
 import { useEffect, useState } from "react";
 import { BridgePulsePanel } from "@/components/bridge-pulse-panel";
@@ -63,25 +63,55 @@ export default function BridgePulsePage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-        <SectionHeader
-          eyebrow="Bridge Pulse™"
-          title="Pulso vivo diario de la empresa"
-          description="Metas, alertas, tareas críticas, oportunidades dormidas, trabajadores bloqueados, notificaciones y actividad reciente en una sola lectura operacional."
-        />
-        <div className="flex flex-wrap gap-2">
-          <Button href="/app/workers/today" variant="secondary"><Smartphone className="size-4" /> Vista trabajador</Button>
-          <Button href="/app/tracker"><Target className="size-4" /> Abrir tracker</Button>
+      <div className="relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-[#10100f] p-6 text-bone shadow-[0_24px_80px_rgba(10,10,10,0.16)] lg:p-8">
+        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(120deg,rgba(184,117,71,0.24),transparent_34%,rgba(255,59,31,0.12)_72%,transparent)]" />
+        <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
+        <div className="relative grid gap-7 xl:grid-cols-[1fr_420px] xl:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(245,241,234,0.14)] bg-[rgba(245,241,234,0.08)] px-4 py-2 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-copper">
+              <Radio className="size-4 animate-pulse text-ember" /> Live operating pulse
+            </div>
+            <h1 className="mt-5 max-w-4xl font-display text-5xl font-semibold leading-[0.96] lg:text-6xl">Qué está pasando hoy y qué debe hacerse antes de las 17:00.</h1>
+            <p className="mt-5 max-w-3xl text-sm leading-7 text-[rgba(245,241,234,0.76)]">
+              Pulse no es un reporte: es la lectura diaria de metas, alertas, conversaciones, bloqueos, trabajadores y próxima mejor acción.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Button href="/app/workers/today" className="border-bone bg-bone text-ink hover:border-ember hover:bg-ember hover:text-bone"><Smartphone className="size-4" /> Vista trabajador</Button>
+              <Button href="/app/tracker" className="border-[rgba(245,241,234,0.22)] bg-transparent text-bone hover:border-ember hover:bg-ember hover:text-bone"><Target className="size-4" /> Abrir tracker</Button>
+            </div>
+          </div>
+          <div className="rounded-lg border border-[rgba(245,241,234,0.14)] bg-[rgba(245,241,234,0.08)] p-5">
+            <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-copper">Score operativo del día</p>
+            <div className="mt-4 flex items-end justify-between gap-4">
+              <p className="text-6xl font-semibold">{operationalScore}%</p>
+              <span className="mb-2 rounded bg-[rgba(245,241,234,0.1)] px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.1em] text-[rgba(245,241,234,0.7)]">
+                {operationalScore >= 75 ? "Estable" : operationalScore >= 55 ? "En tensión" : "Crítico"}
+              </span>
+            </div>
+            <p className="mt-5 text-sm leading-6 text-[rgba(245,241,234,0.72)]">Si haces una sola cosa hoy: {focus.title.toLowerCase()}.</p>
+          </div>
         </div>
       </div>
 
+      <SectionHeader
+        eyebrow="Bridge Pulse™"
+        title="Pulso vivo diario de la empresa"
+        description="Metas, alertas, tareas críticas, oportunidades dormidas, trabajadores bloqueados, notificaciones y actividad reciente en una sola lectura operacional."
+      />
+
       <BridgePulsePanel />
 
-      <Card>
-        <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Metas del día</p>
+      <Card className="overflow-hidden">
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Metas del día</p>
+            <h2 className="mt-2 text-2xl font-semibold">Objetivos vivos que mueven el sistema</h2>
+          </div>
+          <span className="rounded-md bg-bone-2 px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.1em] text-copper">{riskyGoals.length} en riesgo</span>
+        </div>
         <div className="mt-5 grid gap-3 lg:grid-cols-3">
           {goals.filter((goal) => goal.cadence === "Diaria").map((goal) => (
-            <div key={goal.id} className="rounded-md border border-[color:var(--line)] bg-bone p-4">
+            <div key={goal.id} className="group rounded-lg border border-[color:var(--line)] bg-bone p-4 transition hover:-translate-y-1 hover:border-copper">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h3 className="font-semibold text-ink">{goal.title}</h3>
@@ -98,13 +128,22 @@ export default function BridgePulsePage() {
         </div>
       </Card>
 
-      <Card>
-        <div className="flex items-start gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[rgba(255,59,31,0.1)] text-ember"><Radio className="size-5" /></span>
-          <div>
-            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Pulso de hoy</p>
-            <h2 className="mt-2 text-2xl font-semibold">{new Date().toLocaleDateString("es-CL", { weekday: "long", day: "numeric", month: "long" })} · {company.name}</h2>
-            <p className="mt-3 text-sm leading-6 text-fog">Estado del día: <strong className="text-ink">{operationalScore >= 75 ? "estable" : operationalScore >= 55 ? "en tensión" : "crítico"}</strong>. Score operativo diario: <strong className="text-ink">{operationalScore}%</strong>.</p>
+      <Card className="bg-bone-2">
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div className="flex items-start gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[rgba(255,59,31,0.1)] text-ember"><Radio className="size-5" /></span>
+            <div>
+              <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Pulso de hoy</p>
+              <h2 className="mt-2 text-2xl font-semibold">{new Date().toLocaleDateString("es-CL", { weekday: "long", day: "numeric", month: "long" })} · {company.name}</h2>
+              <p className="mt-3 text-sm leading-6 text-fog">Estado del día: <strong className="text-ink">{operationalScore >= 75 ? "estable" : operationalScore >= 55 ? "en tensión" : "crítico"}</strong>. Score operativo diario: <strong className="text-ink">{operationalScore}%</strong>.</p>
+            </div>
+          </div>
+          <div className="rounded-lg border border-[color:var(--line)] bg-bone p-4">
+            <div className="flex items-center gap-2 text-copper">
+              <Zap className="size-4" />
+              <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.12em]">Comando rápido</p>
+            </div>
+            <p className="mt-2 max-w-sm text-sm leading-6 text-fog">{companion.managerGuidance}</p>
           </div>
         </div>
         <div className="mt-5 grid gap-3 md:grid-cols-4">
@@ -148,11 +187,11 @@ export default function BridgePulsePage() {
       </Card>
 
       <div className="grid gap-5 xl:grid-cols-[1.15fr_.85fr]">
-        <Card>
+        <Card className="overflow-hidden">
           <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Feed operativo en vivo simulado</p>
           <div className="mt-5 space-y-3">
             {feed.map((item) => (
-              <div key={item.id} className="grid gap-3 rounded-md border border-[color:var(--line)] bg-bone p-4 lg:grid-cols-[76px_1fr_120px] lg:items-center">
+              <div key={item.id} className="group grid gap-3 rounded-md border border-[color:var(--line)] bg-bone p-4 transition hover:-translate-y-0.5 hover:border-copper lg:grid-cols-[76px_1fr_120px] lg:items-center">
                 <span className="font-mono text-sm text-fog">{new Date(item.time).toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" })}</span>
                 <div>
                   <div className="flex flex-wrap items-center gap-2">

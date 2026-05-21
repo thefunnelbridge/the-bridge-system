@@ -14,7 +14,7 @@ import { getInboxMetrics } from "@/lib/inbox";
 import { calculateAdvancedScores, createImpactUrgencyMatrix, getExecutiveDiagnosis, getTopLeaks } from "@/lib/scoring";
 import { getCompanyProfile, getDataRoom, getInboxConversations, getScanResponses } from "@/lib/storage";
 import type { AdvancedScores, CompanyProfile, DataRoom } from "@/lib/types";
-import { Brain, Database, Flame, Users } from "lucide-react";
+import { Activity, ArrowRight, Brain, Database, Flame, ShieldAlert, Signal, Target, Users } from "lucide-react";
 
 export default function InsightPage() {
   const [company, setCompany] = useState<CompanyProfile | null>(null);
@@ -38,14 +38,64 @@ export default function InsightPage() {
   const rules = getIndustryRules(company.industry);
   const isBrokerage = company.industry === "Corredores de propiedades / Brokerage inmobiliario";
   const inboxMetrics = getInboxMetrics(getInboxConversations());
+  const primaryLeak = leaks[0];
+  const executiveBlocks = [
+    ["Mayor fuga", primaryLeak?.title ?? "Seguimiento sin sistema", primaryLeak?.areaName ?? "Ventas"],
+    ["Riesgo invisible", primaryLeak?.riskOfInaction ?? "La operación seguirá dependiendo de memoria humana.", "No actuar"],
+    ["Oportunidad", rules.opportunitySignals[0] ?? "Convertir señales dispersas en acciones visibles.", "Próxima semana"],
+  ];
+  const signalFlow = [
+    { icon: Signal, title: "Señal", text: "El sistema cruza datos internos, conversaciones y benchmarks." },
+    { icon: ShieldAlert, title: "Riesgo", text: "Prioriza lo que puede frenar ventas, servicio o adopción." },
+    { icon: Target, title: "Acción", text: "Traduce diagnóstico en tareas, responsables y KPI." },
+    { icon: Activity, title: "Aprendizaje", text: "Cada uso alimenta mejores recomendaciones." },
+  ];
 
   return (
     <div className="space-y-8">
-      <SectionHeader eyebrow="Bridge Insight™" title="Dashboard de análisis avanzado" description="Command center analítico con índices, matriz de urgencia, fugas, riesgos y oportunidades por industria." />
-      <div className="grid gap-5 xl:grid-cols-[340px_1fr]">
-        <Card><ScoreRing score={scores.overallScore} /><p className="text-center font-semibold">{scores.maturityLevel}</p></Card>
-        <Card><AreaScoreChart scores={scores.areaScores} /></Card>
+      <div className="relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-[#10100f] p-6 text-bone shadow-[0_24px_80px_rgba(10,10,10,0.16)] lg:p-8">
+        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(120deg,rgba(184,117,71,0.24),transparent_34%,rgba(255,59,31,0.12)_72%,transparent)]" />
+        <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
+        <div className="relative grid gap-7 xl:grid-cols-[1fr_360px] xl:items-center">
+          <div>
+            <p className="font-mono text-[0.7rem] font-bold uppercase tracking-[0.18em] text-copper">Bridge Insight™ · Executive Signal Room</p>
+            <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold leading-[0.96] lg:text-6xl">Aquí los datos dejan de ser números y se convierten en criterio.</h1>
+            <p className="mt-5 max-w-3xl text-sm leading-7 text-[rgba(245,241,234,0.76)]">
+              Insight interpreta el Data Room, Bridge Scan™, Inbox y señales de industria para mostrar qué importa, qué está en riesgo y qué debería priorizar dirección.
+            </p>
+          </div>
+          <div className="rounded-lg border border-[rgba(245,241,234,0.14)] bg-[rgba(245,241,234,0.08)] p-5">
+            <ScoreRing score={scores.overallScore} />
+            <p className="text-center font-semibold text-bone">{scores.maturityLevel}</p>
+            <p className="mt-3 text-center text-sm leading-6 text-[rgba(245,241,234,0.68)]">{company.name}</p>
+          </div>
+        </div>
       </div>
+
+      <SectionHeader eyebrow="Bridge Insight™" title="Dashboard de análisis avanzado" description="Command center analítico con índices, matriz de urgencia, fugas, riesgos y oportunidades por industria." />
+
+      <div className="grid gap-5 xl:grid-cols-[1fr_420px]">
+        <Card>
+          <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Mapa de madurez</p>
+              <h2 className="mt-2 text-2xl font-semibold">Score por área operativa</h2>
+            </div>
+            <span className="rounded-md bg-bone-2 px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.1em] text-copper">Scan + Data Room + Inbox</span>
+          </div>
+          <AreaScoreChart scores={scores.areaScores} />
+        </Card>
+        <div className="space-y-4">
+          {executiveBlocks.map(([label, value, meta]) => (
+            <Card key={label} className="transition hover:-translate-y-1 hover:border-copper">
+              <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.12em] text-copper">{label}</p>
+              <h3 className="mt-2 text-xl font-semibold text-ink">{value}</h3>
+              <p className="mt-2 font-mono text-[0.6rem] uppercase tracking-[0.1em] text-fog">{meta}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Índice fuga comercial" value={`${scores.commercialLeakIndex}%`} detail="Ventas + mensaje + experiencia." icon={Flame} />
         <StatCard label="Índice fuga operativa" value={`${scores.operationalLeakIndex}%`} detail="Operación + datos + mejora continua." icon={Database} />
@@ -54,6 +104,20 @@ export default function InsightPage() {
       </div>
       <ExcellenceScorePanel scores={scores} />
       <StrategicScorecardPanel scores={scores} />
+      <Card className="bg-bone-2">
+        <div className="grid gap-4 md:grid-cols-4">
+          {signalFlow.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.title} className="rounded-lg border border-[color:var(--line)] bg-bone p-4">
+                <Icon className="size-5 text-copper" />
+                <p className="mt-3 font-semibold text-ink">{item.title}</p>
+                <p className="mt-2 text-sm leading-6 text-fog">{item.text}</p>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
       <Card>
         <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Inbox™ · WhatsApp como memoria operativa</p>
         <p className="mt-3 text-base leading-8 text-fog">
@@ -77,7 +141,15 @@ export default function InsightPage() {
         <Card>
           <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Matriz impacto / urgencia</p>
           <div className="mt-4 space-y-3">
-            {matrix.map((item) => <div key={item.id} className="rounded-md bg-bone-2 p-4"><strong>{item.title}</strong><p className="mt-1 text-sm text-fog">{item.quadrant} · impacto {item.impact} · urgencia {item.urgency}</p></div>)}
+            {matrix.map((item) => (
+              <div key={item.id} className="group rounded-md bg-bone-2 p-4 transition hover:-translate-y-0.5 hover:bg-bone">
+                <div className="flex items-start justify-between gap-3">
+                  <strong>{item.title}</strong>
+                  <ArrowRight className="size-4 text-copper opacity-0 transition group-hover:opacity-100" />
+                </div>
+                <p className="mt-1 text-sm text-fog">{item.quadrant} · impacto {item.impact} · urgencia {item.urgency}</p>
+              </div>
+            ))}
           </div>
         </Card>
         <Card>

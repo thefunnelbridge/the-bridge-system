@@ -70,7 +70,7 @@ export default function CommandCenterPage() {
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button href="/app/intro" className="border-bone bg-bone text-ink hover:border-ember hover:bg-ember hover:text-bone"><Play className="size-4" /> Empezar introducción</Button>
-              <Button href="/app/pulse" variant="secondary"><Compass className="size-4" /> Ver pulso del día</Button>
+              <Button href="/app/pulse" className="border-[rgba(245,241,234,0.22)] bg-transparent text-bone hover:border-ember hover:bg-ember hover:text-bone"><Compass className="size-4" /> Ver pulso del día</Button>
             </div>
           </div>
           <div className="grid gap-3">

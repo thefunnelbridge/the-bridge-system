@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Archive, Clock, FileText, MessageSquare, Tag, UserCheck } from "lucide-react";
+import { AlertCircle, Archive, ArrowRight, Clock, FileText, MessageSquare, PanelTop, Tag, UserCheck, Zap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { SectionHeader } from "@/components/section-header";
@@ -55,17 +55,12 @@ export default function BridgeInboxPage() {
 
   return (
     <div className="space-y-8">
-      <SectionHeader
-        eyebrow="Bridge Inbox™"
-        title="Conversaciones convertidas en oportunidades accionables"
-        description="Ordena WhatsApp, emails, formularios y chats sin reemplazarlos: cada conversación debe tener responsable, estado, archivo y próxima acción."
-      />
-
-      <Card className="bg-ink text-bone">
-        <div className="grid gap-6 lg:grid-cols-[1fr_360px] lg:items-center">
+      <div className="relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-ink p-6 text-bone shadow-[0_24px_90px_rgba(10,10,10,0.18)] lg:p-8">
+        <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
+        <div className="relative grid gap-8 xl:grid-cols-[1fr_420px] xl:items-end">
           <div>
-            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em] text-copper">WhatsApp como parte del sistema operativo</p>
-            <h2 className="mt-4 font-display text-4xl font-semibold leading-tight">No prohibimos WhatsApp. Lo convertimos en parte del sistema.</h2>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.18em] text-copper">Bridge Inbox™ · Conversation Intelligence</p>
+            <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold leading-[0.96] lg:text-7xl">Convierte chats dispersos en oportunidades con dueño y siguiente paso.</h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-[rgba(245,241,234,0.78)]">
               WhatsApp no es el problema. El problema es usarlo sin estructura. Bridge Inbox™ transforma mensajes dispersos en responsables claros, próximas acciones, alertas, scripts y trazabilidad ejecutiva.
             </p>
@@ -75,13 +70,26 @@ export default function BridgeInboxPage() {
             <p className="mt-3 text-lg leading-7">El cliente no debería perderse dentro de un chat. Los archivos no deberían vivir enterrados en conversaciones.</p>
           </div>
         </div>
-      </Card>
+      </div>
+
+      <SectionHeader
+        eyebrow="Bridge Inbox™"
+        title="Conversaciones convertidas en oportunidades accionables"
+        description="Ordena WhatsApp, emails, formularios y chats sin reemplazarlos: cada conversación debe tener responsable, estado, archivo y próxima acción."
+      />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Conversaciones abiertas" value={metrics.openConversations} detail="Canales activos con oportunidad o atención pendiente." icon={MessageSquare} />
         <StatCard label="Sin responsable" value={metrics.unassigned} detail="Conversaciones que dependen de memoria o buena voluntad." icon={UserCheck} />
         <StatCard label="Sin próxima acción" value={metrics.withoutNextAction} detail="Clientes esperando claridad sobre el siguiente paso." icon={Clock} />
         <StatCard label="Archivos dispersos" value={metrics.scatteredFiles} detail="Documentos, audios o cotizaciones enterradas en chats." icon={Archive} />
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-4">
+        <InboxStage title="Entrada" value={metrics.openConversations} text="Mensajes que llegaron desde WhatsApp, email, formularios o DM." />
+        <InboxStage title="Orden" value={metrics.openConversations - metrics.unassigned} text="Conversaciones con alguien responsable mirando el siguiente paso." />
+        <InboxStage title="Acción" value={metrics.openConversations - metrics.withoutNextAction} text="Clientes con próxima acción registrada, no enterrada en el chat." />
+        <InboxStage title="Alerta" value={metrics.dormantOpportunities} text="Oportunidades dormidas que el sistema debe levantar antes de perderlas." />
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
@@ -133,6 +141,12 @@ export default function BridgeInboxPage() {
                   <Info label="Archivo asociado" value={conversation.associatedFile} />
                   <Info label="Script sugerido" value={conversation.suggestedScript} />
                 </div>
+                <div className="mt-4 rounded-md border border-copper/30 bg-bone-2 p-3">
+                  <p className="flex items-center gap-2 font-mono text-[0.58rem] font-bold uppercase tracking-[0.12em] text-copper"><Zap className="size-3" /> Próxima mejor acción</p>
+                  <p className="mt-2 text-sm leading-6 text-fog">
+                    {conversation.nextAction ? "Confirmar que la acción tenga fecha, responsable y canal." : "Asignar responsable, registrar próxima acción y mover la conversación fuera de la memoria del chat."}
+                  </p>
+                </div>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {conversation.tags.map((tag) => (
                     <span key={tag} className="inline-flex items-center gap-1 rounded-md border border-[color:var(--line)] bg-white px-2 py-1 font-mono text-[0.58rem] uppercase tracking-[0.1em] text-fog">
@@ -168,9 +182,36 @@ export default function BridgeInboxPage() {
               <Signal icon={MessageSquare} text={`${metrics.internalMixedWithSales} conversaciones mezclan ventas con coordinación interna.`} />
             </div>
           </Card>
+
+          <Card className="bg-bone-2">
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">For Dummies</p>
+            <h3 className="mt-2 text-2xl font-semibold text-ink">Qué significa ordenar conversaciones</h3>
+            <div className="mt-4 space-y-3 text-sm leading-6 text-fog">
+              <GuideLine text="Un chat sin responsable es una oportunidad sin dueño." />
+              <GuideLine text="Un cliente sin próxima acción queda esperando que alguien se acuerde." />
+              <GuideLine text="Un archivo dentro de WhatsApp no es trazabilidad." />
+              <GuideLine text="Bridge Inbox™ convierte cada conversación en una unidad de operación." />
+            </div>
+            <Button href="/app/flow" variant="secondary" className="mt-5">Enviar a Bridge Flow™ <ArrowRight className="size-4" /></Button>
+          </Card>
         </div>
       </div>
     </div>
+  );
+}
+
+function InboxStage({ title, value, text }: { title: string; value: number; text: string }) {
+  return (
+    <Card className="group hover:-translate-y-1 hover:border-copper hover:bg-bone-2">
+      <div className="flex items-start justify-between gap-4">
+        <span className="grid size-10 place-items-center rounded-md bg-ink text-bone transition group-hover:bg-ember">
+          <PanelTop className="size-5" />
+        </span>
+        <p className="font-mono text-3xl font-bold text-ink">{value}</p>
+      </div>
+      <h3 className="mt-5 text-xl font-semibold text-ink">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-fog">{text}</p>
+    </Card>
   );
 }
 
@@ -187,6 +228,15 @@ function Signal({ icon: Icon, text }: { icon: LucideIcon; text: string }) {
   return (
     <div className="flex items-start gap-2 rounded-md bg-bone p-3">
       <Icon className="mt-0.5 size-4 shrink-0 text-ember" />
+      <p>{text}</p>
+    </div>
+  );
+}
+
+function GuideLine({ text }: { text: string }) {
+  return (
+    <div className="flex items-start gap-2">
+      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-ember" />
       <p>{text}</p>
     </div>
   );

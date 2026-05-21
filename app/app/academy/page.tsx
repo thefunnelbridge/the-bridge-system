@@ -1,5 +1,6 @@
 "use client";
 
+import { BookOpen, CheckCircle2, Flame, PlayCircle, Target, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,13 @@ export default function AcademyPage() {
     if (!company) return academyLessons;
     return Array.from(new Set([...getIndustryRules(company.industry).academyLessons, ...academyLessons]));
   }, [company]);
+  const progress = lessons.length ? Math.round((completed.length / lessons.length) * 100) : 0;
+  const featured = lessons.find((lesson) => !completed.includes(lesson)) ?? lessons[0];
+  const learningPaths = [
+    { title: "Ventas y seguimiento", detail: "Respuesta, retoma, priorización y próxima acción.", icon: Target },
+    { title: "Servicio y experiencia", detail: "Claridad, cortesía, consistencia y humanidad.", icon: Users },
+    { title: "Operación e IA", detail: "Procesos, datos, automatización y revisión humana.", icon: Flame },
+  ];
 
   function complete(title: string) {
     const next = Array.from(new Set([...completed, title]));
@@ -31,17 +39,89 @@ export default function AcademyPage() {
 
   return (
     <div className="space-y-8">
+      <div className="relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-[#10100f] p-6 text-bone shadow-[0_24px_80px_rgba(10,10,10,0.16)] lg:p-8">
+        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(120deg,rgba(184,117,71,0.24),transparent_34%,rgba(255,59,31,0.12)_72%,transparent)]" />
+        <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
+        <div className="relative grid gap-7 xl:grid-cols-[1fr_420px] xl:items-end">
+          <div>
+            <p className="font-mono text-[0.7rem] font-bold uppercase tracking-[0.18em] text-copper">Bridge Academy™ · Adoption Layer</p>
+            <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold leading-[0.96] lg:text-6xl">Entrena al equipo exactamente donde la operación se está fugando.</h1>
+            <p className="mt-5 max-w-3xl text-sm leading-7 text-[rgba(245,241,234,0.76)]">
+              No es una biblioteca de cursos. Es microentrenamiento conectado al diagnóstico: cada lección ayuda a cerrar una fuga real y a instalar hábitos visibles en el equipo.
+            </p>
+          </div>
+          <div className="rounded-lg border border-[rgba(245,241,234,0.14)] bg-[rgba(245,241,234,0.08)] p-5">
+            <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-copper">Siguiente microlección</p>
+            <h2 className="mt-3 text-2xl font-semibold">{featured}</h2>
+            <div className="mt-5 h-2 overflow-hidden rounded-full bg-[rgba(245,241,234,0.12)]">
+              <div className="h-full rounded-full bg-copper transition-all" style={{ width: `${progress}%` }} />
+            </div>
+            <p className="mt-3 text-sm text-[rgba(245,241,234,0.68)]">{progress}% de avance local en Academy.</p>
+          </div>
+        </div>
+      </div>
+
       <SectionHeader eyebrow="Bridge Academy™" title="Microentrenamientos por fuga" description="Lecciones cortas para convertir recomendaciones en hábitos de equipo, con foco por industria y progreso local." />
       <div className="grid gap-4 md:grid-cols-3">
-        <Card><p className="font-mono text-xs text-copper">Lecciones</p><p className="mt-2 text-3xl font-semibold">{lessons.length}</p></Card>
-        <Card><p className="font-mono text-xs text-copper">Completadas</p><p className="mt-2 text-3xl font-semibold">{completed.length}</p></Card>
-        <Card><p className="font-mono text-xs text-copper">Foco</p><p className="mt-2 text-lg font-semibold">{company?.industry ?? "Industria demo"}</p></Card>
+        <Card className="group overflow-hidden">
+          <div className="flex items-start justify-between gap-4">
+            <div><p className="font-mono text-xs text-copper">Lecciones</p><p className="mt-2 text-4xl font-semibold">{lessons.length}</p></div>
+            <BookOpen className="size-5 text-copper" />
+          </div>
+        </Card>
+        <Card>
+          <div className="flex items-start justify-between gap-4">
+            <div><p className="font-mono text-xs text-copper">Completadas</p><p className="mt-2 text-4xl font-semibold">{completed.length}</p></div>
+            <CheckCircle2 className="size-5 text-copper" />
+          </div>
+        </Card>
+        <Card>
+          <p className="font-mono text-xs text-copper">Foco</p>
+          <p className="mt-2 text-lg font-semibold">{company?.industry ?? "Industria demo"}</p>
+        </Card>
       </div>
-      <div className="grid gap-4 lg:grid-cols-2">
+
+      <div className="grid gap-5 xl:grid-cols-[320px_1fr]">
+        <div className="space-y-5">
+          <Card className="bg-bone-2">
+            <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">Rutas de aprendizaje</p>
+            <div className="mt-4 space-y-3">
+              {learningPaths.map((path) => {
+                const Icon = path.icon;
+                return (
+                  <div key={path.title} className="rounded-lg border border-[color:var(--line)] bg-bone p-4">
+                    <div className="flex items-start gap-3">
+                      <span className="grid size-9 shrink-0 place-items-center rounded-md bg-ink text-copper"><Icon className="size-4" /></span>
+                      <div>
+                        <p className="font-semibold text-ink">{path.title}</p>
+                        <p className="mt-1 text-sm leading-6 text-fog">{path.detail}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+          <Card>
+            <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">Cómo usar Academy</p>
+            <div className="mt-4 space-y-3 text-sm leading-6 text-fog">
+              <p><strong className="text-ink">1.</strong> Elige una lección conectada con la fuga principal.</p>
+              <p><strong className="text-ink">2.</strong> Haz el ejercicio con casos reales de la empresa.</p>
+              <p><strong className="text-ink">3.</strong> Marca completada y convierte el aprendizaje en una tarea o estándar.</p>
+            </div>
+          </Card>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
         {lessons.map((title, index) => (
-          <Card key={title}>
-            <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">{12 + (index % 5) * 3} min · {index % 2 === 0 ? "equipo comercial" : "dirección y operación"}</p>
-            <h2 className="mt-2 text-xl font-semibold">{title}</h2>
+          <Card key={title} className={`group transition hover:-translate-y-1 hover:border-copper ${completed.includes(title) ? "bg-bone-2" : ""}`}>
+            <div className="flex items-start justify-between gap-3">
+              <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">{12 + (index % 5) * 3} min · {index % 2 === 0 ? "equipo comercial" : "dirección y operación"}</p>
+              <span className="grid size-9 shrink-0 place-items-center rounded-md border border-[color:var(--line)] bg-bone text-copper">
+                {completed.includes(title) ? <CheckCircle2 className="size-4" /> : <PlayCircle className="size-4" />}
+              </span>
+            </div>
+            <h2 className="mt-3 text-xl font-semibold">{title}</h2>
             <p className="mt-3 text-sm leading-6 text-fog">Objetivo: instalar un estándar simple, humano y medible. Contenido: contexto, ejemplo, checklist y práctica en un caso real del negocio.</p>
             <div className="mt-4 rounded-md bg-bone-2 p-3 text-sm leading-6 text-fog">
               Ejercicio práctico: tomar 5 oportunidades recientes, aplicar el criterio de la lección y registrar una próxima acción verificable.
@@ -52,6 +132,7 @@ export default function AcademyPage() {
             </div>
           </Card>
         ))}
+        </div>
       </div>
     </div>
   );
