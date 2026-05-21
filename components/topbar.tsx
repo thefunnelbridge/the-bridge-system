@@ -18,15 +18,17 @@ export function Topbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 border-b border-[color:var(--line)] bg-[rgba(245,241,234,0.86)] px-4 py-3 backdrop-blur-xl md:px-8">
+    <header className="sticky top-0 z-20 border-b border-[color:var(--line)] bg-[rgba(245,241,234,0.9)] px-4 py-4 backdrop-blur-xl md:px-8">
+      <div aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-ember to-transparent opacity-60" />
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-4">
-          <span className="grid size-11 place-items-center rounded-lg bg-ink text-copper shadow-[0_12px_30px_rgba(10,10,10,0.12)]">
-            <Radio className="size-5 animate-pulse" />
+          <span className="relative grid size-16 place-items-center rounded-xl bg-ink text-ember shadow-[0_18px_45px_rgba(10,10,10,0.18)]">
+            <Radio className="size-7 animate-pulse" />
+            <span className="absolute -right-1 -top-1 rounded-full bg-ember px-1.5 py-0.5 font-mono text-[0.48rem] font-bold uppercase tracking-[0.08em] text-bone">live</span>
           </span>
           <div>
-            <p className="font-display text-2xl font-semibold leading-none text-ink">The Bridge System™</p>
-            <p className="mt-1 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-fog">{company?.name ?? "Empresa demo"} · Operational Intelligence Layer</p>
+            <p className="font-display text-4xl font-semibold leading-none text-ink lg:text-[2.6rem]">The Bridge System™</p>
+            <p className="mt-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-fog">{company?.name ?? "Empresa demo"} · Operational Intelligence Layer</p>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">

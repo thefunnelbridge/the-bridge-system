@@ -23,8 +23,35 @@ const industryOptions: DemoIndustry[] = [
 ];
 
 function fieldToLabel(field: string) {
+  const knownLabels: Record<string, string> = {
+    activeAgents: "Agentes activos",
+    offices: "Oficinas",
+    buyerLeads: "Leads compradores",
+    ownerLeads: "Leads propietarios",
+    capturedProperties: "Propiedades captadas",
+    scheduledVisits: "Visitas agendadas",
+    offersIssued: "Ofertas emitidas",
+    responseTime: "Tiempo de respuesta",
+    unfollowedAfter72h: "Sin seguimiento después de 72 h",
+    unclassifiedBuyers: "Compradores sin clasificar",
+    ownersNoPostValuationFollowUp: "Propietarios sin seguimiento post tasación",
+    propertiesWithoutCommercialPlan: "Propiedades sin plan comercial",
+    buyerLeadToVisit: "Lead comprador a visita",
+    visitToOffer: "Visita a oferta",
+    offerToClose: "Oferta a cierre",
+    monthlyLeads: "Leads mensuales",
+    monthlyInquiries: "Consultas mensuales",
+    unfollowedLeads: "Leads sin seguimiento",
+    unfollowedInquiries: "Consultas sin seguimiento",
+    closeRate: "Tasa de cierre",
+    testDriveRate: "Tasa de test drive",
+    inquiryToBooking: "Consulta a agenda",
+    noShow: "No-show",
+  };
+  if (knownLabels[field]) return knownLabels[field];
   return field
     .replace(/([a-záéíóúñ])([A-ZÁÉÍÓÚÑ])/g, "$1 $2")
+    .replace(/([A-Z]+)([A-Z][a-záéíóúñ])/g, "$1 $2")
     .replace(/_/g, " ")
     .replace(/\s+/g, " ")
     .trim()
@@ -33,9 +60,18 @@ function fieldToLabel(field: string) {
 
 export default function CompanyPage() {
   const [profile, setProfile] = useState<CompanyProfile | null>(null);
+  const [channelsText, setChannelsText] = useState("");
+  const [toolsText, setToolsText] = useState("");
+  const [teamText, setTeamText] = useState("");
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => setProfile(getCompanyProfile()), []);
+  useEffect(() => {
+    const storedProfile = getCompanyProfile();
+    setProfile(storedProfile);
+    setChannelsText(storedProfile.channels.join(", "));
+    setToolsText(storedProfile.tools.join(", "));
+    setTeamText(storedProfile.team.join(", "));
+  }, []);
   if (!profile) return null;
 
   const rules = getIndustryRules(profile.industry);
@@ -44,15 +80,40 @@ export default function CompanyPage() {
     if (!profile) return;
     setProfile({
       ...profile,
-      [field]: field === "channels" || field === "tools" || field === "team" ? value.split(",").map((item) => item.trim()).filter(Boolean) : value,
+      [field]: value,
     } as CompanyProfile);
     setSaved(false);
+  }
+
+  function updateMetric(field: string, value: string) {
+    setProfile({
+      ...profile,
+      metrics: {
+        ...profile.metrics,
+        [field]: value,
+      },
+    });
+    setSaved(false);
+  }
+
+  function textToList(value: string) {
+    return value
+      .split(/[,;\n]/g)
+      .map((item) => item.trim())
+      .filter(Boolean);
   }
 
   function submit(event: React.FormEvent) {
     event.preventDefault();
     if (!profile) return;
-    saveCompanyProfile(profile);
+    const nextProfile = {
+      ...profile,
+      channels: textToList(channelsText),
+      tools: textToList(toolsText),
+      team: textToList(teamText),
+    };
+    saveCompanyProfile(nextProfile);
+    setProfile(nextProfile);
     setSaved(true);
   }
 
@@ -61,6 +122,7 @@ export default function CompanyPage() {
       ...profile,
       id: `custom-${Date.now()}`,
       name: "",
+      industry: profile.industry ?? "Pyme local",
       city: "",
       size: "",
       monthlyRevenue: "",
@@ -78,6 +140,9 @@ export default function CompanyPage() {
       },
     };
     setProfile(next);
+    setChannelsText("");
+    setToolsText("");
+    setTeamText("");
     saveCompanyProfile(next);
     setSaved(false);
   }
@@ -147,16 +212,32 @@ export default function CompanyPage() {
             </label>
             <label className="grid gap-2">
               <span className="font-mono text-xs font-bold uppercase tracking-[0.12em] text-copper">Canales</span>
-              <input className="h-12 rounded-md border border-[color:var(--line)] bg-bone px-4 outline-none focus:border-copper" value={profile.channels.join(", ")} onChange={(event) => update("channels", event.target.value)} />
+              <input className="h-12 rounded-md border border-[color:var(--line)] bg-bone px-4 outline-none focus:border-copper" placeholder="web, Instagram, WhatsApp, referidos" value={channelsText} onChange={(event) => { setChannelsText(event.target.value); setSaved(false); }} />
             </label>
             <label className="grid gap-2">
               <span className="font-mono text-xs font-bold uppercase tracking-[0.12em] text-copper">Herramientas</span>
-              <input className="h-12 rounded-md border border-[color:var(--line)] bg-bone px-4 outline-none focus:border-copper" value={profile.tools.join(", ")} onChange={(event) => update("tools", event.target.value)} />
+              <input className="h-12 rounded-md border border-[color:var(--line)] bg-bone px-4 outline-none focus:border-copper" placeholder="CRM, WhatsApp Business, Google Sheets" value={toolsText} onChange={(event) => { setToolsText(event.target.value); setSaved(false); }} />
             </label>
             <label className="grid gap-2">
               <span className="font-mono text-xs font-bold uppercase tracking-[0.12em] text-copper">Equipo</span>
-              <input className="h-12 rounded-md border border-[color:var(--line)] bg-bone px-4 outline-none focus:border-copper" value={profile.team.join(", ")} onChange={(event) => update("team", event.target.value)} />
+              <input className="h-12 rounded-md border border-[color:var(--line)] bg-bone px-4 outline-none focus:border-copper" placeholder="dirección, ventas, atención, operaciones" value={teamText} onChange={(event) => { setTeamText(event.target.value); setSaved(false); }} />
             </label>
+            <div className="rounded-lg border border-[color:var(--line)] bg-bone-2 p-4">
+              <p className="font-mono text-xs font-bold uppercase tracking-[0.12em] text-copper">Métricas base</p>
+              <p className="mt-2 text-sm leading-6 text-fog">Estos datos también alimentan el diagnóstico. Puedes cambiarlos ahora y ver el resumen vivo al lado.</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {Object.entries(profile.metrics).slice(0, 8).map(([key, value]) => (
+                  <label key={key} className="grid gap-2">
+                    <span className="text-xs font-semibold text-fog">{fieldToLabel(key)}</span>
+                    <input
+                      className="h-11 rounded-md border border-[color:var(--line)] bg-bone px-3 outline-none focus:border-copper"
+                      value={String(value)}
+                      onChange={(event) => updateMetric(key, event.target.value)}
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
             <div className="flex items-center gap-3">
               <Button type="submit"><Save className="size-4" /> Guardar empresa</Button>
               {saved ? <span className="text-sm text-fog">Guardado en localStorage.</span> : null}
@@ -164,6 +245,20 @@ export default function CompanyPage() {
           </form>
         </Card>
         <div className="space-y-5">
+          <Card className="bg-ink text-bone">
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Resumen vivo</p>
+            <h2 className="mt-2 text-2xl font-semibold">{profile.name || "Empresa sin nombre"}</h2>
+            <div className="mt-4 space-y-3 text-sm leading-6 text-[rgba(245,241,234,0.76)]">
+              <p><strong className="text-bone">Industria:</strong> {profile.industry}</p>
+              <p><strong className="text-bone">Canales:</strong> {channelsText || "Sin canales definidos"}</p>
+              <p><strong className="text-bone">Herramientas:</strong> {toolsText || "Sin herramientas definidas"}</p>
+              <p><strong className="text-bone">Equipo:</strong> {teamText || "Sin equipo definido"}</p>
+            </div>
+            <div className="mt-5 h-2 overflow-hidden rounded-full bg-[rgba(245,241,234,0.12)]">
+              <div className="h-full w-3/4 bg-ember" />
+            </div>
+            <p className="mt-3 font-mono text-[0.58rem] uppercase tracking-[0.12em] text-copper">Actualiza en vivo mientras escribes</p>
+          </Card>
           <Card className="border-copper/40 bg-bone-2">
             <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Modo usable</p>
             <h2 className="mt-2 text-2xl font-semibold text-ink">Sí puedes usarlo con tu empresa.</h2>

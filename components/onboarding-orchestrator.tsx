@@ -56,7 +56,7 @@ export function OnboardingOrchestrator() {
   return (
     <>
       {toastOpen ? (
-        <div className="fixed bottom-5 right-5 z-40 max-w-sm animate-bridge-slide-up rounded-lg border border-[color:var(--line)] bg-[#10100f] p-4 text-bone shadow-[0_24px_80px_rgba(10,10,10,0.22)]">
+        <div className="fixed bottom-5 right-5 z-40 max-w-sm animate-bridge-slide-up rounded-lg border border-[color:var(--line)] bg-[#10100f] p-4 text-bone shadow-[0_24px_80px_rgba(10,10,10,0.22)] lg:right-[400px]">
           <div className="flex items-start gap-3">
             <span className="grid size-9 shrink-0 place-items-center rounded-md bg-[rgba(255,59,31,0.14)] text-ember">
               <Bell className="size-4" />

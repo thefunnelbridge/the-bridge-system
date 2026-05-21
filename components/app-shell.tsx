@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BridgeAgentDock } from "./bridge-agent-dock";
 import { LaunchGate } from "./launch-gate";
 import { OnboardingOrchestrator } from "./onboarding-orchestrator";
 import { Sidebar } from "./sidebar";
@@ -14,6 +15,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main className="relative z-10 px-4 py-8 md:px-8 lg:px-10">{children}</main>
       </div>
       <OnboardingOrchestrator />
+      <BridgeAgentDock />
     </div>
   );
 }

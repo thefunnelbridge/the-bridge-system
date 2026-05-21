@@ -64,6 +64,64 @@ function valueToText(value: unknown) {
 }
 
 function fieldToLabel(field: string) {
+  const knownLabels: Record<string, string> = {
+    leadsMensuales: "Leads mensuales",
+    consultasMensuales: "Consultas mensuales",
+    tiempoPromedioRespuesta: "Tiempo promedio de respuesta",
+    porcentajeSinSeguimiento: "Porcentaje sin seguimiento",
+    canalesPrincipales: "Canales principales",
+    objecionesFrecuentes: "Objeciones frecuentes",
+    etapaDondeMasSePierden: "Etapa donde más se pierden",
+    ventasMensuales: "Ventas mensuales",
+    ticketPromedio: "Ticket promedio",
+    cicloDeVenta: "Ciclo de venta",
+    tasaDeCierre: "Tasa de cierre",
+    cantidadDeVendedores: "Cantidad de vendedores",
+    etapasPipeline: "Etapas del pipeline",
+    kpiPrincipal: "KPI principal",
+    tonoMarca: "Tono de marca",
+    mensajesFrecuentes: "Mensajes frecuentes",
+    preguntasFrecuentes: "Preguntas frecuentes",
+    scriptsExistentes: "Scripts existentes",
+    canalesAtencion: "Canales de atención",
+    consistenciaMensaje: "Consistencia del mensaje",
+    procesosCriticos: "Procesos críticos",
+    tareasRepetitivas: "Tareas repetitivas",
+    herramientasUsadas: "Herramientas usadas",
+    responsables: "Responsables",
+    cuellosDeBotella: "Cuellos de botella",
+    dependenciaPersonaClave: "Dependencia de persona clave",
+    roles: "Roles",
+    nivelEntrenamiento: "Nivel de entrenamiento",
+    reunionesSeguimiento: "Reuniones de seguimiento",
+    cargaOperativa: "Carga operativa",
+    problemasCoordinacion: "Problemas de coordinación",
+    compradoresClasificados: "Compradores clasificados",
+    presupuestoPromedio: "Presupuesto promedio",
+    comunasMasSolicitadas: "Comunas más solicitadas",
+    urgenciaCompra: "Urgencia de compra",
+    visitasAgendadas: "Visitas agendadas",
+    visitasRealizadas: "Visitas realizadas",
+    ofertasEmitidas: "Ofertas emitidas",
+    propietariosContactados: "Propietarios contactados",
+    tasacionesRealizadas: "Tasaciones realizadas",
+    propiedadesCaptadas: "Propiedades captadas",
+    propiedadesPublicadas: "Propiedades publicadas",
+    propiedadesSinMovimiento: "Propiedades sin movimiento",
+    seguimientoPostTasacion: "Seguimiento post tasación",
+    numeroCorredores: "Número de corredores",
+    leadsPorCorredor: "Leads por corredor",
+    respuestaPromedioCorredor: "Respuesta promedio por corredor",
+    proximasAccionesRegistradas: "Próximas acciones registradas",
+    oportunidadesDormidas: "Oportunidades dormidas",
+    reunionesPipeline: "Reuniones de pipeline",
+    numeroOficinas: "Número de oficinas",
+    leadsPorOficina: "Leads por oficina",
+    conversionPorOficina: "Conversión por oficina",
+    lideresOficina: "Líderes de oficina",
+    alertasPorOficina: "Alertas por oficina",
+  };
+  if (knownLabels[field]) return knownLabels[field];
   return field
     .replace(/([a-záéíóúñ])([A-ZÁÉÍÓÚÑ])/g, "$1 $2")
     .replace(/([A-Z]+)([A-Z][a-záéíóúñ])/g, "$1 $2")
@@ -195,7 +253,7 @@ export default function DataRoomPage() {
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             {Object.entries(current as Record<string, unknown>).map(([field, value]) => (
               <label key={field} className="grid gap-2">
-                <span className="break-words font-mono text-xs font-bold uppercase tracking-[0.08em] text-copper">{fieldToLabel(field)}</span>
+                <span className="break-words text-sm font-semibold text-copper">{fieldToLabel(field)}</span>
                 <textarea
                   className="min-h-12 resize-y rounded-md border border-[color:var(--line)] bg-bone px-3 py-3 text-sm leading-6 outline-none focus:border-copper"
                   value={valueToText(value)}
@@ -266,7 +324,7 @@ export default function DataRoomPage() {
               <div key={section} className="rounded-md border border-[color:var(--line)] bg-bone p-4">
                 <h3 className="font-semibold capitalize">{section}</h3>
                 <div className="mt-3 space-y-2 text-xs text-fog">
-                  {Object.entries(values).map(([key, value]) => <p key={key}>{fieldToLabel(key)}: <strong className="text-ink">{valueToText(value)}</strong></p>)}
+                  {Object.entries(values).map(([key, value]) => <p key={key} className="leading-5">{fieldToLabel(key)}: <strong className="text-ink">{valueToText(value)}</strong></p>)}
                 </div>
               </div>
             ))}
