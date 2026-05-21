@@ -1,6 +1,6 @@
 "use client";
 
-import { Compass, FileDown, RotateCcw } from "lucide-react";
+import { Compass, FileDown, Radio, RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { demoCompanies } from "@/lib/demo-data";
 import { getCompanyProfile, setSelectedCompanyId } from "@/lib/storage";
@@ -18,11 +18,16 @@ export function Topbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 border-b border-[color:var(--line)] bg-[rgba(245,241,234,0.9)] px-4 py-3 backdrop-blur md:px-8">
+    <header className="sticky top-0 z-20 border-b border-[color:var(--line)] bg-[rgba(245,241,234,0.86)] px-4 py-3 backdrop-blur-xl md:px-8">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.16em] text-copper">The Bridge System™</p>
-          <p className="mt-1 text-sm text-fog">{company?.name ?? "Empresa demo"}</p>
+        <div className="flex items-center gap-4">
+          <span className="grid size-11 place-items-center rounded-lg bg-ink text-copper shadow-[0_12px_30px_rgba(10,10,10,0.12)]">
+            <Radio className="size-5 animate-pulse" />
+          </span>
+          <div>
+            <p className="font-display text-2xl font-semibold leading-none text-ink">The Bridge System™</p>
+            <p className="mt-1 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-fog">{company?.name ?? "Empresa demo"} · Operational Intelligence Layer</p>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <select

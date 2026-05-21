@@ -44,11 +44,16 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="border-b border-[color:var(--line)] bg-[rgba(239,232,219,0.7)] md:fixed md:inset-y-0 md:left-0 md:w-72 md:border-b-0 md:border-r">
+    <aside className="border-b border-[color:var(--line)] bg-[rgba(239,232,219,0.82)] backdrop-blur md:fixed md:inset-y-0 md:left-0 md:w-80 md:border-b-0 md:border-r">
       <div className="flex h-full flex-col p-4">
-        <Link href="/app" className="rounded-lg border border-[color:var(--line)] bg-bone p-4">
-          <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.16em] text-copper">THE BRIDGE SYSTEM™</p>
-          <p className="mt-2 text-sm text-fog">by THE FUNNEL BRIDGE™</p>
+        <Link href="/app" className="group relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-[#10100f] p-5 text-bone shadow-[0_24px_70px_rgba(10,10,10,0.16)]">
+          <div aria-hidden className="absolute inset-0 bg-[linear-gradient(125deg,rgba(184,117,71,0.22),transparent_46%,rgba(255,59,31,0.12))]" />
+          <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
+          <div className="relative">
+            <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-copper">THE BRIDGE SYSTEM™</p>
+            <p className="mt-3 font-display text-3xl font-semibold leading-none">Bridge OS</p>
+            <p className="mt-2 text-sm text-[rgba(245,241,234,0.68)]">by THE FUNNEL BRIDGE™</p>
+          </div>
         </Link>
         <nav className="mt-5 grid gap-1">
           {items.map((item) => {
@@ -58,19 +63,22 @@ export function Sidebar() {
               <Link
                 href={item.href}
                 key={item.href}
-                className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition ${
-                  active ? "bg-ink text-bone" : "text-ink hover:bg-bone"
+                className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                  active ? "bg-ink text-bone shadow-[0_12px_28px_rgba(10,10,10,0.14)]" : "text-ink hover:bg-bone hover:shadow-[0_10px_30px_rgba(10,10,10,0.05)]"
                 }`}
               >
-                <Icon className="size-4" />
+                <Icon className={`size-4 transition ${active ? "text-copper" : "text-ink group-hover:text-copper"}`} />
                 <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
-        <div className="mt-auto hidden rounded-lg border border-[color:var(--line)] bg-bone p-4 md:block">
+        <div className="mt-auto hidden rounded-xl border border-[color:var(--line)] bg-bone p-4 shadow-[0_12px_36px_rgba(10,10,10,0.04)] md:block">
           <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Brain™</p>
-          <p className="mt-2 text-sm leading-6 text-fog">AI layer ready para la próxima versión con inteligencia aplicada.</p>
+          <p className="mt-2 text-sm leading-6 text-fog">AI layer ready · datos, trends, inbox y acción diaria.</p>
+          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-bone-2">
+            <div className="h-full w-[72%] rounded-full bg-copper" />
+          </div>
         </div>
       </div>
     </aside>
