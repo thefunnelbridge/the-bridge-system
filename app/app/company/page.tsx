@@ -118,11 +118,12 @@ export default function CompanyPage() {
   }
 
   function startRealCompanyMode() {
+    if (!profile) return;
+    const currentIndustry: DemoIndustry = profile.industry || "Pyme local";
     const next: CompanyProfile = {
-      ...profile,
       id: `custom-${Date.now()}`,
       name: "",
-      industry: profile.industry ?? "Pyme local",
+      industry: currentIndustry,
       city: "",
       size: "",
       monthlyRevenue: "",
