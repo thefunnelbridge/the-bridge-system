@@ -116,7 +116,7 @@ export default function FlowPage() {
           <div>
             <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Inbox™</p>
             <h2 className="mt-2 text-2xl font-semibold">{inboxFlow.title}</h2>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-fog">WhatsApp no es el problema. El problema es usarlo sin estructura. Cada conversación debe tener responsable, estado y próxima acción.</p>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-fog">Las conversaciones comerciales ya contienen intención, documentos, objeciones y próximos pasos. Bridge Inbox™ las convierte en operación trazable.</p>
           </div>
           <Button variant="secondary" onClick={addInboxToTracker}>Agregar al tracker</Button>
         </div>

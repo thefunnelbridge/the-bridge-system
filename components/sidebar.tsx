@@ -19,32 +19,54 @@ import {
   Sparkles,
   TrendingUp,
   Users,
+  Target,
 } from "lucide-react";
 
-const items = [
-  { href: "/app/intro", label: "Empieza aquí", icon: Compass },
-  { href: "/app", label: "Command Center", icon: Home },
-  { href: "/app/company", label: "Empresa", icon: Building2 },
-  { href: "/app/data-room", label: "Data Room", icon: Database },
-  { href: "/app/inbox", label: "Bridge Inbox™", icon: Inbox },
-  { href: "/app/trends", label: "Bridge Trends™", icon: TrendingUp },
-  { href: "/app/pulse", label: "Bridge Pulse™", icon: Radio },
-  { href: "/app/scan", label: "Bridge Scan™", icon: ClipboardList },
-  { href: "/app/insight", label: "Bridge Insight™", icon: BarChart3 },
-  { href: "/app/flow", label: "Bridge Flow™", icon: GitBranch },
-  { href: "/app/paula-engine", label: "Paula Engine™", icon: Sparkles },
-  { href: "/app/team", label: "Team & Culture", icon: Users },
-  { href: "/app/academy", label: "Bridge Academy™", icon: Library },
-  { href: "/app/integrations", label: "Integrations", icon: Plug },
-  { href: "/app/report", label: "Executive Report", icon: FileText },
-  { href: "/app/settings", label: "Settings", icon: Settings },
+const groups = [
+  {
+    label: "Operación",
+    items: [
+      { href: "/app/intro", label: "Empieza aquí", icon: Compass },
+      { href: "/app", label: "Command Center", icon: Home },
+      { href: "/app/pulse", label: "Bridge Pulse™", icon: Radio },
+      { href: "/app/inbox", label: "Bridge Inbox™", icon: Inbox },
+    ],
+  },
+  {
+    label: "Inteligencia",
+    items: [
+      { href: "/app/company", label: "Empresa", icon: Building2 },
+      { href: "/app/data-room", label: "Data Room", icon: Database },
+      { href: "/app/trends", label: "Bridge Trends™", icon: TrendingUp },
+      { href: "/app/scan", label: "Bridge Scan™", icon: ClipboardList },
+      { href: "/app/insight", label: "Bridge Insight™", icon: BarChart3 },
+      { href: "/app/paula-engine", label: "Paula Engine™", icon: Sparkles },
+    ],
+  },
+  {
+    label: "Ejecución",
+    items: [
+      { href: "/app/flow", label: "Bridge Flow™", icon: GitBranch },
+      { href: "/app/workers/today", label: "Workers", icon: Target },
+      { href: "/app/team", label: "Bridge Culture™", icon: Users },
+      { href: "/app/academy", label: "Bridge Academy™", icon: Library },
+    ],
+  },
+  {
+    label: "Dirección",
+    items: [
+      { href: "/app/integrations", label: "Integrations", icon: Plug },
+      { href: "/app/report", label: "Executive Report", icon: FileText },
+      { href: "/app/settings", label: "Settings", icon: Settings },
+    ],
+  },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="border-b border-[color:var(--line)] bg-[rgba(239,232,219,0.82)] backdrop-blur md:fixed md:inset-y-0 md:left-0 md:w-80 md:border-b-0 md:border-r">
+    <aside className="border-b border-[color:var(--line)] bg-[rgba(239,232,219,0.88)] backdrop-blur-xl md:fixed md:inset-y-0 md:left-0 md:w-80 md:border-b-0 md:border-r">
       <div className="flex h-full flex-col p-4">
         <Link href="/app" className="group relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-[#10100f] p-5 text-bone shadow-[0_24px_70px_rgba(10,10,10,0.16)]">
           <div aria-hidden className="absolute inset-0 bg-[linear-gradient(125deg,rgba(184,117,71,0.22),transparent_46%,rgba(255,59,31,0.12))]" />
@@ -55,23 +77,33 @@ export function Sidebar() {
             <p className="mt-2 text-sm text-[rgba(245,241,234,0.68)]">by THE FUNNEL BRIDGE™</p>
           </div>
         </Link>
-        <nav className="mt-5 grid gap-1">
-          {items.map((item) => {
-            const active = pathname === item.href;
-            const Icon = item.icon;
-            return (
-              <Link
-                href={item.href}
-                key={item.href}
-                className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
-                  active ? "bg-ink text-bone shadow-[0_12px_28px_rgba(10,10,10,0.14)]" : "text-ink hover:bg-bone hover:shadow-[0_10px_30px_rgba(10,10,10,0.05)]"
-                }`}
-              >
-                <Icon className={`size-4 transition ${active ? "text-copper" : "text-ink group-hover:text-copper"}`} />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
+        <nav className="mt-5 min-h-0 flex-1 overflow-y-auto pr-1">
+          {groups.map((group) => (
+            <div key={group.label} className="mb-5">
+              <p className="mb-2 px-3 font-mono text-[0.56rem] font-bold uppercase tracking-[0.18em] text-copper">{group.label}</p>
+              <div className="grid gap-1">
+                {group.items.map((item) => {
+                  const active = pathname === item.href || (item.href !== "/app" && pathname.startsWith(`${item.href}/`));
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      href={item.href}
+                      key={item.href}
+                      className={`group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                        active
+                          ? "bg-ink text-bone shadow-[0_12px_28px_rgba(10,10,10,0.14)]"
+                          : "text-ink hover:bg-bone hover:shadow-[0_10px_30px_rgba(10,10,10,0.05)]"
+                      }`}
+                    >
+                      {active ? <span className="absolute left-0 top-2 h-[calc(100%-1rem)] w-1 rounded-r-full bg-ember" /> : null}
+                      <Icon className={`size-4 transition ${active ? "text-ember" : "text-ink group-hover:text-copper"}`} />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
         <div className="mt-auto hidden rounded-xl border border-[color:var(--line)] bg-bone p-4 shadow-[0_12px_36px_rgba(10,10,10,0.04)] md:block">
           <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Brain™</p>

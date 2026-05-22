@@ -1,17 +1,23 @@
 "use client";
 
-import { Compass, FileDown, Radio, RotateCcw } from "lucide-react";
+import { Bell, Compass, FileDown, Radio, RotateCcw, Sparkles, Target } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { demoCompanies } from "@/lib/demo-data";
-import { getCompanyProfile, setSelectedCompanyId } from "@/lib/storage";
-import type { CompanyProfile } from "@/lib/types";
+import { calculateAdvancedScores } from "@/lib/scoring";
+import { getCompanyProfile, getScanResponses, setSelectedCompanyId } from "@/lib/storage";
+import type { AdvancedScores, CompanyProfile } from "@/lib/types";
 import { Button } from "./ui/button";
 
 export function Topbar() {
   const [company, setCompany] = useState<CompanyProfile | null>(null);
+  const [scores, setScores] = useState<AdvancedScores | null>(null);
 
   useEffect(() => {
-    const syncCompany = () => setCompany(getCompanyProfile());
+    const syncCompany = () => {
+      setCompany(getCompanyProfile());
+      setScores(calculateAdvancedScores(getScanResponses()));
+    };
     syncCompany();
     window.addEventListener("bridge-system:storage", syncCompany);
     return () => window.removeEventListener("bridge-system:storage", syncCompany);
@@ -29,6 +35,11 @@ export function Topbar() {
           <div>
             <p className="font-display text-4xl font-semibold leading-none text-ink lg:text-[2.6rem]">The Bridge System™</p>
             <p className="mt-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-fog">{company?.name ?? "Empresa demo"} · Operational Intelligence Layer</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <StatusPill icon={Target} label="Estado del día" value={(scores?.implementationUrgency ?? 60) > 70 ? "En riesgo" : "Activo"} />
+              <StatusPill icon={Sparkles} label="Nivel" value={`${scores?.maturityLevel ?? "Operación visible"} · ${scores?.overallScore ?? 0}%`} />
+              <StatusPill icon={Radio} label="Sistema" value="Aprendiendo con 42 señales" />
+            </div>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -45,10 +56,20 @@ export function Topbar() {
             ))}
           </select>
           <Button href="/app/intro" variant="secondary"><Compass className="size-4" /> Empieza aquí</Button>
+          <Button href="/app/pulse" variant="secondary"><Bell className="size-4" /> Notificaciones</Button>
           <Button href="/app/report" variant="secondary"><FileDown className="size-4" /> Exportar informe</Button>
-          <Button href="/app/scan"><RotateCcw className="size-4" /> Nuevo Scan</Button>
+          <Button href="/app/flow"><RotateCcw className="size-4" /> Nueva misión</Button>
         </div>
       </div>
     </header>
+  );
+}
+
+function StatusPill({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-bone px-3 py-1.5 font-mono text-[0.56rem] uppercase tracking-[0.1em] text-fog">
+      <Icon className="size-3.5 text-ember" />
+      <strong className="text-copper">{label}:</strong> {value}
+    </span>
   );
 }

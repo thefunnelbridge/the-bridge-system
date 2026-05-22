@@ -305,7 +305,7 @@ export default function DataRoomPage() {
             <p className="mt-3 text-sm leading-7 text-fog">
               Bridge Inbox™ convierte WhatsApp, emails, formularios y chats en señales que alimentan el Data Room: responsables, estados, archivos, tiempos de respuesta, scripts y próximas acciones.
             </p>
-            <p className="mt-3 text-sm leading-7 text-fog">No reemplaza WhatsApp. Lo ordena, lo mide y lo conecta con el sistema operativo de la empresa.</p>
+            <p className="mt-3 text-sm leading-7 text-fog">Cada conversación aporta intención, contexto y trazabilidad para que la operación avance con responsable y próxima acción.</p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <MiniMetric label="Sin próxima acción" value={inboxMetrics.withoutNextAction} />

@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { AreaScoreChart } from "@/components/area-score-chart";
 import { BridgeCompanionPanel } from "@/components/bridge-companion-panel";
 import { BridgePulsePanel } from "@/components/bridge-pulse-panel";
+import { BridgeSignalSvg } from "@/components/bridge-visuals";
+import { AchievementBadges, BridgeMap, LiveFeedPanel, MissionControl, ScoreDeck } from "@/components/command-widgets";
 import { ContinuousImprovementLoop } from "@/components/continuous-improvement-loop";
 import { ExcellenceScorePanel } from "@/components/excellence-score-panel";
 import { LeakCard } from "@/components/leak-card";
@@ -15,6 +17,7 @@ import { StatCard } from "@/components/stat-card";
 import { SystemMap } from "@/components/system-map";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { generateActivityFeed } from "@/lib/activity-feed";
 import { benchmarks } from "@/lib/benchmarks";
 import { getIndustryRules } from "@/lib/industry-rules";
 import { getInboxMetrics } from "@/lib/inbox";
@@ -55,18 +58,76 @@ export default function CommandCenterPage() {
   const primaryTrend = getPrimaryTrend(company);
   const inboxMetrics = getInboxMetrics(getInboxConversations());
   const firstSteps = onboardingSteps.slice(0, 4);
+  const feed = generateActivityFeed(company, company.industry, tasks, liveGoals);
+  const missionProgress = Math.max(12, Math.min(96, liveGoals[0]?.progress ?? 62));
+  const bridgeMapNodes = [
+    { label: "Data Room", href: "/app/data-room", status: "En progreso" as const },
+    { label: "Trends", href: "/app/trends", status: "Completo" as const },
+    { label: "Scan", href: "/app/scan", status: scores.overallScore > 0 ? "Completo" as const : "Pendiente" as const },
+    { label: "Insight", href: "/app/insight", status: leaks.length ? "En riesgo" as const : "En progreso" as const },
+    { label: "Pulse", href: "/app/pulse", status: "En progreso" as const },
+    { label: "Flow", href: "/app/flow", status: tasks.length ? "En progreso" as const : "Pendiente" as const },
+    { label: "Workers", href: "/app/workers/today", status: "Pendiente" as const },
+    { label: "Report", href: "/app/report", status: "En progreso" as const },
+  ];
+  const achievementBadges = [
+    { label: "Sistema alimentado", active: true },
+    { label: "Fuga detectada", active: leaks.length > 0 },
+    { label: "Tendencia aplicada", active: Boolean(primaryTrend) },
+    { label: "Conversación ordenada", active: inboxMetrics.openConversations > inboxMetrics.unassigned },
+    { label: "Equipo alineado", active: scores.teamTrainingNeed < 75 },
+    { label: "Meta cumplida", active: liveGoals.some((goal) => goal.status === "Cumplida") },
+    { label: "Proceso estandarizado", active: scores.operationalLeakIndex < 70 },
+    { label: "Reporte listo", active: true },
+  ];
+  const scoreDeck = [
+    { label: "Bridge Score™", value: scores.overallScore, detail: scores.maturityLevel },
+    { label: "Excellence", value: Math.round((scores.strategicClarityIndex + scores.dataMaturityIndex + (100 - scores.teamTrainingNeed)) / 3), detail: "cultura de excelencia" },
+    { label: "AI Readiness", value: scores.aiReadinessIndex, detail: "datos + workflows" },
+    { label: "Data Health", value: scores.dataMaturityIndex, detail: "contexto operativo" },
+    { label: "Human Dependency", value: scores.humanDependencyIndex, detail: "memoria humana" },
+    { label: "Service Standard", value: Math.max(8, 100 - scores.customerExperienceRisk), detail: "claridad + consistencia" },
+  ];
 
   return (
     <div className="space-y-8">
+      <MissionControl
+        mission={todayFocus.title}
+        nextAction={liveGoals[0]?.companionRecommendation ?? "Convierte una señal crítica en tarea con responsable, fecha y KPI visible."}
+        risk={leaks[0]?.title ?? "Seguimiento sin sistema visible"}
+        owner={isBrokerage ? "líder de oficina / corredor asignado" : "líder comercial / responsable de área"}
+        deadline="Hoy · antes de las 17:00"
+        progress={missionProgress}
+      />
+
+      <div className="overflow-hidden rounded-xl border border-[color:var(--line)] bg-bone-2 p-4 text-copper">
+        <BridgeSignalSvg className="h-24 w-full" />
+      </div>
+
+      <ScoreDeck scores={scoreDeck} />
+
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+        <SectionHeader
+          eyebrow="Command Center"
+          title="Command Center"
+          description="El centro operativo donde The Bridge System™ conecta datos internos, tendencias externas y ejecución diaria."
+        />
+        <div className="flex flex-wrap gap-2">
+          <Button href="/app/data-room" variant="secondary"><Database className="size-4" /> Alimentar Data Room</Button>
+          <Button href="/app/inbox" variant="secondary"><Inbox className="size-4" /> Ordenar Inbox</Button>
+          <Button href="/app/trends" variant="secondary"><TrendingUp className="size-4" /> Ver Trends</Button>
+          <Button href="/app/insight"><Brain className="size-4" /> Ver Insight</Button>
+        </div>
+      </div>
+
       <Card className="relative overflow-hidden bg-[#10100f] text-bone">
-        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(120deg,rgba(184,117,71,0.2),transparent_38%,rgba(255,59,31,0.12)_78%,transparent)]" />
         <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
         <div className="relative grid gap-6 xl:grid-cols-[1fr_420px] xl:items-center">
           <div>
             <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em] text-copper">Start Here · Operational Intelligence</p>
-            <h1 className="mt-3 max-w-4xl font-display text-5xl font-semibold leading-[0.96]">Primero entiende el sistema. Después úsalo todos los días.</h1>
+            <h2 className="mt-3 max-w-4xl font-display text-4xl font-semibold leading-[0.98]">Primero entiende el sistema. Después úsalo todos los días.</h2>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-[rgba(245,241,234,0.76)]">
-              Si alguien entra sin contexto, esta ruta le enseña qué hace cada capa, qué debe completar, qué mirar y cómo convertir señales en tareas para el equipo.
+              Esta ruta enseña qué hace cada capa, qué debe completar el usuario, qué mirar y cómo convertir señales en tareas para el equipo.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button href="/app/intro" className="border-bone bg-bone text-ink hover:border-ember hover:bg-ember hover:text-bone"><Play className="size-4" /> Empezar introducción</Button>
@@ -84,20 +145,6 @@ export default function CommandCenterPage() {
           </div>
         </div>
       </Card>
-
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-        <SectionHeader
-          eyebrow="Command Center"
-          title="Command Center"
-          description="El centro operativo donde The Bridge System™ conecta datos internos, tendencias externas y ejecución diaria."
-        />
-        <div className="flex flex-wrap gap-2">
-          <Button href="/app/data-room" variant="secondary"><Database className="size-4" /> Alimentar Data Room</Button>
-          <Button href="/app/inbox" variant="secondary"><Inbox className="size-4" /> Ordenar Inbox</Button>
-          <Button href="/app/trends" variant="secondary"><TrendingUp className="size-4" /> Ver Trends</Button>
-          <Button href="/app/insight"><Brain className="size-4" /> Ver Insight</Button>
-        </div>
-      </div>
 
       <Card>
         <div className="grid gap-5 xl:grid-cols-[.9fr_1.1fr]">
@@ -130,13 +177,20 @@ export default function CommandCenterPage() {
 
       <ExcellenceScorePanel scores={scores} />
 
+      <div className="grid gap-5 xl:grid-cols-[1.15fr_.85fr]">
+        <BridgeMap nodes={bridgeMapNodes} />
+        <AchievementBadges badges={achievementBadges} />
+      </div>
+
+      <LiveFeedPanel events={feed} />
+
       <BridgePulsePanel compact />
 
       <Card>
         <div className="grid gap-5 lg:grid-cols-[.8fr_1.2fr]">
           <div>
             <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Inbox™</p>
-            <h2 className="mt-2 text-2xl font-semibold">WhatsApp no se reemplaza. Se convierte en sistema.</h2>
+            <h2 className="mt-2 text-2xl font-semibold">Las conversaciones comerciales también alimentan el sistema.</h2>
             <p className="mt-3 text-sm leading-6 text-fog">
               Bridge Inbox™ transforma mensajes dispersos en oportunidades accionables con responsable, estado, próxima acción, archivos asociados, scripts sugeridos y alertas de seguimiento.
             </p>

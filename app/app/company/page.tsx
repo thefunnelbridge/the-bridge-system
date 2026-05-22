@@ -86,6 +86,7 @@ export default function CompanyPage() {
   }
 
   function updateMetric(field: string, value: string) {
+    if (!profile) return;
     setProfile({
       ...profile,
       metrics: {
@@ -106,7 +107,7 @@ export default function CompanyPage() {
   function submit(event: React.FormEvent) {
     event.preventDefault();
     if (!profile) return;
-    const nextProfile = {
+    const nextProfile: CompanyProfile = {
       ...profile,
       channels: textToList(channelsText),
       tools: textToList(toolsText),

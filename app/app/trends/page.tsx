@@ -1,22 +1,45 @@
 "use client";
 
-import { Activity, ArrowRight, Library, Signal, Zap } from "lucide-react";
+import { Activity, ArrowRight, BarChart3, Library, Signal, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { SectionHeader } from "@/components/section-header";
 import { StatCard } from "@/components/stat-card";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getCompanyProfile } from "@/lib/storage";
 import { trendSources } from "@/lib/trend-sources";
-import { getTrendsForCompany } from "@/lib/trends";
-import type { CompanyProfile } from "@/lib/types";
+import { bridgeTrends, getTrendsForCompany } from "@/lib/trends";
+import type { CompanyProfile, DemoIndustry } from "@/lib/types";
+
+const trendIndustries: (DemoIndustry | "Todas")[] = [
+  "Todas",
+  "Automotora",
+  "Clínica / salud / estética / dental",
+  "Corredores de propiedades / Brokerage inmobiliario",
+  "Construcción / Inmobiliaria",
+  "Legal",
+  "Educación",
+  "Gimnasio / wellness",
+  "Retail / e-commerce",
+  "Pyme local",
+];
 
 export default function TrendsPage() {
   const [company, setCompany] = useState<CompanyProfile | null>(null);
+  const [selectedIndustry, setSelectedIndustry] = useState<DemoIndustry | "Todas">("Todas");
 
-  useEffect(() => setCompany(getCompanyProfile()), []);
+  useEffect(() => {
+    const nextCompany = getCompanyProfile();
+    setCompany(nextCompany);
+    setSelectedIndustry(nextCompany.industry);
+  }, []);
 
   if (!company) return null;
-  const trends = getTrendsForCompany(company);
+  const currentTrends = getTrendsForCompany(company);
+  const trends =
+    selectedIndustry === "Todas"
+      ? [...bridgeTrends, ...currentTrends.filter((trend) => trend.id === "ai-ready-context")]
+      : bridgeTrends.filter((trend) => trend.industries.includes(selectedIndustry));
   const highImpact = trends.filter((trend) => trend.impact === "Alto").length;
   const highUrgency = trends.filter((trend) => trend.urgency === "Alta" || trend.urgency === "Media/Alta").length;
 
@@ -27,6 +50,40 @@ export default function TrendsPage() {
         title="Señales externas aplicadas a la operación"
         description="La capa que alimenta The Bridge System™ con tendencias de industria, señales de mercado, nuevas herramientas, benchmarks y cambios de comportamiento."
       />
+
+      <Card className="relative overflow-hidden bg-[#10100f] text-bone">
+        <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
+        <div className="grid gap-5 xl:grid-cols-[1fr_380px] xl:items-center">
+          <div>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Market Intelligence Room</p>
+            <h2 className="mt-3 font-display text-5xl font-semibold leading-[0.96]">Las tendencias no sirven si no se traducen en acción.</h2>
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-[rgba(245,241,234,0.76)]">
+              Bridge Trends™ toma señales externas y las convierte en acciones internas: canal, herramienta, KPI, urgencia, impacto y siguiente tarea.
+            </p>
+          </div>
+          <div className="rounded-lg border border-[rgba(245,241,234,0.14)] bg-[rgba(245,241,234,0.08)] p-5">
+            <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.12em] text-copper">Industria activa</p>
+            <p className="mt-3 text-2xl font-semibold">{selectedIndustry}</p>
+            <div className="mt-5 h-2 overflow-hidden rounded-full bg-[rgba(245,241,234,0.12)]">
+              <div className="h-full w-3/4 rounded-full bg-ember" />
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <div className="flex flex-wrap gap-2">
+        {trendIndustries.map((industry) => (
+          <button
+            key={industry}
+            onClick={() => setSelectedIndustry(industry)}
+            className={`rounded-md border px-3 py-2 text-sm transition ${
+              selectedIndustry === industry ? "border-ink bg-ink text-bone" : "border-[color:var(--line)] bg-bone text-ink hover:border-copper"
+            }`}
+          >
+            {industry}
+          </button>
+        ))}
+      </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         <StatCard label="Tendencias activas" value={trends.length} detail={company.industry} icon={Signal} />
@@ -103,13 +160,39 @@ export default function TrendsPage() {
                   <p><strong className="text-ink">Herramienta:</strong> {trend.suggestedTool}</p>
                   <p><strong className="text-ink">KPI:</strong> {trend.kpi}</p>
                 </div>
-                <div className="mt-5 flex items-center gap-2 font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-ink">
-                  Enviar a Bridge Flow™ <ArrowRight className="size-4 text-copper" />
-                </div>
+                <MiniChart impact={trend.impact === "Alto" ? 92 : trend.impact === "Medio/Alto" ? 74 : 58} urgency={trend.urgency === "Alta" ? 90 : trend.urgency === "Media/Alta" ? 72 : 52} />
+                <Button href="/app/flow" variant="secondary" className="mt-5 w-full justify-center">
+                  Convertir en acción <ArrowRight className="size-4" />
+                </Button>
               </div>
             </div>
           </Card>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function MiniChart({ impact, urgency }: { impact: number; urgency: number }) {
+  return (
+    <div className="mt-5 rounded-md border border-[color:var(--line)] bg-bone p-4">
+      <div className="flex items-center gap-2 font-mono text-[0.58rem] font-bold uppercase tracking-[0.12em] text-copper">
+        <BarChart3 className="size-4" /> Señal operacional
+      </div>
+      <div className="mt-4 space-y-3">
+        <Bar label="Impacto" value={impact} />
+        <Bar label="Urgencia" value={urgency} />
+      </div>
+    </div>
+  );
+}
+
+function Bar({ label, value }: { label: string; value: number }) {
+  return (
+    <div>
+      <div className="flex justify-between gap-3 text-xs text-fog"><span>{label}</span><strong>{value}%</strong></div>
+      <div className="mt-1 h-2 overflow-hidden rounded-full bg-bone-2">
+        <div className="h-full rounded-full bg-ember" style={{ width: `${value}%` }} />
       </div>
     </div>
   );

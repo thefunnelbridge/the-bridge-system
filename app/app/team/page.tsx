@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, CheckCircle2, Clock, Users } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Clock, Flame, Target, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { SectionHeader } from "@/components/section-header";
 import { StatCard } from "@/components/stat-card";
@@ -36,9 +36,26 @@ export default function TeamPage() {
     <div className="space-y-8">
       <SectionHeader
         eyebrow="Team & Culture"
-        title="Bridge Culture™"
+        title="Tablero humano de ejecución"
         description="Vista de roles, carga operativa, riesgos culturales y entrenamientos para convertir esfuerzo individual en sistema compartido."
       />
+
+      <Card className="bg-ink text-bone">
+        <div className="grid gap-5 lg:grid-cols-[1fr_360px] lg:items-center">
+          <div>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Hoy para el equipo</p>
+            <h2 className="mt-3 font-display text-4xl font-semibold leading-tight">Dar foco sin vigilar. Convertir carga en claridad.</h2>
+            <p className="mt-4 text-sm leading-7 text-[rgba(245,241,234,0.76)]">
+              The Bridge System™ no controla personas: ayuda a que cada rol sepa su misión, bloqueo, microlección y siguiente avance.
+            </p>
+          </div>
+          <div className="grid gap-3">
+            <TeamToday label="Trabajadores bloqueados" value={withoutSystem} />
+            <TeamToday label="Tareas críticas" value={tasks.filter((task) => task.priority === "Alta" && task.status !== "Implementado").length} />
+            <TeamToday label="Microlecciones pendientes" value={roles.length} />
+          </div>
+        </div>
+      </Card>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Roles observados" value={roles.length} detail="Funciones críticas conectadas al diagnóstico." icon={Users} />
@@ -75,7 +92,7 @@ export default function TeamPage() {
 
       <div className="grid gap-4 xl:grid-cols-2">
         {roles.map((role) => (
-          <Card key={role.role}>
+          <Card key={role.role} className="group overflow-hidden transition hover:-translate-y-1 hover:border-copper hover:bg-bone-2">
             <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
               <div>
                 <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">{role.status}</p>
@@ -84,6 +101,19 @@ export default function TeamPage() {
               <span className="w-fit rounded bg-bone-2 px-3 py-2 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-fog">
                 Carga {role.operationalLoad}
               </span>
+            </div>
+            <div className="mt-5 h-2 overflow-hidden rounded-full bg-bone-2">
+              <div className="h-full rounded-full bg-ember transition-all group-hover:w-[78%]" style={{ width: role.operationalLoad === "Crítica" ? "34%" : role.operationalLoad === "Alta" ? "48%" : "68%" }} />
+            </div>
+            <div className="mt-5 grid gap-3 md:grid-cols-2">
+              <div className="rounded-md bg-bone p-3">
+                <p className="flex items-center gap-2 font-mono text-[0.58rem] font-bold uppercase tracking-[0.12em] text-copper"><Target className="size-3" /> Misión asignada</p>
+                <p className="mt-2 text-sm leading-6 text-fog">{role.assignedTasks[0]}</p>
+              </div>
+              <div className="rounded-md bg-bone p-3">
+                <p className="flex items-center gap-2 font-mono text-[0.58rem] font-bold uppercase tracking-[0.12em] text-copper"><Flame className="size-3" /> Bloqueo</p>
+                <p className="mt-2 text-sm leading-6 text-fog">{role.associatedLeaks[0]}</p>
+              </div>
             </div>
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <div>
@@ -145,6 +175,15 @@ export default function TeamPage() {
           </div>
         </Card>
       ) : null}
+    </div>
+  );
+}
+
+function TeamToday({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded-md border border-[rgba(245,241,234,0.14)] bg-[rgba(245,241,234,0.08)] p-4">
+      <p className="font-mono text-[0.58rem] font-bold uppercase tracking-[0.12em] text-copper">{label}</p>
+      <p className="mt-2 text-3xl font-semibold text-bone">{value}</p>
     </div>
   );
 }

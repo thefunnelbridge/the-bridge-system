@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AreaScoreChart } from "@/components/area-score-chart";
+import { ScoreDeck } from "@/components/command-widgets";
 import { ExcellenceScorePanel } from "@/components/excellence-score-panel";
 import { LeakCard } from "@/components/leak-card";
 import { ScoreRing } from "@/components/score-ring";
@@ -50,6 +51,14 @@ export default function InsightPage() {
     { icon: Target, title: "Acción", text: "Traduce diagnóstico en tareas, responsables y KPI." },
     { icon: Activity, title: "Aprendizaje", text: "Cada uso alimenta mejores recomendaciones." },
   ];
+  const scoreDeck = [
+    { label: "Bridge Score™", value: scores.overallScore, detail: scores.maturityLevel },
+    { label: "Excellence", value: Math.round((scores.strategicClarityIndex + scores.dataMaturityIndex + (100 - scores.teamTrainingNeed)) / 3), detail: "excelencia operativa" },
+    { label: "AI Readiness", value: scores.aiReadinessIndex, detail: "IA lista para operar" },
+    { label: "Human Dependency", value: scores.humanDependencyIndex, detail: "dependencia humana" },
+    { label: "Data Maturity", value: scores.dataMaturityIndex, detail: "calidad del contexto" },
+    { label: "Service Standard", value: Math.max(8, 100 - scores.customerExperienceRisk), detail: "claridad de servicio" },
+  ];
 
   return (
     <div className="space-y-8">
@@ -73,6 +82,22 @@ export default function InsightPage() {
       </div>
 
       <SectionHeader eyebrow="Bridge Insight™" title="Dashboard de análisis avanzado" description="Command center analítico con índices, matriz de urgencia, fugas, riesgos y oportunidades por industria." />
+
+      <ScoreDeck scores={scoreDeck} />
+
+      <Card className="bg-ink text-bone">
+        <div className="grid gap-5 lg:grid-cols-[1fr_360px] lg:items-center">
+          <div>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Próxima decisión recomendada</p>
+            <h2 className="mt-3 font-display text-4xl font-semibold leading-tight">{primaryLeak?.title ?? "Instalar visibilidad operacional antes de automatizar"}</h2>
+            <p className="mt-4 text-sm leading-7 text-[rgba(245,241,234,0.76)]">{primaryLeak?.whyItMatters ?? "La empresa necesita saber qué señal se convierte en acción, quién responde y cómo se mide el avance."}</p>
+          </div>
+          <div className="rounded-lg border border-[rgba(245,241,234,0.14)] bg-[rgba(245,241,234,0.08)] p-5">
+            <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.12em] text-copper">Antes de las 17:00</p>
+            <p className="mt-3 text-lg leading-7">Asignar responsable, KPI y próxima acción a la fuga principal detectada.</p>
+          </div>
+        </div>
+      </Card>
 
       <div className="grid gap-5 xl:grid-cols-[1fr_420px]">
         <Card>
@@ -119,9 +144,9 @@ export default function InsightPage() {
         </div>
       </Card>
       <Card>
-        <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Inbox™ · WhatsApp como memoria operativa</p>
+        <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Bridge Inbox™ · Conversaciones como memoria operativa</p>
         <p className="mt-3 text-base leading-8 text-fog">
-          El sistema detecta que WhatsApp funciona como canal de ventas, atención, archivo, agenda y coordinación interna al mismo tiempo. Esto puede generar pérdida de trazabilidad, respuestas inconsistentes, archivos dispersos y oportunidades sin próxima acción.
+          El sistema detecta conversaciones que mezclan ventas, atención, archivos, agenda y coordinación interna. Cuando no existe estado, responsable y próxima acción, la empresa pierde trazabilidad y seguimiento.
         </p>
         <div className="mt-5 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
           <InboxMetric label="Sin próxima acción" value={inboxMetrics.withoutNextAction} />

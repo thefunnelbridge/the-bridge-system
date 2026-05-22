@@ -1,4 +1,5 @@
 import { academyLessons } from "@/lib/academy";
+import { BridgeSignalSvg } from "./bridge-visuals";
 import { generateActivityFeed, getRecentActivity } from "@/lib/activity-feed";
 import { calculateBridgeExcellenceScore, getContinuousImprovementLoop, getServiceStandardScore, getStrategicScorecard } from "@/lib/excellence-library";
 import { getDemoInboxConversations, getInboxFlowRecommendation, getInboxMetrics, type BridgeInboxConversation } from "@/lib/inbox";
@@ -67,6 +68,9 @@ export function ReportPreview({
           <p className="mt-3 text-xl leading-8 text-ink">
             The Bridge System™ es una capa viva de inteligencia operativa: conecta datos internos, tendencias externas y ejecución diaria para que la empresa decida y actúe más rápido.
           </p>
+        </div>
+        <div className="mt-10 overflow-hidden rounded-lg border border-[color:var(--line)] bg-bone-2 p-4 text-copper">
+          <BridgeSignalSvg className="h-24 w-full" />
         </div>
       </section>
 
@@ -184,7 +188,7 @@ export function ReportPreview({
       <section className="break-after-page py-8">
         <h3 className="font-display text-4xl font-semibold">Orden de conversaciones y WhatsApp</h3>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-fog">
-          Bridge Inbox™ no reemplaza WhatsApp. Lo convierte en parte del sistema: cada conversación debe tener responsable, estado, archivo asociado y próxima acción.
+          Bridge Inbox™ convierte conversaciones comerciales en parte del sistema: cada intercambio debe tener responsable, estado, archivo asociado y próxima acción.
         </p>
         <div className="mt-5 grid gap-4 md:grid-cols-5">
           <div className="rounded-lg bg-bone-2 p-4"><p className="font-mono text-xs text-copper">Sin próxima acción</p><p className="mt-2 text-3xl font-semibold">{inboxMetrics.withoutNextAction}</p></div>

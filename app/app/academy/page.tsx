@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, CheckCircle2, Flame, PlayCircle, Target, Users } from "lucide-react";
+import { Award, BookOpen, CheckCircle2, Flame, GitBranch, PlayCircle, Target, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
@@ -62,6 +62,17 @@ export default function AcademyPage() {
       </div>
 
       <SectionHeader eyebrow="Bridge Academy™" title="Microentrenamientos por fuga" description="Lecciones cortas para convertir recomendaciones en hábitos de equipo, con foco por industria y progreso local." />
+      <Card className="bg-bone-2">
+        <div className="grid gap-4 md:grid-cols-4">
+          {["Nivel 1 · Claridad", "Nivel 2 · Seguimiento", "Nivel 3 · Estándar", "Nivel 4 · Automatización"].map((level, index) => (
+            <div key={level} className={`rounded-lg border p-4 ${progress >= index * 25 ? "border-copper bg-bone" : "border-[color:var(--line)] bg-white/45"}`}>
+              <GitBranch className="size-5 text-copper" />
+              <p className="mt-3 font-semibold text-ink">{level}</p>
+              <p className="mt-2 text-sm leading-6 text-fog">{progress >= index * 25 ? "Disponible" : "Pendiente"}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="group overflow-hidden">
           <div className="flex items-start justify-between gap-4">
@@ -116,12 +127,15 @@ export default function AcademyPage() {
         {lessons.map((title, index) => (
           <Card key={title} className={`group transition hover:-translate-y-1 hover:border-copper ${completed.includes(title) ? "bg-bone-2" : ""}`}>
             <div className="flex items-start justify-between gap-3">
-              <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">{12 + (index % 5) * 3} min · {index % 2 === 0 ? "equipo comercial" : "dirección y operación"}</p>
+              <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">Nivel {index + 1} · {12 + (index % 5) * 3} min · {index % 2 === 0 ? "equipo comercial" : "dirección y operación"}</p>
               <span className="grid size-9 shrink-0 place-items-center rounded-md border border-[color:var(--line)] bg-bone text-copper">
-                {completed.includes(title) ? <CheckCircle2 className="size-4" /> : <PlayCircle className="size-4" />}
+                {completed.includes(title) ? <Award className="size-4" /> : <PlayCircle className="size-4" />}
               </span>
             </div>
             <h2 className="mt-3 text-xl font-semibold">{title}</h2>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-bone-2">
+              <div className="h-full rounded-full bg-ember transition-all" style={{ width: completed.includes(title) ? "100%" : `${25 + (index % 4) * 12}%` }} />
+            </div>
             <p className="mt-3 text-sm leading-6 text-fog">Objetivo: instalar un estándar simple, humano y medible. Contenido: contexto, ejemplo, checklist y práctica en un caso real del negocio.</p>
             <div className="mt-4 rounded-md bg-bone-2 p-3 text-sm leading-6 text-fog">
               Ejercicio práctico: tomar 5 oportunidades recientes, aplicar el criterio de la lección y registrar una próxima acción verificable.
