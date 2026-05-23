@@ -182,6 +182,55 @@ export const industryRules: Record<DemoIndustry, IndustryRules> = {
   "Hotelería / turismo": baseRules,
   "Gimnasio / wellness": baseRules,
   "Energía / estaciones de servicio / conveniencia": baseRules,
+  "Salón de belleza / estética grande": {
+    ...baseRules,
+    typicalLeaks: [
+      "agenda saturada sin priorización",
+      "clientas sin confirmación o recordatorio",
+      "servicios recomendados sin seguimiento",
+      "WhatsApp mezclado entre ventas, agenda y post atención",
+      "equipo con protocolos distintos según profesional",
+      "recompra y mantenciones sin sistema",
+    ],
+    kpisToWatch: ["consulta a reserva", "confirmación de cita", "no-show", "recompra", "ticket promedio", "seguimiento post servicio"],
+    recommendedAutomations: [
+      "recordatorio 24h y 3h antes de la cita",
+      "seguimiento post atención con recomendación de mantención",
+      "alerta de clienta sin próxima visita",
+      "segmentación por servicio, frecuencia y profesional",
+    ],
+    recommendedScripts: ["primer contacto por tratamiento", "confirmación de hora", "post atención y mantención", "reactivación de clienta antigua"],
+    academyLessons: ["Cómo reducir no-shows", "Cómo vender mantenciones sin presión", "WhatsApp ordenado para agenda", "Servicio premium y consistencia de equipo"],
+    executiveLanguage:
+      "En salones y centros de estética grandes, la fuga aparece cuando agenda, atención, venta consultiva, post servicio y recompra viven en conversaciones separadas sin trazabilidad.",
+    riskSignals: ["no-shows recurrentes", "clientas sin seguimiento post servicio", "agenda dependiente de una persona", "respuestas distintas por profesional"],
+    opportunitySignals: ["alta recurrencia potencial", "servicios complementarios", "equipo experto", "base de clientas reactivable"],
+  },
+  "Negocio unipersonal / solopreneur": {
+    ...baseRules,
+    typicalLeaks: [
+      "todo depende de una sola persona",
+      "ventas, atención, entrega y cobranza mezcladas",
+      "ideas sin calendario de ejecución",
+      "clientes antiguos sin reactivación",
+      "contenido, seguimiento y administración compiten por el mismo tiempo",
+      "decisiones guardadas en memoria personal",
+    ],
+    kpisToWatch: ["consultas respondidas", "tareas críticas cerradas", "recompra", "leads dormidos", "horas bloqueadas", "ingreso por oferta"],
+    recommendedAutomations: [
+      "captura simple de clientes",
+      "recordatorio diario de 3 prioridades",
+      "secuencia de retoma para clientes antiguos",
+      "plantillas de respuesta y cotización",
+      "resumen semanal de foco",
+    ],
+    recommendedScripts: ["primer contacto simple", "retoma de cliente antiguo", "mensaje de disponibilidad", "seguimiento post venta"],
+    academyLessons: ["Orden semanal para negocios de una persona", "WhatsApp como sistema personal", "Cómo priorizar sin abrumarse", "Usar IA como asistente operativo"],
+    executiveLanguage:
+      "En un negocio unipersonal, el objetivo no es crear burocracia: es liberar memoria mental, ordenar prioridades y convertir cada conversación importante en una próxima acción visible.",
+    riskSignals: ["sin agenda de seguimiento", "clientes en memoria", "tareas críticas sin bloque horario", "mensajes respondidos sin registro"],
+    opportunitySignals: ["decisión rápida", "trato humano directo", "baja complejidad para implementar", "alto impacto de automatizaciones simples"],
+  },
 };
 
 export function getIndustryRules(industry: DemoIndustry): IndustryRules {

@@ -31,7 +31,9 @@ export type DemoIndustry =
   | "Logística"
   | "Hotelería / turismo"
   | "Gimnasio / wellness"
-  | "Energía / estaciones de servicio / conveniencia";
+  | "Energía / estaciones de servicio / conveniencia"
+  | "Salón de belleza / estética grande"
+  | "Negocio unipersonal / solopreneur";
 
 export type CompanyProfile = {
   id: string;

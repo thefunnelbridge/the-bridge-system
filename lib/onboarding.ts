@@ -178,10 +178,10 @@ export const onboardingSteps: OnboardingStep[] = [
   },
   {
     id: "company",
-    title: "Configura la empresa",
-    description: "Revisa la empresa demo o crea contexto real en perfil y Data Room.",
-    route: "/app/company",
-    duration: "8 min",
+    title: "Activa la empresa",
+    description: "Configura industria, equipo, canales, integraciones y primer plan operativo.",
+    route: "/app/setup",
+    duration: "15 min",
   },
   {
     id: "inbox",

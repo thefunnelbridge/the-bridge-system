@@ -1,5 +1,47 @@
 import type { IntegrationItem } from "./types";
 
+export const whatsappEnterpriseInstall = {
+  title: "WhatsApp Business Platform / Cloud API",
+  summary:
+    "Conexión enterprise para leer eventos de conversaciones, estados, archivos y tiempos de respuesta mediante webhooks y convertirlos en tareas, alertas y oportunidades accionables.",
+  requirements: [
+    "Meta Business Manager verificado o administrado por el cliente.",
+    "WhatsApp Business Account asociado a la empresa.",
+    "Número empresarial autorizado para Cloud API.",
+    "App de Meta con permisos y webhook HTTPS.",
+    "Plantillas aprobadas para mensajes iniciados por la empresa.",
+    "Política interna de privacidad, retención y uso de datos.",
+  ],
+  reads: [
+    "mensajes entrantes",
+    "estados de entrega",
+    "media IDs / archivos",
+    "número o identificador del contacto",
+    "timestamp de conversación",
+    "plantillas utilizadas",
+    "eventos de webhook",
+  ],
+  activates: [
+    "crear conversación en Bridge Inbox™",
+    "asignar responsable",
+    "medir SLA de primera respuesta",
+    "detectar conversación sin próxima acción",
+    "crear tarea en Bridge Flow™",
+    "levantar alerta en Bridge Pulse™",
+    "sugerir script aprobado por etapa",
+  ],
+  implementationSteps: [
+    "Confirmar si el cliente usará número existente o número nuevo.",
+    "Crear o validar WhatsApp Business Account en Meta.",
+    "Configurar Cloud API y obtener phone_number_id.",
+    "Crear endpoint webhook en The Bridge System™.",
+    "Verificar webhook y suscribir eventos de mensajes.",
+    "Crear plantillas de utilidad para confirmación, seguimiento y documentos.",
+    "Mapear estados Bridge Inbox™: nuevo lead, seguimiento pendiente, documento pendiente, cliente dormido.",
+    "Probar flujo con sandbox antes de producción.",
+  ],
+};
+
 export const integrationCatalog: IntegrationItem[] = [
   {
     name: "HubSpot",
