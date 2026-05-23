@@ -13,7 +13,9 @@ import {
   Home,
   Inbox,
   Library,
+  CreditCard,
   Plug,
+  Rocket,
   Radio,
   Settings,
   Sparkles,
@@ -27,8 +29,11 @@ const groups = [
     label: "Operación",
     items: [
       { href: "/app/intro", label: "Empieza aquí", icon: Compass },
+      { href: "/app/setup", label: "Activation Setup", icon: Rocket },
+      { href: "/app/playbooks", label: "Industry Playbooks", icon: ClipboardList },
       { href: "/app", label: "Command Center", icon: Home },
       { href: "/app/pulse", label: "Bridge Pulse™", icon: Radio },
+      { href: "/app/live-goals", label: "Live Goals™", icon: Target },
       { href: "/app/inbox", label: "Bridge Inbox™", icon: Inbox },
     ],
   },
@@ -55,6 +60,8 @@ const groups = [
   {
     label: "Dirección",
     items: [
+      { href: "/app/implementation", label: "Implementation", icon: Rocket },
+      { href: "/app/billing", label: "Billing", icon: CreditCard },
       { href: "/app/integrations", label: "Integrations", icon: Plug },
       { href: "/app/report", label: "Executive Report", icon: FileText },
       { href: "/app/settings", label: "Settings", icon: Settings },
@@ -68,12 +75,11 @@ export function Sidebar() {
   return (
     <aside className="border-b border-[color:var(--line)] bg-[rgba(239,232,219,0.88)] backdrop-blur-xl md:fixed md:inset-y-0 md:left-0 md:w-80 md:border-b-0 md:border-r">
       <div className="flex h-full flex-col p-4">
-        <Link href="/app" className="group relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-[#10100f] p-5 text-bone shadow-[0_24px_70px_rgba(10,10,10,0.16)]">
-          <div aria-hidden className="absolute inset-0 bg-[linear-gradient(125deg,rgba(184,117,71,0.22),transparent_46%,rgba(255,59,31,0.12))]" />
+        <Link href="/app" className="bridge-dark-wave group rounded-xl border border-[rgba(245,241,234,0.14)] p-5 text-bone shadow-[0_24px_70px_rgba(10,10,10,0.16)]">
           <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
           <div className="relative">
-            <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-copper">THE BRIDGE SYSTEM™</p>
-            <p className="mt-3 font-display text-3xl font-semibold leading-none">Bridge OS</p>
+            <p className="font-mono text-[0.58rem] font-bold uppercase tracking-[0.18em] text-copper">THE BRIDGE SYSTEM™</p>
+            <p className="mt-3 font-display text-4xl font-semibold leading-[0.9]">Bridge System</p>
             <p className="mt-2 text-sm text-[rgba(245,241,234,0.68)]">by THE FUNNEL BRIDGE™</p>
           </div>
         </Link>

@@ -55,7 +55,7 @@ export function Topbar() {
               <option key={item.id} value={item.id}>{item.name}</option>
             ))}
           </select>
-          <Button href="/app/intro" variant="secondary"><Compass className="size-4" /> Empieza aquí</Button>
+          <Button href="/app/setup" variant="secondary"><Compass className="size-4" /> Activar empresa</Button>
           <Button href="/app/pulse" variant="secondary"><Bell className="size-4" /> Notificaciones</Button>
           <Button href="/app/report" variant="secondary"><FileDown className="size-4" /> Exportar informe</Button>
           <Button href="/app/flow"><RotateCcw className="size-4" /> Nueva misión</Button>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Bot, BrainCircuit, MessageCircle, Radio, Sparkles, X, Zap } from "lucide-react";
+import { ArrowRight, BrainCircuit, MessageCircle, Radio, Sparkles, X, Zap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { getLayerByRoute } from "@/lib/onboarding";
@@ -55,7 +55,7 @@ export function BridgeAgentDock() {
             <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
             <div className="flex items-start gap-3">
               <span className="relative grid size-12 shrink-0 place-items-center rounded-lg bg-ember text-bone shadow-[0_0_32px_rgba(255,59,31,0.32)]">
-                <Bot className="size-6" />
+                <BrainCircuit className="size-6" />
                 <span className="absolute -right-1 -top-1 size-3 rounded-full bg-copper ring-4 ring-[#10100f]" />
               </span>
               <div className="min-w-0 flex-1">

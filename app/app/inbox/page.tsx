@@ -55,17 +55,18 @@ export default function BridgeInboxPage() {
 
   return (
     <div className="space-y-8">
-      <div className="relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-ink p-6 text-bone shadow-[0_24px_90px_rgba(10,10,10,0.18)] lg:p-8">
+      <div className="bridge-dark-wave rounded-xl border border-[rgba(245,241,234,0.12)] p-6 text-bone shadow-[0_28px_100px_rgba(10,10,10,0.24)] lg:p-8">
         <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
         <div className="relative grid gap-8 xl:grid-cols-[1fr_420px] xl:items-end">
           <div>
             <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.18em] text-copper">Bridge Inbox™ · Conversation Intelligence</p>
-            <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold leading-[0.96] lg:text-7xl">Tus conversaciones ya son parte del negocio. Ahora también pueden ser parte del sistema.</h1>
+            <p className="mt-3 font-display text-5xl font-semibold leading-none text-bone lg:text-7xl">Bridge Inbox™</p>
+            <h1 className="mt-5 max-w-5xl font-display text-4xl font-semibold leading-[0.98] text-[rgba(245,241,234,0.95)] lg:text-6xl">Tus conversaciones ya son parte del negocio. Ahora también pueden ser parte del sistema.</h1>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-[rgba(245,241,234,0.78)]">
               Bridge Inbox™ convierte WhatsApp, emails, formularios y chats en oportunidades con responsable, estado, trazabilidad y próxima acción.
             </p>
           </div>
-          <div className="rounded-lg border border-[rgba(245,241,234,0.16)] bg-[rgba(245,241,234,0.08)] p-5">
+          <div className="bridge-glass rounded-lg border p-5 backdrop-blur">
             <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">Principio operativo</p>
             <p className="mt-3 text-lg leading-7">El cliente no debería perderse dentro de un chat. Los archivos no deberían vivir enterrados en conversaciones.</p>
           </div>

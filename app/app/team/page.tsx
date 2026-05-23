@@ -9,6 +9,7 @@ import { ExcellenceScorePanel } from "@/components/excellence-score-panel";
 import { InternalCommsPanel } from "@/components/internal-comms-panel";
 import { ServiceStandardPanel } from "@/components/service-standard-panel";
 import { Card } from "@/components/ui/card";
+import { getIndustryInduction } from "@/lib/industry-induction";
 import { calculateAdvancedScores } from "@/lib/scoring";
 import { getCompanyProfile, getScanResponses, getTrackerTasks } from "@/lib/storage";
 import { brokerageOffices, getTeamRoles } from "@/lib/team-culture";
@@ -29,6 +30,7 @@ export default function TeamPage() {
 
   if (!company || !scores) return null;
   const brokerage = company.industry === "Corredores de propiedades / Brokerage inmobiliario";
+  const induction = getIndustryInduction(company);
   const overloaded = roles.filter((role) => role.operationalLoad === "Alta" || role.operationalLoad === "Crítica").length;
   const withoutSystem = roles.filter((role) => role.status === "Sin sistema" || role.status === "Sobrecarga").length;
 
@@ -78,6 +80,36 @@ export default function TeamPage() {
             <p className="mt-3 text-sm leading-6 text-fog">
               “Esta semana no buscamos hacer más cosas. Buscamos que ninguna oportunidad crítica quede sin próxima acción clara.”
             </p>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="border-copper/40 bg-bone-2">
+        <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
+          <div>
+            <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Inducción personalizada</p>
+            <h2 className="mt-2 text-3xl font-semibold text-ink">{induction.title}</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-fog">{induction.simpleExplanation}</p>
+            <div className="mt-5 grid gap-3 md:grid-cols-2">
+              {induction.whatToEnter.map((item) => (
+                <div key={item} className="rounded-md border border-[color:var(--line)] bg-bone p-3">
+                  <p className="font-mono text-[0.58rem] font-bold uppercase tracking-[0.12em] text-copper">Dato a ingresar</p>
+                  <p className="mt-1 text-sm font-semibold text-ink">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-lg border border-[color:var(--line)] bg-bone p-5">
+            <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">Checklist del líder</p>
+            <div className="mt-4 space-y-3">
+              {induction.managerChecklist.map((item) => (
+                <div key={item} className="flex items-start gap-3 rounded-md bg-bone-2 p-3">
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-ember" />
+                  <p className="text-sm leading-6 text-fog">{item}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-5 rounded-md bg-ink p-4 text-sm leading-6 text-bone">{induction.companionTone}</p>
           </div>
         </div>
       </Card>

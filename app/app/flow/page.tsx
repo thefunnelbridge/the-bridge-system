@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Bot, CalendarClock, CheckCircle2, Flame, GitBranch, TimerReset } from "lucide-react";
+import { ArrowRight, BrainCircuit, CalendarClock, CheckCircle2, Flame, GitBranch, TimerReset } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FlowTimeline } from "@/components/flow-timeline";
@@ -96,7 +96,7 @@ export default function FlowPage() {
         <CommandTile icon={Flame} title="Ahora" text="Cerrar una fuga visible antes de que se convierta en otra reunión." />
         <CommandTile icon={TimerReset} title="72 horas" text="Asignar responsable, próxima acción y KPI verificable." />
         <CommandTile icon={CalendarClock} title="7 días" text="Estandarizar el comportamiento mínimo del equipo." />
-        <CommandTile icon={Bot} title="30 días" text="Automatizar solo lo que ya está claro y documentado." />
+        <CommandTile icon={BrainCircuit} title="30 días" text="Automatizar solo lo que ya está claro y documentado." />
       </div>
       <FlowTimeline steps={getSuggestedFlow()} />
       <Card className="bg-bone-2">

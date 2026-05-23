@@ -53,23 +53,24 @@ export function ReportPreview({
 
   return (
     <article className="rounded-lg border border-[color:var(--line)] bg-[#fbf8f2] p-6 shadow-[0_22px_70px_rgba(10,10,10,.06)] print:border-0 print:bg-white print:p-0 print:shadow-none">
-      <section className="break-after-page border-b border-[color:var(--line)] pb-10">
+      <section className="bridge-dark-wave break-after-page rounded-xl border border-[rgba(245,241,234,0.12)] p-8 text-bone print:border-b print:border-[color:var(--line)] print:bg-white print:text-ink">
         <p className="font-mono text-[0.7rem] font-bold uppercase tracking-[0.16em] text-copper">Executive Report</p>
-        <h2 className="mt-5 max-w-3xl font-display text-6xl font-semibold leading-none text-ink">The Bridge System™</h2>
-        <p className="mt-4 text-lg text-fog">Bridge Insight™ para {company.name}</p>
+        <h2 className="mt-5 max-w-4xl font-display text-6xl font-semibold leading-none text-bone print:text-ink">The Bridge System™</h2>
+        <p className="mt-3 font-mono text-[0.72rem] font-bold uppercase tracking-[0.2em] text-copper">Operational Intelligence Layer</p>
+        <p className="mt-4 text-lg text-[rgba(245,241,234,0.72)] print:text-fog">Bridge Insight™ para {company.name}</p>
         <div className="mt-10 grid gap-4 md:grid-cols-4">
-          <div><p className="font-mono text-xs text-fog">Empresa</p><p className="font-semibold">{company.name}</p></div>
-          <div><p className="font-mono text-xs text-fog">Industria</p><p className="font-semibold">{company.industry}</p></div>
-          <div><p className="font-mono text-xs text-fog">Fecha</p><p className="font-semibold">{new Date().toLocaleDateString("es-CL")}</p></div>
-          <div><p className="font-mono text-xs text-fog">Versión</p><p className="font-semibold">0.3 Research-driven</p></div>
+          <div className="bridge-glass rounded-lg border p-4 print:border-[color:var(--line)] print:bg-bone"><p className="font-mono text-xs text-copper">Empresa</p><p className="font-semibold">{company.name}</p></div>
+          <div className="bridge-glass rounded-lg border p-4 print:border-[color:var(--line)] print:bg-bone"><p className="font-mono text-xs text-copper">Industria</p><p className="font-semibold">{company.industry}</p></div>
+          <div className="bridge-glass rounded-lg border p-4 print:border-[color:var(--line)] print:bg-bone"><p className="font-mono text-xs text-copper">Fecha</p><p className="font-semibold">{new Date().toLocaleDateString("es-CL")}</p></div>
+          <div className="bridge-glass rounded-lg border p-4 print:border-[color:var(--line)] print:bg-bone"><p className="font-mono text-xs text-copper">Versión</p><p className="font-semibold">0.3 Research-driven</p></div>
         </div>
-        <div className="mt-12 max-w-3xl rounded-lg bg-bone-2 p-6">
+        <div className="bridge-glass mt-12 max-w-4xl rounded-lg border p-6 print:border-[color:var(--line)] print:bg-bone">
           <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">Tesis operativa</p>
-          <p className="mt-3 text-xl leading-8 text-ink">
+          <p className="mt-3 text-xl leading-8 text-[rgba(245,241,234,0.86)] print:text-ink">
             The Bridge System™ es una capa viva de inteligencia operativa: conecta datos internos, tendencias externas y ejecución diaria para que la empresa decida y actúe más rápido.
           </p>
         </div>
-        <div className="mt-10 overflow-hidden rounded-lg border border-[color:var(--line)] bg-bone-2 p-4 text-copper">
+        <div className="relative mt-10 overflow-hidden rounded-lg border border-[rgba(245,241,234,0.16)] bg-[rgba(245,241,234,0.06)] p-4 text-copper print:border-[color:var(--line)] print:bg-bone-2">
           <BridgeSignalSvg className="h-24 w-full" />
         </div>
       </section>

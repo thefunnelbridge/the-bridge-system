@@ -6,6 +6,7 @@ import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { demoCompanies } from "@/lib/demo-data";
+import { enterpriseInstallationSteps, productionModules } from "@/lib/saas-config";
 import { exportDemoData, getCompanyProfile, resetDemo, setSelectedCompanyId } from "@/lib/storage";
 import type { CompanyProfile } from "@/lib/types";
 
@@ -94,9 +95,10 @@ export default function SettingsPage() {
           </select>
           <div className="mt-4 space-y-2 text-sm text-fog">
             <p>Estado almacenamiento: localStorage</p>
-            <p>Estado Supabase: pendiente</p>
+            <p>Estado Supabase: schema multiempresa preparado</p>
             <p>Estado OpenAI: pendiente</p>
-            <p>Estado integraciones reales: demo</p>
+            <p>Estado Stripe: checkout preparado</p>
+            <p>Estado integraciones reales: WhatsApp Cloud API-ready</p>
             <p>Versión: 0.3 Research-driven</p>
             <p>Licencia: Demo privada · The Funnel Bridge SpA · Todos los derechos reservados</p>
           </div>
@@ -136,6 +138,30 @@ export default function SettingsPage() {
             <p>El sistema no reemplaza al equipo. Le devuelve foco.</p>
             <p>Antes de automatizar, hacemos visible la operación.</p>
             <p>La próxima mejor acción no debería depender de memoria humana.</p>
+          </div>
+        </Card>
+        <Card>
+          <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Production SaaS readiness</p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {productionModules.map((module) => (
+              <div key={module.name} className="rounded-md border border-[color:var(--line)] bg-bone p-3">
+                <p className="font-semibold text-ink">{module.name}</p>
+                <p className="mt-1 font-mono text-[0.58rem] uppercase tracking-[0.1em] text-copper">{module.status}</p>
+                <p className="mt-2 text-sm leading-6 text-fog">{module.description}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Button href="/app/implementation" variant="secondary">Ver instalación enterprise</Button>
+            <Button href="/app/billing" variant="secondary">Configurar Stripe</Button>
+          </div>
+        </Card>
+        <Card>
+          <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Checklist para instalar en cliente real</p>
+          <div className="mt-4 space-y-3 text-sm leading-6 text-fog">
+            {enterpriseInstallationSteps.map((step) => (
+              <p key={step.title}><strong className="text-ink">{step.title}:</strong> {step.detail}</p>
+            ))}
           </div>
         </Card>
         <Card>

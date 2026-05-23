@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Award, CheckCircle2, Circle, Clock, Flame, GitBranch, Radio, ShieldAlert, Sparkles, Target, Zap } from "lucide-react";
+import { Award, CheckCircle2, Circle, Clock, Flame, GitBranch, Radio, ShieldAlert, Target, Zap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { ActivityEvent } from "@/lib/activity-feed";
+import { BridgeSignalSvg } from "./bridge-visuals";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 
@@ -25,14 +26,14 @@ export function MissionControl({
   progress: number;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-[#10100f] p-5 text-bone shadow-[0_26px_90px_rgba(10,10,10,0.2)] lg:p-7">
+    <section className="bridge-dark-wave rounded-xl border border-[rgba(245,241,234,0.12)] p-5 text-bone shadow-[0_30px_100px_rgba(10,10,10,0.24)] lg:p-7">
       <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
+      <BridgeSignalSvg className="pointer-events-none absolute -right-12 top-0 h-44 w-[54%] text-copper opacity-40" />
       <div className="grid gap-7 xl:grid-cols-[1fr_380px] xl:items-end">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(245,241,234,0.14)] bg-[rgba(255,59,31,0.08)] px-4 py-2 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-copper">
-            <Radio className="size-4 animate-pulse text-ember" /> Mission Control
-          </div>
-          <h1 className="mt-5 max-w-4xl font-display text-5xl font-semibold leading-[0.96] lg:text-7xl">{mission}</h1>
+          <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.22em] text-copper">Mission Control · Operational Intelligence Layer</p>
+          <p className="mt-4 font-display text-4xl font-semibold leading-none text-bone lg:text-6xl">The Bridge System™</p>
+          <h1 className="mt-5 max-w-4xl font-display text-4xl font-semibold leading-[0.98] text-[rgba(245,241,234,0.94)] lg:text-6xl">{mission}</h1>
           <p className="mt-5 max-w-3xl text-sm leading-7 text-[rgba(245,241,234,0.76)]">{nextAction}</p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button href="/app/flow" className="border-bone bg-bone text-ink hover:border-ember hover:bg-ember hover:text-bone">
@@ -43,7 +44,7 @@ export function MissionControl({
             </Button>
           </div>
         </div>
-        <div className="rounded-lg border border-[rgba(245,241,234,0.14)] bg-[rgba(245,241,234,0.08)] p-5">
+        <div className="bridge-glass relative rounded-lg border p-5 backdrop-blur">
           <div className="grid gap-3">
             <MissionMeta icon={ShieldAlert} label="Riesgo principal" value={risk} />
             <MissionMeta icon={Target} label="Responsable sugerido" value={owner} />

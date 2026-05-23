@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { AreaScoreChart } from "@/components/area-score-chart";
 import { BridgeCompanionPanel } from "@/components/bridge-companion-panel";
 import { BridgePulsePanel } from "@/components/bridge-pulse-panel";
-import { BridgeSignalSvg } from "@/components/bridge-visuals";
 import { AchievementBadges, BridgeMap, LiveFeedPanel, MissionControl, ScoreDeck } from "@/components/command-widgets";
 import { ContinuousImprovementLoop } from "@/components/continuous-improvement-loop";
 import { ExcellenceScorePanel } from "@/components/excellence-score-panel";
@@ -99,10 +98,6 @@ export default function CommandCenterPage() {
         deadline="Hoy · antes de las 17:00"
         progress={missionProgress}
       />
-
-      <div className="overflow-hidden rounded-xl border border-[color:var(--line)] bg-bone-2 p-4 text-copper">
-        <BridgeSignalSvg className="h-24 w-full" />
-      </div>
 
       <ScoreDeck scores={scoreDeck} />
 

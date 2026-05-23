@@ -20,6 +20,8 @@ const industryOptions: DemoIndustry[] = [
   "Educación",
   "Retail / e-commerce",
   "Gimnasio / wellness",
+  "Salón de belleza / estética grande",
+  "Negocio unipersonal / solopreneur",
 ];
 
 function fieldToLabel(field: string) {
@@ -77,22 +79,27 @@ export default function CompanyPage() {
   const rules = getIndustryRules(profile.industry);
 
   function update(field: keyof CompanyProfile, value: string) {
-    if (!profile) return;
-    setProfile({
-      ...profile,
-      [field]: value,
-    } as CompanyProfile);
+    setProfile((currentProfile) => {
+      if (!currentProfile) return currentProfile;
+      return {
+        ...currentProfile,
+        [field]: value,
+      } as CompanyProfile;
+    });
     setSaved(false);
   }
 
   function updateMetric(field: string, value: string) {
-    if (!profile) return;
-    setProfile({
-      ...profile,
-      metrics: {
-        ...profile.metrics,
-        [field]: value,
-      },
+    setProfile((currentProfile) => {
+      if (!currentProfile) return currentProfile;
+      const nextProfile: CompanyProfile = {
+        ...currentProfile,
+        metrics: {
+          ...currentProfile.metrics,
+          [field]: value,
+        },
+      };
+      return nextProfile;
     });
     setSaved(false);
   }

@@ -6,7 +6,10 @@ import { useEffect, useState } from "react";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { getIndustryInduction } from "@/lib/industry-induction";
 import { bridgeLayerGuides, introNarrative, onboardingSteps } from "@/lib/onboarding";
+import { getCompanyProfile } from "@/lib/storage";
+import type { CompanyProfile } from "@/lib/types";
 
 const completedKey = "bridge-system.onboarding.completed";
 
@@ -21,8 +24,12 @@ function readCompleted(): string[] {
 
 export default function IntroPage() {
   const [completed, setCompleted] = useState<string[]>([]);
+  const [company, setCompany] = useState<CompanyProfile | null>(null);
 
-  useEffect(() => setCompleted(readCompleted()), []);
+  useEffect(() => {
+    setCompleted(readCompleted());
+    setCompany(getCompanyProfile());
+  }, []);
 
   function toggle(id: string) {
     const next = completed.includes(id) ? completed.filter((item) => item !== id) : [...completed, id];
@@ -32,6 +39,7 @@ export default function IntroPage() {
 
   const progress = Math.round((completed.length / onboardingSteps.length) * 100);
   const nextStep = onboardingSteps.find((step) => !completed.includes(step.id)) ?? onboardingSteps[0];
+  const induction = company ? getIndustryInduction(company) : null;
 
   return (
     <div className="space-y-8">
@@ -83,6 +91,36 @@ export default function IntroPage() {
           </Card>
         ))}
       </div>
+
+      {induction ? (
+        <Card className="border-copper/40 bg-bone-2">
+          <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
+            <div>
+              <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Tu inducción según industria</p>
+              <h2 className="mt-2 text-3xl font-semibold text-ink">{induction.title}</h2>
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-fog">{induction.simpleExplanation}</p>
+              <div className="mt-5 rounded-lg bg-ink p-5 text-bone">
+                <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-copper">Primer objetivo</p>
+                <p className="mt-2 text-xl font-semibold">{induction.firstDayGoal}</p>
+              </div>
+            </div>
+            <div className="rounded-lg border border-[color:var(--line)] bg-bone p-5">
+              <p className="font-mono text-[0.66rem] font-bold uppercase tracking-[0.14em] text-copper">Qué debe ingresar el equipo</p>
+              <div className="mt-4 grid gap-2">
+                {induction.whatToEnter.map((item) => (
+                  <div key={item} className="flex items-start gap-3 rounded-md bg-bone-2 p-3">
+                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-ember" />
+                    <p className="text-sm leading-6 text-fog">{item}</p>
+                  </div>
+                ))}
+              </div>
+              <Button href="/app/workers/today" variant="secondary" className="mt-5">
+                Abrir vista trabajador <ArrowRight className="size-4" />
+              </Button>
+            </div>
+          </div>
+        </Card>
+      ) : null}
 
       <div className="grid gap-5 xl:grid-cols-[420px_1fr]">
         <Card className="h-fit">

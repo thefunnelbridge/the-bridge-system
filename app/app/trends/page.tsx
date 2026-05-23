@@ -20,8 +20,10 @@ const trendIndustries: (DemoIndustry | "Todas")[] = [
   "Legal",
   "Educación",
   "Gimnasio / wellness",
+  "Salón de belleza / estética grande",
   "Retail / e-commerce",
   "Pyme local",
+  "Negocio unipersonal / solopreneur",
 ];
 
 export default function TrendsPage() {
@@ -51,17 +53,18 @@ export default function TrendsPage() {
         description="La capa que alimenta The Bridge System™ con tendencias de industria, señales de mercado, nuevas herramientas, benchmarks y cambios de comportamiento."
       />
 
-      <Card className="relative overflow-hidden bg-[#10100f] text-bone">
+      <Card className="bridge-dark-wave text-bone">
         <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
         <div className="grid gap-5 xl:grid-cols-[1fr_380px] xl:items-center">
           <div>
             <p className="font-mono text-[0.68rem] font-bold uppercase tracking-[0.14em] text-copper">Market Intelligence Room</p>
-            <h2 className="mt-3 font-display text-5xl font-semibold leading-[0.96]">Las tendencias no sirven si no se traducen en acción.</h2>
+            <p className="mt-3 font-display text-5xl font-semibold leading-none text-bone lg:text-7xl">Bridge Trends™</p>
+            <h2 className="mt-5 font-display text-4xl font-semibold leading-[0.98] text-[rgba(245,241,234,0.94)] lg:text-6xl">Las tendencias no sirven si no se traducen en acción.</h2>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-[rgba(245,241,234,0.76)]">
               Bridge Trends™ toma señales externas y las convierte en acciones internas: canal, herramienta, KPI, urgencia, impacto y siguiente tarea.
             </p>
           </div>
-          <div className="rounded-lg border border-[rgba(245,241,234,0.14)] bg-[rgba(245,241,234,0.08)] p-5">
+          <div className="bridge-glass rounded-lg border p-5 backdrop-blur">
             <p className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.12em] text-copper">Industria activa</p>
             <p className="mt-3 text-2xl font-semibold">{selectedIndustry}</p>
             <div className="mt-5 h-2 overflow-hidden rounded-full bg-[rgba(245,241,234,0.12)]">
@@ -98,7 +101,7 @@ export default function TrendsPage() {
         </p>
       </Card>
 
-      <Card className="relative overflow-hidden bg-[#10100f] text-bone">
+      <Card className="bridge-dark-wave text-bone">
         <div aria-hidden className="absolute left-0 top-0 h-px w-full animate-bridge-scan bg-gradient-to-r from-transparent via-ember to-transparent" />
         <div className="relative grid gap-5 xl:grid-cols-[.75fr_1.25fr]">
           <div>
