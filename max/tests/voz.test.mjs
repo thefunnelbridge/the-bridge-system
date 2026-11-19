@@ -103,3 +103,10 @@ test("el café es solo en la mañana", () => {
   assert.match(textoSaludo(16), /buenas tardes/);
   assert.match(textoSaludo(22), /buenas noches/);
 });
+
+test("la alerta diaria de terminados va en el saludo, sin montos", () => {
+  assert.match(textoSaludo(9, { hayDatos: true, terminados: 3 }), /Ojo: tienes 3 trabajos terminados sin facturar\./);
+  assert.match(textoSaludo(9, { hayDatos: true, terminados: 1 }), /tienes un trabajo terminado sin facturar\./);
+  assert.doesNotMatch(textoSaludo(9, { hayDatos: true, terminados: 0 }), /Ojo/);
+  assert.doesNotMatch(textoSaludo(9, { hayDatos: true, terminados: 3 }), /\$/);
+});

@@ -20,8 +20,12 @@ export function saludoCorto(hora) {
 }
 
 // Para la voz. Si todavía no hay datos cargados, Max lo dice en vez de inventar.
-export function textoSaludo(hora, { hayDatos = false } = {}) {
+// `terminados`: cuántos trabajos terminados siguen sin facturar (alerta diaria).
+export function textoSaludo(hora, { hayDatos = false, terminados = 0 } = {}) {
   const m = momento(hora);
   const reporte = hayDatos ? "Aquí está tu reporte de hoy." : "Todavía no me cargan los datos de hoy.";
-  return `Hola Javier, ${SALUDO[m]}. ¿Cómo estás? ${reporte} ${CIERRE[m]}`;
+  const alerta = terminados > 0
+    ? ` Ojo: tienes ${terminados === 1 ? "un trabajo terminado" : `${terminados} trabajos terminados`} sin facturar.`
+    : "";
+  return `Hola Javier, ${SALUDO[m]}. ¿Cómo estás? ${reporte}${alerta} ${CIERRE[m]}`;
 }

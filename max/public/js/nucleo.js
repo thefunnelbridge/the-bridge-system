@@ -104,6 +104,12 @@ export function crearNucleo(contenedor) {
   crear("path", { d: arco(R_AVANCE, INICIO, INICIO + BARRIDO), class: "n-pista" }, svg);
   const avance = crear("path", { d: "", class: "n-avance", filter: "url(#n-glow)" }, svg);
 
+  // Anillos segmentados que giran lento, uno en cada sentido.
+  const giroA = crear("g", { class: "n-giro" }, svg);
+  crear("circle", { cx: C, cy: C, r: 113, class: "n-segmentos" }, giroA);
+  const giroB = crear("g", { class: "n-giro n-giro-inverso" }, svg);
+  crear("circle", { cx: C, cy: C, r: 183.5, class: "n-segmentos n-segmentos-finos" }, giroB);
+
   // Halo del centro.
   crear("circle", { cx: C, cy: C, r: 118, class: "n-halo", fill: "url(#n-halo)" }, svg);
 

@@ -3,6 +3,9 @@ import { crearNucleo } from "./nucleo.js";
 import { crearVoz } from "./voz.js";
 import { etiqueta } from "./voces.js";
 import { saludoCorto, textoSaludo } from "./saludo.js";
+import { api } from "./api.js";
+import { pintarTablero } from "./tablero.js";
+import { prepararFormularios } from "./carga.js";
 
 const ZONA = "America/Santiago";
 const $ = (id) => document.getElementById(id);
@@ -27,27 +30,6 @@ function pintarFecha() {
   const { hora, minuto } = partesChile(ahora);
   $("fecha").textContent = `${capitalizar(dia)} · ${String(hora).padStart(2, "0")}:${minuto}`;
   $("saludo").textContent = saludoCorto(hora);
-}
-
-function nombreMes() {
-  return new Intl.DateTimeFormat("es-CL", { timeZone: ZONA, month: "long" }).format(new Date());
-}
-
-// ---------- Conexión con el servidor ----------
-
-async function api(ruta, opciones = {}) {
-  const respuesta = await fetch(ruta, {
-    credentials: "same-origin",
-    ...opciones,
-    headers: { "content-type": "application/json", ...(opciones.headers || {}) },
-  });
-  if (respuesta.status === 401) {
-    location.replace("/login");
-    throw new Error("sin sesión");
-  }
-  const datos = await respuesta.json().catch(() => ({}));
-  if (!respuesta.ok) throw new Error(datos.error || "Error del servidor");
-  return datos;
 }
 
 // ---------- La voz y el resplandor ----------
@@ -93,7 +75,11 @@ function recuerda(clave) {
 async function saludar() {
   avisoVoz.textContent = "";
   const { hora } = partesChile();
-  const resultado = await voz.decir(textoSaludo(hora, { hayDatos: false }));
+  const r = tablero?.resumen;
+  const resultado = await voz.decir(textoSaludo(hora, {
+    hayDatos: Boolean(r && r.meta !== null && r.facturado !== null),
+    terminados: tablero?.terminados.length ?? 0,
+  }));
   if (resultado === "bloqueado") {
     // El navegador solo deja hablar después de un toque en la página.
     ponerEstado("Toca el núcleo y Max te saluda", "toque");
@@ -206,12 +192,36 @@ async function cargarActividad() {
   }
 }
 
-// ---------- Meta del departamento (se completa en la parte 2) ----------
+// ---------- Tablero: meta, gráfico y terminados ----------
 
-function pintarMetaSinDatos() {
-  $("e-facturado").textContent = `Facturado en ${nombreMes()}`;
-  $("aviso-meta").textContent = `Todavía no me cargan la meta ni la facturación de ${nombreMes()}.`;
+let tablero = null;
+
+async function refrescar() {
+  try {
+    tablero = await api("/api/tablero");
+    pintarTablero(tablero, { nucleo, alFacturar });
+  } catch (e) {
+    if (e.message !== "sin sesión") $("aviso-meta").textContent = "No pude cargar los datos. Revisa la conexión.";
+  }
+  cargarActividad();
 }
+
+async function alFacturar(id) {
+  try {
+    await api("/api/terminados", { accion: "facturado", id });
+  } catch (e) {
+    if (e.message !== "sin sesión") $("aviso-terminados").textContent = e.message;
+  }
+  await refrescar();
+}
+
+// Max confirma en voz lo que se guardó (frase fija, sin montos).
+async function alGuardar(frase) {
+  await refrescar();
+  voz.decir(frase);
+}
+
+prepararFormularios({ estado: () => tablero, alGuardar });
 
 // ---------- Salir ----------
 
@@ -235,11 +245,13 @@ if ("serviceWorker" in navigator) {
 
 pintarFecha();
 setInterval(pintarFecha, 30000);
-pintarMetaSinDatos();
 pintarSilencio();
-cargarActividad();
 
-// Encendido: barrido de la aguja y, la primera vez de cada sesión, el saludo.
-nucleo.encender(0).then(() => {
+// Encendido: barrido de la aguja, datos y, la primera vez de cada sesión, el saludo.
+Promise.all([nucleo.encender(0), refrescar()]).then(() => {
+  if (tablero) pintarTablero(tablero, { nucleo, alFacturar });
   if (!recuerda(SALUDO_HECHO)) saludar();
 });
+
+// Si la pantalla queda abierta, los datos se refrescan solos.
+setInterval(() => { if (!document.hidden && !document.querySelector("dialog[open]")) refrescar(); }, 5 * 60 * 1000);

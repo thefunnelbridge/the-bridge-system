@@ -25,6 +25,9 @@
       <button type="button" class="boton-icono" id="btn-voz" title="Voz de Max" aria-label="Voz de Max">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10v4"/><path d="M9 6v12"/><path d="M13 9v6"/><path d="M17 4v16"/><path d="M21 10v4"/></svg>
       </button>
+      <button type="button" class="boton-icono" id="btn-ajustes" title="Ajustes" aria-label="Ajustes">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10"/><path d="M18 7h2"/><circle cx="16" cy="7" r="2"/><path d="M4 17h2"/><path d="M10 17h10"/><circle cx="8" cy="17" r="2"/></svg>
+      </button>
       <button type="button" class="boton-icono" id="btn-salir" title="Salir" aria-label="Salir">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l-5-5 5-5"/><path d="M5 12h11"/></svg>
       </button>
@@ -37,6 +40,7 @@
       <div class="cifra cifra-principal">
         <span class="cifra-etiqueta" id="e-facturado">Facturado este mes</span>
         <span class="cifra-valor sin-dato" id="v-facturado">Sin dato</span>
+        <span class="cifra-nota" id="n-ritmo"></span>
       </div>
       <div class="cifra">
         <span class="cifra-etiqueta">Meta del mes</span>
@@ -49,8 +53,10 @@
       <div class="cifra">
         <span class="cifra-etiqueta">Hay que facturar por día hábil</span>
         <span class="cifra-valor sin-dato" id="v-por-dia">Sin dato</span>
+        <span class="cifra-nota" id="n-dias"></span>
       </div>
       <p class="aviso" id="aviso-meta"></p>
+      <button type="button" class="boton-primario boton-ancho" id="btn-cargar">Cargar datos</button>
     </section>
 
     <section class="centro" aria-label="Max">
@@ -61,14 +67,22 @@
       <p class="aviso aviso-voz" id="aviso-voz"></p>
     </section>
 
-    <section class="col col-der" aria-label="Actividad y gráficos">
+    <section class="col col-der" aria-label="Terminados, gráfico y actividad">
       <div class="panel">
-        <h2 class="titulo-seccion">Actividad</h2>
-        <ul class="actividad" id="actividad"></ul>
+        <div class="panel-cabecera">
+          <h2 class="titulo-seccion">Terminados sin facturar <span class="contador" id="c-terminados" hidden></span></h2>
+          <button type="button" class="boton-chico" id="btn-terminado">Agregar</button>
+        </div>
+        <p class="aviso" id="aviso-terminados"></p>
+        <ul class="terminados" id="terminados"></ul>
       </div>
       <div class="panel">
         <h2 class="titulo-seccion">Facturación por día</h2>
         <div class="grafico vacio" id="grafico">Sin datos todavía.</div>
+      </div>
+      <div class="panel">
+        <h2 class="titulo-seccion">Actividad</h2>
+        <ul class="actividad" id="actividad"></ul>
       </div>
     </section>
   </main>
@@ -94,6 +108,102 @@
       <button type="button" class="boton-secundario" id="voz-probar">Probar</button>
       <button type="button" class="boton-primario" id="voz-cerrar">Listo</button>
     </div>
+  </dialog>
+  <dialog class="dialogo" id="dialogo-cargar" aria-labelledby="t-cargar">
+    <h2 class="titulo-seccion" id="t-cargar">Cargar datos</h2>
+    <form id="form-dia" novalidate>
+      <label class="dialogo-campo">
+        <span>Facturación del departamento</span>
+        <input id="dia-depto" type="text" inputmode="numeric" autocomplete="off" placeholder="$">
+      </label>
+      <label class="dialogo-campo">
+        <span>Tu facturación (privada: no se ve al escribir ni en el tablero)</span>
+        <input id="dia-personal" class="oculta-texto" type="text" inputmode="numeric" autocomplete="off" spellcheck="false">
+      </label>
+      <div class="dialogo-fila">
+        <label class="dialogo-campo">
+          <span>Día</span>
+          <input id="dia-fecha" type="date">
+        </label>
+        <label class="dialogo-campo">
+          <span>Los montos son</span>
+          <select id="dia-modo">
+            <option value="dia">Lo de ese día</option>
+            <option value="acumulado">El acumulado del mes</option>
+          </select>
+        </label>
+      </div>
+      <p class="dialogo-mensaje" id="dia-mensaje" role="alert"></p>
+      <div class="dialogo-botones">
+        <button type="submit" class="boton-primario" id="dia-guardar">Guardar</button>
+      </div>
+    </form>
+    <div class="dialogo-separador"><span>o sube un Excel</span></div>
+    <div class="dialogo-excel">
+      <label class="boton-secundario boton-archivo">
+        Elegir Excel
+        <input id="excel-archivo" class="oculto" type="file" accept=".xlsx,.xls,.csv">
+      </label>
+      <button type="button" class="boton-enlace" id="excel-plantilla">Descargar plantilla</button>
+    </div>
+    <div class="excel-vista" id="excel-vista" hidden></div>
+    <p class="dialogo-mensaje" id="excel-mensaje" role="alert"></p>
+    <div class="dialogo-botones">
+      <button type="button" class="boton-secundario" id="cargar-cerrar">Cerrar</button>
+      <button type="button" class="boton-primario" id="excel-confirmar" hidden>Guardar lo del Excel</button>
+    </div>
+  </dialog>
+
+  <dialog class="dialogo" id="dialogo-ajustes" aria-labelledby="t-ajustes">
+    <h2 class="titulo-seccion" id="t-ajustes">Ajustes</h2>
+    <form id="form-ajustes" novalidate>
+      <label class="dialogo-campo">
+        <span id="e-meta">Meta del mes del departamento</span>
+        <input id="aj-meta" type="text" inputmode="numeric" autocomplete="off" placeholder="$">
+      </label>
+      <label class="dialogo-campo">
+        <span>Los sábados</span>
+        <select id="aj-sabado">
+          <option value="no">No se cuentan</option>
+          <option value="medio">Cuentan como medio día</option>
+          <option value="completo">Cuentan como día completo</option>
+        </select>
+      </label>
+      <div class="dialogo-campo">
+        <span>Días sin trabajo este mes (además de domingos y feriados)</span>
+        <div class="dialogo-fila">
+          <input id="aj-dia" type="date" aria-label="Día sin trabajo">
+          <button type="button" class="boton-secundario" id="aj-agregar">Agregar</button>
+        </div>
+        <ul class="chips" id="aj-dias"></ul>
+        <p class="dialogo-nota" id="aj-feriados"></p>
+      </div>
+      <p class="dialogo-mensaje" id="aj-mensaje" role="alert"></p>
+      <div class="dialogo-botones">
+        <button type="button" class="boton-secundario" id="aj-cerrar">Cerrar</button>
+        <button type="submit" class="boton-primario">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dialogo" id="dialogo-terminado" aria-labelledby="t-terminado">
+    <h2 class="titulo-seccion" id="t-terminado">Terminado sin facturar</h2>
+    <form id="form-terminado" novalidate>
+      <div class="dialogo-fila">
+        <label class="dialogo-campo"><span>N° de OT</span><input id="te-ot" type="text" autocomplete="off" maxlength="30"></label>
+        <label class="dialogo-campo"><span>Patente</span><input id="te-patente" type="text" autocomplete="off" maxlength="12"></label>
+      </div>
+      <label class="dialogo-campo"><span>Cliente</span><input id="te-cliente" type="text" autocomplete="off" maxlength="80"></label>
+      <div class="dialogo-fila">
+        <label class="dialogo-campo"><span>Modelo</span><input id="te-modelo" type="text" autocomplete="off" maxlength="60"></label>
+        <label class="dialogo-campo"><span>Terminado el</span><input id="te-fecha" type="date"></label>
+      </div>
+      <p class="dialogo-mensaje" id="te-mensaje" role="alert"></p>
+      <div class="dialogo-botones">
+        <button type="button" class="boton-secundario" id="te-cerrar">Cerrar</button>
+        <button type="submit" class="boton-primario">Guardar</button>
+      </div>
+    </form>
   </dialog>
 </body>
 </html>

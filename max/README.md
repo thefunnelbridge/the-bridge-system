@@ -17,13 +17,29 @@ enciende, salen ondas y la luz tiñe toda la pantalla.
 
 | Parte | Qué incluye | Estado |
 |---|---|---|
-| 1 | Clave de entrada, guardia, centro de mando, núcleo, instalable como app | Lista (forma del núcleo provisional hasta recibir el demo aprobado) |
+| 1 | Clave de entrada, guardia, centro de mando, núcleo, instalable como app | Lista |
 | Voz | Saludo hablado según la hora, voz gratis de hombre (primero Lorenzo, Chile), resplandor al hablar, silencio, elegir y probar voz | Lista |
-| 2 | Meta del departamento, carga de datos, ajustes, terminados sin facturar | Pendiente |
+| 2 | Meta del departamento, carga de datos (formulario y Excel), ajustes, gráfico por día, terminados sin facturar con alerta | Lista |
 | 3 | Mi mes (PIN, autobloqueo, comisión y sueldo) | Pendiente |
 | 4 | Resumen hablado y barra para escribir o hablar (Claude) | Pendiente |
 | 5 | Cerebro y Radar diario | Pendiente |
 | 6 | Modo demo, estructura de Etapa 2 | Pendiente |
+
+## Cómo se usan los datos
+
+- **Meta del mes**: botón de ajustes (arriba a la derecha). Ahí también se dice si
+  los sábados cuentan y se agregan días sin trabajo. Los feriados de Chile ya vienen.
+- **Cargar datos**: dos campos, la facturación del departamento y la de Javier.
+  La de Javier se escribe a ciegas y se guarda en la zona privada: no aparece en
+  el tablero, en la actividad ni en lo que Max dice.
+- **Excel**: se puede subir un archivo. Max muestra primero qué encontró y solo
+  guarda al confirmar. "Descargar plantilla" entrega un Excel listo para llenar.
+  Columnas que reconoce: Fecha, Facturación departamento, Facturación Javier; y
+  para terminados: OT, Cliente, Patente, Modelo, Fecha término.
+- **Terminados sin facturar**: se agregan a mano o por Excel. "Facturado" (dos
+  toques) los saca de la lista. Max los avisa en el saludo. No llevan montos.
+- **Supuestos que se pueden cambiar**: días hábiles de lunes a viernes y montos
+  tal como se ingresen (se recomienda netos, sin IVA, igual que la meta).
 
 ## Lo que viene después de la Etapa 1
 
@@ -107,14 +123,15 @@ max/
 │   ├── login.html             pantalla de clave
 │   ├── index.html             centro de mando
 │   ├── css/max.css
-│   ├── js/                    app.js, nucleo.js (resplandor), voz.js, voces.js, saludo.js, login.js
+│   ├── js/                    app.js, nucleo.js (resplandor), voz.js, tablero.js, grafico.js, carga.js, excel.js...
+│   ├── js/vendor/             lector de Excel (SheetJS, licencia Apache 2.0)
 │   ├── manifest.webmanifest   app instalable
 │   ├── sw.js                  guarda solo la interfaz, nunca datos
 │   └── icons/
 ├── netlify/
 │   ├── edge-functions/guardia.js   sin sesión no se entrega ninguna página
-│   └── functions/                  login, logout, actividad
-├── lib/                       sesión firmada, almacén, utilidades
+│   └── functions/                  login, logout, actividad, tablero, cargar, ajustes, terminados
+├── lib/                       sesión, almacén, cálculos de días hábiles y meta, feriados, zona privada
 └── tests/                     pruebas automáticas
 ```
 
