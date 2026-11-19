@@ -77,6 +77,7 @@ Necesitas Node.js 20 o más nuevo (https://nodejs.org).
 
 3. Copia `.env.example` como `.env` y completa al menos:
 
+   - `MAX_USER`: el usuario para entrar (si lo dejas vacío, es `javier`).
    - `MAX_PASSWORD`: la clave para entrar.
    - `SESSION_SECRET`: un texto largo al azar. Para generarlo:
 
@@ -100,6 +101,7 @@ Para correr las pruebas automáticas: `npm test`.
 2. **Branch to deploy**: la rama donde está Max.
 3. **Base directory**: `max`. El resto lo toma de `max/netlify.toml`.
 4. En **Project configuration > Environment variables**, agrega:
+   - `MAX_USER` (opcional; por defecto `javier`)
    - `MAX_PASSWORD`
    - `MAX_PIN_PRIVADO`
    - `SESSION_SECRET`

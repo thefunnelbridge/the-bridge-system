@@ -240,6 +240,8 @@ button, input { font: inherit; }
   font-size: 15px;
 }
 
+.login-form input[type="text"] { letter-spacing: 0.02em; }
+
 .login-form input {
   width: 100%;
   min-height: 56px;

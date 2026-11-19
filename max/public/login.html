@@ -19,8 +19,10 @@
     <p class="login-sub">Tu centro de mando</p>
 
     <form id="form-login" class="login-form" novalidate>
+      <label for="usuario">Usuario</label>
+      <input id="usuario" name="usuario" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
       <label for="clave">Clave</label>
-      <input id="clave" name="clave" type="password" autocomplete="current-password" required autofocus>
+      <input id="clave" name="clave" type="password" autocomplete="current-password" required>
       <button type="submit" class="boton-primario boton-grande" id="btn-entrar">Entrar</button>
       <p id="mensaje" class="login-mensaje" role="alert" aria-live="polite"></p>
     </form>

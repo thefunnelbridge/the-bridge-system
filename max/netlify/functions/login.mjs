@@ -1,4 +1,5 @@
-// Entrada a Max con la clave. Bloquea 15 minutos tras 5 intentos fallidos.
+// Entrada a Max con usuario y clave. Bloquea 15 minutos tras 5 intentos fallidos.
+// El usuario se define en MAX_USER (si no está, es "javier").
 import { env } from "../../lib/entorno.mjs";
 import { crearSesion, cookieSesion, iguales, secretoValido } from "../../lib/sesion.mjs";
 import { json, error, esSeguro, mismoOrigen } from "../../lib/respuestas.mjs";
@@ -29,6 +30,8 @@ export default async (request, context) => {
     return error("Solicitud inválida.", 400);
   }
   const clave = typeof cuerpo?.clave === "string" ? cuerpo.clave : "";
+  const usuario = typeof cuerpo?.usuario === "string" ? cuerpo.usuario.trim().toLowerCase() : "";
+  const usuarioReal = (env("MAX_USER") || "javier").trim().toLowerCase();
 
   const seguridad = tienda("seguridad");
   const llave = `login/${context?.ip || "desconocida"}`;
@@ -40,7 +43,10 @@ export default async (request, context) => {
     return error(`Demasiados intentos. Espera ${plural(minutos, "minuto")} y vuelve a intentar.`, 429);
   }
 
-  if (!clave || !(await iguales(clave, claveReal))) {
+  // Se revisan los dos siempre, para no revelar cuál de los dos falló.
+  const usuarioOk = await iguales(usuario, usuarioReal);
+  const claveOk = await iguales(clave, claveReal);
+  if (!clave || !usuarioOk || !claveOk) {
     const fallos = (estado.fallos || 0) + 1;
     if (fallos >= MAX_FALLOS) {
       await seguridad.setJSON(llave, { fallos: 0, bloqueadoHasta: ahora + BLOQUEO_MINUTOS * 60000 });
@@ -49,7 +55,7 @@ export default async (request, context) => {
     }
     await seguridad.setJSON(llave, { fallos, bloqueadoHasta: 0 });
     const quedan = MAX_FALLOS - fallos;
-    return error(`Clave incorrecta. Te ${quedan === 1 ? "queda" : "quedan"} ${plural(quedan, "intento")}.`, 401);
+    return error(`Usuario o clave incorrectos. Te ${quedan === 1 ? "queda" : "quedan"} ${plural(quedan, "intento")}.`, 401);
   }
 
   await seguridad.delete(llave);

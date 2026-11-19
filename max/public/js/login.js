@@ -1,12 +1,18 @@
 // Pantalla de clave.
 const formulario = document.getElementById("form-login");
 const campo = document.getElementById("clave");
+const usuario = document.getElementById("usuario");
 const mensaje = document.getElementById("mensaje");
 const boton = document.getElementById("btn-entrar");
 
 formulario.addEventListener("submit", async (evento) => {
   evento.preventDefault();
   mensaje.textContent = "";
+  if (!usuario.value.trim()) {
+    mensaje.textContent = "Escribe tu usuario.";
+    usuario.focus();
+    return;
+  }
   if (!campo.value) {
     mensaje.textContent = "Escribe tu clave.";
     campo.focus();
@@ -19,7 +25,7 @@ formulario.addEventListener("submit", async (evento) => {
       method: "POST",
       headers: { "content-type": "application/json" },
       credentials: "same-origin",
-      body: JSON.stringify({ clave: campo.value }),
+      body: JSON.stringify({ usuario: usuario.value, clave: campo.value }),
     });
     const datos = await respuesta.json().catch(() => ({}));
     if (respuesta.ok && datos.ok) {
