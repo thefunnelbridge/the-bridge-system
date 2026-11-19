@@ -18,11 +18,15 @@
   --fuente: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
   --fuente-tablero: Bahnschrift, "DIN Alternate", "DIN Condensed", "Segoe UI", system-ui, sans-serif;
   color-scheme: dark;
+  --nivel: 0; /* 0 a 1: cuánto resplandece Max ahora. Lo mueve nucleo.js */
 }
 
 * { box-sizing: border-box; }
 
 html, body { margin: 0; }
+
+/* El resplandor del núcleo no debe ensanchar la página. */
+html, body { overflow-x: clip; }
 
 body {
   min-height: 100dvh;
@@ -89,6 +93,19 @@ button, input { font: inherit; }
 
 .boton-grande { min-height: 54px; font-size: 18px; }
 
+.boton-secundario {
+  border: 1px solid var(--borde-fuerte);
+  border-radius: 999px;
+  padding: 12px 22px;
+  min-height: 44px;
+  background: var(--carbon-2);
+  color: var(--texto);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boton-secundario:hover { border-color: #5a5f67; }
+
 .boton-icono {
   width: 44px;
   height: 44px;
@@ -115,6 +132,11 @@ button, input { font: inherit; }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+.boton-icono .sin-sonido { display: none; }
+.boton-icono[aria-pressed="true"] .con-sonido { display: none; }
+.boton-icono[aria-pressed="true"] .sin-sonido { display: block; }
+.boton-icono[aria-pressed="true"] { color: var(--rojo-claro); border-color: rgba(255, 45, 26, 0.45); }
 
 /* ---------- Pantalla de clave ---------- */
 
@@ -216,6 +238,20 @@ button, input { font: inherit; }
   min-height: 100dvh;
 }
 
+/* Luz roja que llena la pantalla cuando Max habla. */
+.resplandor {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(58vmax 58vmax at 50% 46%, rgba(255, 45, 26, 0.34) 0%, rgba(255, 45, 26, 0.1) 38%, transparent 64%);
+  opacity: calc(var(--nivel) * 0.95);
+}
+
+.barra-superior,
+.mando { position: relative; z-index: 1; }
+
 .barra-superior {
   display: flex;
   align-items: center;
@@ -259,6 +295,8 @@ button, input { font: inherit; }
   border: 1px solid var(--borde);
   border-radius: 16px;
   background: var(--panel);
+  border-color: color-mix(in srgb, var(--rojo-vivo) calc(var(--nivel) * 42%), var(--borde));
+  box-shadow: 0 0 calc(var(--nivel) * 46px) rgba(255, 45, 26, calc(var(--nivel) * 0.16));
 }
 
 .panel::before {
@@ -347,9 +385,32 @@ button, input { font: inherit; }
 }
 
 .nucleo {
-  width: min(100%, 520px, 60vh);
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 520px, 58vh);
   aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
+
+.nucleo::before {
+  content: "";
+  position: absolute;
+  inset: -16%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 60, 36, 0.62) 0%, rgba(255, 45, 26, 0.2) 44%, transparent 70%);
+  filter: blur(26px);
+  opacity: calc(0.1 + var(--nivel) * 0.9);
+  transform: scale(calc(0.92 + var(--nivel) * 0.12));
+}
+
+.nucleo:focus-visible { outline-offset: 8px; }
 
 .estado-max {
   display: flex;
@@ -373,17 +434,43 @@ button, input { font: inherit; }
   animation: latido 2.4s ease-in-out infinite;
 }
 
+body[data-max="hablando"] .estado-max { color: var(--rojo-claro); }
+body[data-max="hablando"] .estado-max::before { animation-duration: 0.7s; }
+body[data-max="toque"] .estado-max { color: var(--texto); }
+
+.dicho {
+  min-height: 3.1em;
+  max-width: 34ch;
+  margin: 2px 0 0;
+  font-size: clamp(17px, 1.5vw, 20px);
+  line-height: 1.5;
+  text-align: center;
+  color: var(--texto);
+  text-wrap: balance;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.dicho.visible { opacity: 1; }
+
+.aviso-voz { max-width: 44ch; margin: 0; text-align: center; }
+
 /* ---------- Núcleo SVG ---------- */
 
 .nucleo-svg {
-  --nivel: 0;
   display: block;
   width: 100%;
   height: 100%;
   overflow: visible;
 }
 
-.n-bisel { fill: none; stroke: url(#n-cromo); stroke-width: 6; }
+.n-bisel {
+  fill: none;
+  stroke: url(#n-cromo);
+  stroke-width: 6;
+  filter: drop-shadow(0 0 calc(var(--nivel) * 16px) rgba(255, 70, 40, calc(var(--nivel) * 0.75)));
+}
+
 .n-cara { fill: #0a0b0e; stroke: #000; stroke-width: 2; }
 
 .n-marca { stroke: #464b53; stroke-width: 2; stroke-linecap: round; }
@@ -404,37 +491,67 @@ button, input { font: inherit; }
 .n-avance { fill: none; stroke: var(--rojo-vivo); stroke-width: 8; stroke-linecap: round; }
 
 .n-halo,
-.n-centro {
+.n-centro,
+.n-destello,
+.n-onda {
   transform-box: fill-box;
   transform-origin: center;
 }
 
 .n-halo {
-  opacity: calc(0.5 + var(--nivel) * 0.5);
-  transform: scale(calc(1 + var(--nivel) * 0.28));
+  opacity: calc(0.45 + var(--nivel) * 0.55);
+  transform: scale(calc(1 + var(--nivel) * 0.34));
 }
 
-.n-centro { transform: scale(calc(1 + var(--nivel) * 0.17)); }
+.n-centro { transform: scale(calc(1 + var(--nivel) * 0.2)); }
 
-.n-anillo { fill: none; stroke-width: 1.2; }
-.n-anillo-1 { stroke: rgba(255, 255, 255, 0.07); }
-.n-anillo-2 { stroke: rgba(255, 45, 26, 0.4); }
+/* Destello blanco: solo se enciende cuando Max habla. */
+.n-destello {
+  opacity: calc(var(--nivel) * 0.85);
+  transform: scale(calc(0.7 + var(--nivel) * 0.5));
+}
 
-.nucleo-svg:not(.hablando) .n-centro { animation: respirar 3.6s ease-in-out infinite; }
-.nucleo-svg:not(.hablando) .n-halo { animation: halo 3.6s ease-in-out infinite; }
+.n-anillo { fill: none; stroke: rgba(255, 45, 26, 0.42); stroke-width: 1.2; }
+
+.n-barra {
+  stroke: var(--rojo-vivo);
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  opacity: calc(0.26 + var(--nivel) * 0.74);
+}
+
+.n-onda {
+  fill: none;
+  stroke: #ff5a3c;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  animation: onda 1.15s ease-out forwards;
+}
+
+/* En espera, el centro respira solo. */
+.nucleo-svg[data-estado="espera"] .n-centro,
+.nucleo-svg[data-estado="toque"] .n-centro { animation: respirar 3.6s ease-in-out infinite; }
+.nucleo-svg[data-estado="espera"] .n-halo { animation: halo 3.6s ease-in-out infinite; }
+
+/* Pide un toque: late más rápido para llamar la atención. */
+.nucleo-svg[data-estado="toque"] .n-halo { animation: halo 1.3s ease-in-out infinite; }
+.nucleo-svg[data-estado="toque"] .n-anillo { animation: latido 1.3s ease-in-out infinite; stroke-width: 2; }
 
 .n-valor {
   fill: #fff;
   font-family: var(--fuente-tablero);
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: 0.2em;
   text-anchor: middle;
   dominant-baseline: central;
+  paint-order: stroke;
+  stroke: rgba(80, 0, 0, 0.55);
+  stroke-width: 3px;
 }
 
 .n-unidad {
-  fill: rgba(255, 255, 255, 0.78);
+  fill: rgba(255, 255, 255, 0.82);
   font-family: var(--fuente-tablero);
   font-size: 10px;
   letter-spacing: 0.3em;
@@ -483,6 +600,7 @@ button, input { font: inherit; }
 .barra-max {
   position: sticky;
   bottom: 0;
+  z-index: 2;
   padding: 14px 28px 20px;
   background: linear-gradient(180deg, rgba(7, 8, 10, 0) 0%, rgba(7, 8, 10, 0.92) 40%);
 }
@@ -513,7 +631,45 @@ button, input { font: inherit; }
 
 .barra-form input::placeholder { color: var(--texto-tenue); }
 
+/* ---------- Diálogos ---------- */
+
+.dialogo {
+  width: min(92vw, 440px);
+  padding: 24px;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: 18px;
+  background: var(--carbon);
+  color: var(--texto);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+}
+
+.dialogo::backdrop { background: rgba(0, 0, 0, 0.62); }
+
+.dialogo-texto { margin: 8px 0 16px; color: var(--texto-suave); }
+
+.dialogo-campo { display: grid; gap: 6px; color: var(--texto-suave); font-size: 15px; }
+
+.dialogo-campo select {
+  min-height: 48px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid #2a2d33;
+  background: var(--carbon-2);
+  color: var(--texto);
+  font-size: 17px;
+}
+
+.dialogo-botones { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+[hidden] { display: none !important; }
+
 /* ---------- Animaciones ---------- */
+
+@keyframes onda {
+  from { transform: scale(1); opacity: 0.8; }
+  to { transform: scale(3.05); opacity: 0; }
+}
+
 
 @keyframes respirar {
   0%, 100% { transform: scale(0.97); }
@@ -551,6 +707,8 @@ button, input { font: inherit; }
 
 @media (max-width: 520px) {
   .marca { font-size: 18px; letter-spacing: 0.3em; }
-  .fecha { font-size: 14px; }
+  .fecha { font-size: 13px; line-height: 1.3; }
+  .acciones { gap: 6px; }
+  .acciones .boton-icono { width: 40px; height: 40px; }
   .barra-form .boton-primario { padding: 10px 16px; }
 }

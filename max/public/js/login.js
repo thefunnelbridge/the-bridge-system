@@ -23,8 +23,8 @@ formulario.addEventListener("submit", async (evento) => {
     });
     const datos = await respuesta.json().catch(() => ({}));
     if (respuesta.ok && datos.ok) {
-      // Marca que la entrada fue recién, para que Max salude al llegar.
-      try { sessionStorage.setItem("max-recien-entro", "1"); } catch {}
+      // Entrada nueva: Max vuelve a saludar al llegar.
+      try { sessionStorage.removeItem("max-saludo-hecho"); } catch {}
       location.replace("/");
       return;
     }

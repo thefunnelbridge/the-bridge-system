@@ -6,17 +6,41 @@ Max es una herramienta personal de Javier, no un sistema de Salfa.
 Sitio estático + Netlify Functions + Netlify Blobs (base de datos incluida en Netlify).
 Sin framework y sin paso de compilación.
 
+## La idea
+
+Max es para Javier lo que Jarvis para Tony Stark: un copiloto que lo recibe, le dice
+cómo va el mes, le muestra dónde está la plata que falta facturar y lo ayuda a
+ordenarse para ser el mejor asesor. Cuando Max habla, resplandece: el núcleo se
+enciende, salen ondas y la luz tiñe toda la pantalla.
+
 ## Estado
 
 | Parte | Qué incluye | Estado |
 |---|---|---|
-| 1 | Clave de entrada, guardia, centro de mando, núcleo, instalable como app | Lista (núcleo provisional hasta recibir el demo aprobado) |
+| 1 | Clave de entrada, guardia, centro de mando, núcleo, instalable como app | Lista (forma del núcleo provisional hasta recibir el demo aprobado) |
+| Voz | Saludo hablado según la hora, voz gratis de hombre (primero Lorenzo, Chile), resplandor al hablar, silencio, elegir y probar voz | Lista |
 | 2 | Meta del departamento, carga de datos, ajustes, terminados sin facturar | Pendiente |
 | 3 | Mi mes (PIN, autobloqueo, comisión y sueldo) | Pendiente |
-| 4 | Voz (gratis, del navegador; primero "Lorenzo", Chile), saludo y pulso | Pendiente |
-| 5 | Resumen hablado y barra para escribir o hablar (Claude) | Pendiente |
-| 6 | Cerebro y Radar diario | Pendiente |
-| 7 | Modo demo, estructura de Etapa 2 | Pendiente |
+| 4 | Resumen hablado y barra para escribir o hablar (Claude) | Pendiente |
+| 5 | Cerebro y Radar diario | Pendiente |
+| 6 | Modo demo, estructura de Etapa 2 | Pendiente |
+
+## Lo que viene después de la Etapa 1
+
+- Etapa 2: cartera de clientes, "Oportunidades del día" y agenda con Google Calendar.
+- Después: correo en solo lectura, WhatsApp oficial y recordatorio de cursos.
+- Más adelante: que Max pueda llamar a Javier por teléfono y hablar con él.
+  La voz ya está separada del resto (`public/js/voz.js`), así que cambiarla por
+  una voz de mayor calidad o por una línea telefónica no obliga a rehacer Max.
+
+## La voz
+
+- Gratis: usa la voz del navegador. En Microsoft Edge habla con "Lorenzo", de Chile.
+- Solo voces de hombre en español. Si el equipo no tiene ninguna, Max no usa otra:
+  escribe lo que diría y avisa.
+- Tocar el núcleo: Max saluda; tocarlo mientras habla: se calla.
+- Botón de silencio: Max escribe y brilla suave, sin sonido.
+- Si el navegador no deja hablar al abrir, Max pide un toque en el núcleo.
 
 ## Probarlo en tu computador
 
@@ -83,7 +107,7 @@ max/
 │   ├── login.html             pantalla de clave
 │   ├── index.html             centro de mando
 │   ├── css/max.css
-│   ├── js/                    app.js, nucleo.js, login.js
+│   ├── js/                    app.js, nucleo.js (resplandor), voz.js, voces.js, saludo.js, login.js
 │   ├── manifest.webmanifest   app instalable
 │   ├── sw.js                  guarda solo la interfaz, nunca datos
 │   └── icons/
