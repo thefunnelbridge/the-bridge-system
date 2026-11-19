@@ -11,11 +11,15 @@ export async function api(ruta, cuerpo) {
   } catch {
     throw new Error("No hay conexión con Max. Revisa internet e intenta de nuevo.");
   }
-  if (respuesta.status === 401) {
+  const datos = await respuesta.json().catch(() => ({}));
+  if (respuesta.status === 401 && datos.sinSesion) {
     location.replace("/login");
     throw new Error("sin sesión");
   }
-  const datos = await respuesta.json().catch(() => ({}));
-  if (!respuesta.ok) throw new Error(datos.error || "Algo falló en el servidor. Intenta de nuevo.");
+  if (!respuesta.ok) {
+    const falla = new Error(datos.error || "Algo falló en el servidor. Intenta de nuevo.");
+    falla.cerrada = Boolean(datos.cerrada); // Mi mes se bloqueó
+    throw falla;
+  }
   return datos;
 }

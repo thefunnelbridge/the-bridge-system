@@ -20,7 +20,7 @@ enciende, salen ondas y la luz tiñe toda la pantalla.
 | 1 | Clave de entrada, guardia, centro de mando, núcleo, instalable como app | Lista |
 | Voz | Saludo hablado según la hora, voz gratis de hombre (primero Lorenzo, Chile), resplandor al hablar, silencio, elegir y probar voz | Lista |
 | 2 | Meta del departamento, carga de datos (formulario y Excel), ajustes, gráfico por día, terminados sin facturar con alerta | Lista |
-| 3 | Mi mes (PIN, autobloqueo, comisión y sueldo) | Pendiente |
+| 3 | Mi mes: zona privada con PIN, autobloqueo a los 60 s, comisión, sueldo y proyección | Lista |
 | 4 | Resumen hablado y barra para escribir o hablar (Claude) | Pendiente |
 | 5 | Cerebro y Radar diario | Pendiente |
 | 6 | Modo demo, estructura de Etapa 2 | Pendiente |
@@ -38,6 +38,11 @@ enciende, salen ondas y la luz tiñe toda la pantalla.
   para terminados: OT, Cliente, Patente, Modelo, Fecha término.
 - **Terminados sin facturar**: se agregan a mano o por Excel. "Facturado" (dos
   toques) los saca de la lista. Max los avisa en el saludo. No llevan montos.
+- **Mi mes** (candado, arriba a la derecha): pide el PIN privado (`MAX_PIN_PRIVADO`,
+  distinto de la clave). Muestra "hasta hoy tu sueldo va en", la comisión, una
+  proyección al cierre y cuánto suma cada millón extra. Las reglas de sueldo las
+  define Javier ahí mismo. Se bloquea sola a los 60 segundos sin uso, al cerrarla
+  o al cambiar de ventana, y Max nunca dice esos montos en voz alta.
 - **Supuestos que se pueden cambiar**: días hábiles de lunes a viernes y montos
   tal como se ingresen (se recomienda netos, sin IVA, igual que la meta).
 
@@ -132,7 +137,7 @@ max/
 │   └── icons/
 ├── netlify/
 │   ├── edge-functions/guardia.js   sin sesión no se entrega ninguna página
-│   └── functions/                  login, logout, actividad, tablero, cargar, ajustes, terminados
+│   └── functions/                  login, logout, actividad, tablero, cargar, ajustes, terminados, mi-mes
 ├── lib/                       sesión, almacén, cálculos de días hábiles y meta, feriados, zona privada
 └── tests/                     pruebas automáticas
 ```

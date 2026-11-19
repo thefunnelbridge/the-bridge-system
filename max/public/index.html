@@ -25,6 +25,9 @@
       <button type="button" class="boton-icono" id="btn-voz" title="Voz de Max" aria-label="Voz de Max">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10v4"/><path d="M9 6v12"/><path d="M13 9v6"/><path d="M17 4v16"/><path d="M21 10v4"/></svg>
       </button>
+      <button type="button" class="boton-icono" id="btn-mi-mes" title="Mi mes (privado)" aria-label="Mi mes, zona privada">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      </button>
       <button type="button" class="boton-icono" id="btn-ajustes" title="Ajustes" aria-label="Ajustes">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10"/><path d="M18 7h2"/><circle cx="16" cy="7" r="2"/><path d="M4 17h2"/><path d="M10 17h10"/><circle cx="8" cy="17" r="2"/></svg>
       </button>
@@ -202,6 +205,42 @@
       <div class="dialogo-botones">
         <button type="button" class="boton-secundario" id="te-cerrar">Cerrar</button>
         <button type="submit" class="boton-primario">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog class="dialogo dialogo-privado" id="dialogo-privado" aria-labelledby="t-privado">
+    <div class="privado-cabecera">
+      <h2 class="titulo-seccion" id="t-privado">Mi mes</h2>
+      <span class="privado-reloj" id="privado-reloj" hidden></span>
+    </div>
+    <form id="form-pin" novalidate>
+      <label class="dialogo-campo">
+        <span>PIN privado</span>
+        <input id="pin" class="oculta-texto" type="text" inputmode="numeric" autocomplete="off" spellcheck="false">
+      </label>
+      <p class="dialogo-mensaje" id="pin-mensaje" role="alert"></p>
+      <div class="dialogo-botones">
+        <button type="button" class="boton-secundario" id="pin-cerrar">Cerrar</button>
+        <button type="submit" class="boton-primario" id="pin-abrir">Abrir</button>
+      </div>
+    </form>
+    <div id="privado-contenido" hidden></div>
+    <form id="form-reglas" novalidate hidden>
+      <p class="dialogo-texto">Estas reglas definen cómo Max calcula tu sueldo. Solo se ven aquí.</p>
+      <div class="dialogo-fila">
+        <label class="dialogo-campo"><span>Sueldo base del mes</span><input id="rg-base" type="text" inputmode="numeric" autocomplete="off" placeholder="$"></label>
+        <label class="dialogo-campo"><span>Comisión (%)</span><input id="rg-pct" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej: 1,5"></label>
+      </div>
+      <label class="dialogo-campo"><span>Comisionas desde esta facturación (déjalo vacío si comisionas siempre)</span><input id="rg-minimo" type="text" inputmode="numeric" autocomplete="off" placeholder="$"></label>
+      <label class="dialogo-check"><input id="rg-excedente" type="checkbox"> <span>El porcentaje se aplica solo a lo que pasa de ese mínimo</span></label>
+      <div class="dialogo-fila">
+        <label class="dialogo-campo"><span>Bono si el departamento cumple la meta</span><input id="rg-bono" type="text" inputmode="numeric" autocomplete="off" placeholder="$"></label>
+        <label class="dialogo-campo"><span>Descuentos legales aprox. (%)</span><input id="rg-desc" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej: 20"></label>
+      </div>
+      <p class="dialogo-mensaje" id="rg-mensaje" role="alert"></p>
+      <div class="dialogo-botones">
+        <button type="button" class="boton-secundario" id="rg-volver">Volver</button>
+        <button type="submit" class="boton-primario">Guardar reglas</button>
       </div>
     </form>
   </dialog>

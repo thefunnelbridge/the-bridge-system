@@ -32,7 +32,7 @@ export default async (request) => {
 
   if (cuerpo.accion === "facturado") {
     const cual = lista.find((t) => t.id === cuerpo.id);
-    if (!cual) return error("Ese trabajo ya no está en la lista.", 404);
+    if (!cual) return error("Ese trabajo ya no está en la lista.", 409);
     await guardarTerminados(lista.filter((t) => t.id !== cuerpo.id));
     await registrarActividad(`La OT ${cual.ot} quedó facturada.`, "terminado");
     return json({ ok: true });

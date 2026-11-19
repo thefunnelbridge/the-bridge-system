@@ -33,7 +33,8 @@ export async function sesion(request) {
   return sesionDesdeRequest(env("SESSION_SECRET"), request);
 }
 
-export const sinSesion = () => error("Tu sesión terminó. Vuelve a entrar.", 401);
+// La marca sinSesion le dice a la pantalla que vuelva a pedir usuario y clave.
+export const sinSesion = () => error("Tu sesión terminó. Vuelve a entrar.", 401, { sinSesion: true });
 
 // Revisa método, origen y sesión, y lee el cuerpo si lo hay.
 // Devuelve { falla: Response } si hay que cortar, o { cuerpo }.

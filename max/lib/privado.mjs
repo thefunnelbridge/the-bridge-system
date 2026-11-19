@@ -21,3 +21,11 @@ export async function guardarPersonalDia(mes, fecha, monto, modo = "dia") {
   await privado().setJSON(`mes/${mes}`, { ...actual, dias: resultado.dias });
   return { ok: true };
 }
+
+export async function leerReglas() {
+  return (await privado().get("reglas", { type: "json" })) ?? null;
+}
+
+export async function guardarReglas(reglas) {
+  await privado().setJSON("reglas", reglas);
+}

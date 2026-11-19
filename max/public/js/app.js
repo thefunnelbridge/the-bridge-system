@@ -6,6 +6,7 @@ import { saludoCorto, textoSaludo } from "./saludo.js";
 import { api } from "./api.js";
 import { pintarTablero } from "./tablero.js";
 import { prepararFormularios } from "./carga.js";
+import { prepararMiMes } from "./mi-mes.js";
 
 const ZONA = "America/Santiago";
 const $ = (id) => document.getElementById(id);
@@ -223,10 +224,14 @@ async function alGuardar(frase) {
 
 prepararFormularios({ estado: () => tablero, alGuardar });
 
+// Mi mes: al abrirla, Max se calla. Lo que hay adentro nunca pasa por la voz.
+const miMes = prepararMiMes({ alAbrir: () => voz.callar() });
+
 // ---------- Salir ----------
 
 $("btn-salir").addEventListener("click", async () => {
   voz.callar();
+  miMes.bloquear();
   try {
     await fetch("/api/logout", { method: "POST", credentials: "same-origin" });
   } finally {

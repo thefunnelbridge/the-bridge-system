@@ -892,6 +892,64 @@ body[data-max="toque"] .estado-max { color: var(--texto); }
 
 .dialogo { max-height: 92dvh; overflow-y: auto; }
 
+.dialogo-check { display: flex; align-items: flex-start; gap: 10px; color: var(--texto-suave); font-size: 15px; }
+.dialogo-check input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--rojo-vivo); }
+
+/* ---------- Mi mes (zona privada) ---------- */
+
+.dialogo-privado { width: min(94vw, 520px); }
+.dialogo-privado::backdrop { background: rgba(0, 0, 0, 0.86); }
+
+.privado-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.privado-cabecera .titulo-seccion { margin: 0; }
+
+.privado-reloj {
+  font-family: var(--fuente-tablero);
+  font-size: 13px;
+  color: var(--texto-tenue);
+  font-variant-numeric: tabular-nums;
+}
+
+.privado-reloj.pronto { color: var(--rojo-claro); }
+
+#privado-contenido { display: grid; gap: 14px; margin-top: 14px; }
+
+.privado-principal { display: grid; gap: 2px; padding-bottom: 14px; border-bottom: 1px solid var(--borde); }
+
+.privado-monto {
+  font-family: var(--fuente-tablero);
+  font-size: clamp(36px, 8vw, 52px);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.privado-etiqueta { color: var(--texto-suave); font-size: 14px; }
+.privado-nota { color: var(--texto-tenue); font-size: 14px; }
+
+.privado-grupo { display: grid; gap: 12px; }
+
+.privado-fila { display: grid; gap: 1px; }
+.privado-fila strong { font-family: var(--fuente-tablero); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.privado-empuje {
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid rgba(143, 227, 176, 0.28);
+  border-radius: 12px;
+  background: rgba(143, 227, 176, 0.06);
+}
+
+.privado-empuje p { margin: 0; }
+
+.privado-subtitulo { margin: 4px 0 -6px; font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--texto-tenue); }
+
+.privado-dias { list-style: none; margin: 0; padding: 0; }
+.privado-dias li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--borde); font-size: 15px; }
+.privado-dias li:last-child { border-bottom: 0; }
+.privado-dias span { color: var(--texto-suave); }
+.privado-dias strong { font-family: var(--fuente-tablero); font-variant-numeric: tabular-nums; }
+
 .dialogo-botones { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
 [hidden] { display: none !important; }
