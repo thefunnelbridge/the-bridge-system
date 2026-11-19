@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07080a">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Max</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="stylesheet" href="/css/max.css">
+  <script type="module" src="/js/login.js"></script>
+</head>
+<body class="pantalla-login">
+  <main class="login">
+    <div class="nucleo-mini" aria-hidden="true"><span></span></div>
+    <h1 class="login-marca">MAX</h1>
+    <p class="login-sub">Tu centro de mando</p>
+
+    <form id="form-login" class="login-form" novalidate>
+      <label for="clave">Clave</label>
+      <input id="clave" name="clave" type="password" autocomplete="current-password" required autofocus>
+      <button type="submit" class="boton-primario boton-grande" id="btn-entrar">Entrar</button>
+      <p id="mensaje" class="login-mensaje" role="alert" aria-live="polite"></p>
+    </form>
+  </main>
+</body>
+</html>

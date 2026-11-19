@@ -1,0 +1,48 @@
+# Max: configuración de Netlify.
+# Al crear el sitio en Netlify, "Base directory" debe ser: max
+
+[build]
+  base = "max"
+  publish = "public"
+  functions = "netlify/functions"
+  edge_functions = "netlify/edge-functions"
+
+[dev]
+  framework = "#static"
+  publish = "public"
+  port = 8888
+
+[functions]
+  node_bundler = "esbuild"
+
+# Seguridad para todas las páginas.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+    Permissions-Policy = "camera=(), geolocation=(), microphone=(self)"
+    Content-Security-Policy = "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; media-src 'self' blob:; worker-src 'self'; manifest-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+
+# Las páginas nunca se guardan en caché: al salir, no quedan a la vista.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/login"
+  [headers.values]
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
