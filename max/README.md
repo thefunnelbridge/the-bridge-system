@@ -20,7 +20,7 @@ enciende, salen ondas y la luz tiñe toda la pantalla.
 | 1 | Clave de entrada, guardia, centro de mando, núcleo, instalable como app | Lista |
 | Voz | Saludo hablado según la hora, voz gratis de hombre (primero Lorenzo, Chile), resplandor al hablar, silencio, elegir y probar voz | Lista |
 | 2 | Meta del departamento, carga de datos (formulario y Excel), ajustes, gráfico por día, terminados sin facturar con alerta | Lista |
-| 3 | Mi mes: zona privada con PIN, autobloqueo a los 60 s, comisión, sueldo y proyección | Lista |
+| 3 | Mi mes: zona privada con PIN, autobloqueo a los 3 minutos, comisión, sueldo y proyección | Lista |
 | 4 | Resumen hablado y barra para escribir o hablar (Claude) | Pendiente |
 | 5 | Cerebro y Radar diario | Pendiente |
 | 6 | Modo demo, estructura de Etapa 2 | Pendiente |
@@ -41,7 +41,7 @@ enciende, salen ondas y la luz tiñe toda la pantalla.
 - **Mi mes** (candado, arriba a la derecha): pide el PIN privado (`MAX_PIN_PRIVADO`,
   distinto de la clave). Muestra "hasta hoy tu sueldo va en", la comisión, una
   proyección al cierre y cuánto suma cada millón extra. Las reglas de sueldo las
-  define Javier ahí mismo. Se bloquea sola a los 60 segundos sin uso, al cerrarla
+  define Javier ahí mismo. Se bloquea sola a los 3 minutos sin uso, al cerrarla
   o al cambiar de ventana, y Max nunca dice esos montos en voz alta.
 - **Supuestos que se pueden cambiar**: días hábiles de lunes a viernes y montos
   tal como se ingresen (se recomienda netos, sin IVA, igual que la meta).

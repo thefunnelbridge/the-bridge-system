@@ -4,14 +4,14 @@
 //  - Se abre solo con el PIN, que valida el servidor.
 //  - Los montos viven en la memoria de esta ventana mientras está abierta: no se
 //    guardan en el navegador y, al bloquear, se borran de la pantalla.
-//  - Se bloquea sola a los 60 segundos sin uso, al cerrarla, al cambiar de
+//  - Se bloquea sola a los 3 minutos sin uso, al cerrarla, al cambiar de
 //    pestaña o al salir de la ventana.
 //  - Este archivo no conoce la voz de Max: nada de aquí se puede decir en voz alta.
 import { api } from "./api.js";
 import { aMonto, conPuntos, clp, fechaCorta, nombreMes, plural } from "./formato.js";
 
 const $ = (id) => document.getElementById(id);
-const SEGUNDOS_SIN_USO = 60;
+const SEGUNDOS_SIN_USO = 180; // 3 minutos
 const RENOVAR_CADA_MS = 30000;
 
 function el(etiqueta, clase, texto) {
@@ -73,8 +73,10 @@ export function prepararMiMes({ alAbrir = () => {} } = {}) {
   }
 
   function pintarReloj() {
-    reloj.textContent = `Se bloquea en ${restante} s`;
-    reloj.classList.toggle("pronto", restante <= 10);
+    const minutos = Math.floor(restante / 60);
+    const segundos = String(restante % 60).padStart(2, "0");
+    reloj.textContent = `Se bloquea en ${minutos}:${segundos}`;
+    reloj.classList.toggle("pronto", restante <= 15);
   }
 
   function vigilar() {
