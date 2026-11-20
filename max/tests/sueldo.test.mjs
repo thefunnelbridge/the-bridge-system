@@ -45,6 +45,28 @@ test("el líquido aproximado descuenta el porcentaje indicado", () => {
   assert.equal(s.liquido, 640_000);
 });
 
+test("otros haberes fijos suman al bruto", () => {
+  const s = calcularSueldo({ reglas: { ...REGLAS, otrosHaberes: 150_000 }, facturado: 10_000_000 });
+  assert.equal(s.bruto, 950_000);
+  assert.equal(s.otrosHaberes, 150_000);
+});
+
+test("líquido: descuento legal en % y después los descuentos fijos en pesos", () => {
+  const reglas = { ...REGLAS, descuentosPct: 20, descuentosFijos: 100_000 };
+  assert.equal(calcularSueldo({ reglas, facturado: 10_000_000 }).liquido, 540_000);
+  // Solo descuentos fijos, sin porcentaje.
+  assert.equal(calcularSueldo({ reglas: { ...REGLAS, descuentosFijos: 100_000 }, facturado: 0 }).liquido, 500_000);
+  // Nunca queda negativo.
+  assert.equal(calcularSueldo({ reglas: { ...REGLAS, descuentosFijos: 9_000_000 }, facturado: 0 }).liquido, 0);
+});
+
+test("reglas guardadas antes de este cambio siguen funcionando", () => {
+  const antiguas = { sueldoBase: 600_000, comisionPct: 2, minimo: 0, soloExcedente: false, bonoMeta: 0, descuentosPct: 0 };
+  const s = calcularSueldo({ reglas: antiguas, facturado: 10_000_000 });
+  assert.equal(s.bruto, 800_000);
+  assert.equal(s.liquido, null);
+});
+
 test("porcentajes con decimales", () => {
   assert.equal(calcularSueldo({ reglas: { ...REGLAS, comisionPct: 1.5 }, facturado: 10_000_000 }).comision, 150_000);
 });
@@ -64,7 +86,7 @@ test("las reglas se validan", () => {
   assert.ok(limpiarReglas({ sueldoBase: 1, comisionPct: 120 }).error);
   assert.ok(limpiarReglas({ sueldoBase: 1, comisionPct: 2, descuentosPct: 90 }).error);
   const { reglas } = limpiarReglas({ sueldoBase: 600_000, comisionPct: 1.5, soloExcedente: true });
-  assert.deepEqual(reglas, { sueldoBase: 600_000, comisionPct: 1.5, minimo: 0, soloExcedente: false, bonoMeta: 0, descuentosPct: 0 });
+  assert.deepEqual(reglas, { sueldoBase: 600_000, otrosHaberes: 0, comisionPct: 1.5, minimo: 0, soloExcedente: false, bonoMeta: 0, descuentosPct: 0, descuentosFijos: 0 });
 });
 
 // ---------- Mi mes nunca se dice en voz alta ----------

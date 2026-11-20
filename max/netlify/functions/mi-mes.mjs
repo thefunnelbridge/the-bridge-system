@@ -32,7 +32,10 @@ async function paquete(secreto) {
     mes,
     facturado,
     dias: Object.entries(privado.dias).sort(([a], [b]) => b.localeCompare(a)).map(([fecha, monto]) => ({ fecha, monto })),
-    participacion: facturado !== null && depto.facturado > 0 ? Math.round((facturado / depto.facturado) * 1000) / 10 : null,
+    // Si lo personal supera lo del departamento, los datos no calzan: mejor no mostrar el porcentaje.
+    participacion: facturado !== null && depto.facturado > 0 && facturado <= depto.facturado
+      ? Math.round((facturado / depto.facturado) * 1000) / 10
+      : null,
     deptoCumplio: depto.cumplida,
     reglas,
     sueldo: reglas ? calcularSueldo({ reglas, facturado: facturado ?? 0, deptoCumplio: depto.cumplida }) : null,

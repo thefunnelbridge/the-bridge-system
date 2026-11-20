@@ -46,7 +46,7 @@ export function prepararMiMes({ alAbrir = () => {} } = {}) {
   let tic = 0;
   let renovacion = 0;
 
-  ["rg-base", "rg-minimo", "rg-bono"].forEach((id) => conPuntos($(id)));
+  ["rg-base", "rg-otros", "rg-minimo", "rg-bono", "rg-fijos"].forEach((id) => conPuntos($(id)));
   $("pin").addEventListener("input", (e) => { e.target.value = e.target.value.replace(/[^\d]/g, ""); });
 
   // ---------- Bloqueo ----------
@@ -130,12 +130,13 @@ export function prepararMiMes({ alAbrir = () => {} } = {}) {
       principal.append(
         el("span", "privado-etiqueta", "Hasta hoy tu sueldo va en"),
         el("strong", "privado-monto", clp(s.bruto)),
-        el("span", "privado-nota", s.liquido !== null ? `Bruto. Líquido aproximado: ${clp(s.liquido)}.` : "Monto bruto."),
+        el("span", "privado-nota", s.liquido !== null ? `Bruto. Líquido aproximado: ${clp(s.liquido)}, con los descuentos que anotaste.` : "Monto bruto."),
       );
       partes.push(principal);
 
       const desglose = el("div", "privado-grupo");
       desglose.append(fila("Sueldo base", clp(s.base)));
+      if (s.otrosHaberes > 0) desglose.append(fila("Otros haberes fijos", clp(s.otrosHaberes)));
       desglose.append(fila(
         "Comisión",
         clp(s.comision),
@@ -240,6 +241,8 @@ export function prepararMiMes({ alAbrir = () => {} } = {}) {
     $("rg-minimo").value = r ? puntos(r.minimo) : "";
     $("rg-excedente").checked = Boolean(r?.soloExcedente);
     $("rg-bono").value = r ? puntos(r.bonoMeta) : "";
+    $("rg-otros").value = r ? puntos(r.otrosHaberes) : "";
+    $("rg-fijos").value = r ? puntos(r.descuentosFijos) : "";
     $("rg-desc").value = r && r.descuentosPct ? coma(r.descuentosPct) : "";
     mReglas.textContent = "";
     contenido.hidden = true;
@@ -270,6 +273,8 @@ export function prepararMiMes({ alAbrir = () => {} } = {}) {
           minimo: aMonto($("rg-minimo").value) ?? 0,
           soloExcedente: $("rg-excedente").checked,
           bonoMeta: aMonto($("rg-bono").value) ?? 0,
+          otrosHaberes: aMonto($("rg-otros").value) ?? 0,
+          descuentosFijos: aMonto($("rg-fijos").value) ?? 0,
           descuentosPct,
         },
       });
