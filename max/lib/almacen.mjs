@@ -3,7 +3,7 @@
 // aparte que solo abre la función de Mi mes (parte 3); desde aquí no se puede.
 import { getStore } from "@netlify/blobs";
 
-const PERMITIDOS = new Set(["publico", "seguridad"]);
+const PERMITIDOS = new Set(["publico", "seguridad", "cartera"]);
 
 export function tienda(nombre) {
   if (!PERMITIDOS.has(nombre)) {

@@ -34,13 +34,73 @@ function ubicar(encabezados, clave, ocupadas = []) {
   return encabezados.findIndex((e, i) => !ocupadas.includes(i) && COLUMNAS[clave].test(e));
 }
 
-// Devuelve { facturacion: [{fecha, depto, personal}], terminados: [...], avisos: [] }
-export function interpretar(XLSX, datos) {
-  const libro = XLSX.read(datos, { type: "array" });
-  const salida = { facturacion: [], terminados: [], avisos: [] };
+// ---------- Cartera: clientes, atenciones y solicitudes de Toyota ----------
+
+const CARTERA = {
+  solicitudes: {
+    es: (enc) => enc.some((e) => /fecha reservada/.test(e)),
+    columnas: { rut: /rut/, servicio: /tipo de servicio/, detalle: /^detalle/, modelo: /modelo/, anio: /^an(i|n)?o$/, patente: /patente/, fecha: /fecha reservada/, hora: /^hora/, comentario: /comentario/, campana: /campana/ },
+    fechas: ["fecha"],
+  },
+  atenciones: {
+    es: (enc) => enc.some((e) => /tipo de lista/.test(e)),
+    columnas: { ot: /^(n[°ºo.]*\s*)?(ot|orden)\b/, fecha: /^fecha/, tipo: /tipo de lista/, patente: /patente/, rut: /rut/, asesor: /asesor/ },
+    fechas: ["fecha"],
+  },
+  clientes: {
+    es: (enc) => enc.some((e) => /^nombre/.test(e)) && enc.some((e) => /^rut/.test(e)) && enc.some((e) => /patente|mantencion|telefono/.test(e)),
+    columnas: { nombre: /^nombre/, rut: /^rut/, telefono: /telefono|celular|fono/, email: /mail|correo/, patentes: /patente/, ultimaAtencion: /^ultima atencion/, mantencion: /mantencion/, asesor: /asesor/, listas: /aparece/ },
+    fechas: ["ultimaAtencion", "mantencion"],
+  },
+};
+
+// Una hora que Excel guardó como fracción del día (0,395 = 09:30).
+function aHora(valor) {
+  if (typeof valor === "number" && valor >= 0 && valor < 1) {
+    const minutos = Math.round(valor * 1440);
+    return `${String(Math.floor(minutos / 60)).padStart(2, "0")}:${String(minutos % 60).padStart(2, "0")}`;
+  }
+  return String(valor ?? "").trim();
+}
+
+function leerCartera(filas, salida) {
+  for (let i = 0; i < Math.min(filas.length, 15); i++) {
+    const enc = (filas[i] || []).map(normal);
+    const tipo = Object.keys(CARTERA).find((nombre) => CARTERA[nombre].es(enc));
+    if (!tipo) continue;
+    const { columnas, fechas } = CARTERA[tipo];
+    const indice = Object.fromEntries(Object.entries(columnas).map(([clave, patron]) => [clave, enc.findIndex((e) => patron.test(e))]));
+    let ilegibles = 0;
+    for (const fila of filas.slice(i + 1)) {
+      if (!fila || fila.every((c) => c === null || c === "")) continue;
+      const dato = {};
+      for (const [clave, pos] of Object.entries(indice)) {
+        const valor = pos === -1 ? null : fila[pos];
+        if (fechas.includes(clave)) {
+          dato[clave] = aFechaISO(valor);
+          if (valor !== null && String(valor).trim() !== "" && dato[clave] === null) ilegibles += 1;
+        } else if (clave === "hora") dato[clave] = aHora(valor);
+        else dato[clave] = valor === null ? "" : String(valor).trim();
+      }
+      salida[tipo].push(dato);
+    }
+    if (ilegibles) salida.avisos.push(`${ilegibles} ${ilegibles === 1 ? "fecha venía ilegible" : "fechas venían ilegibles"} (por ejemplo "#####") y ${ilegibles === 1 ? "quedó vacía" : "quedaron vacías"}.`);
+    return true;
+  }
+  return false;
+}
+
+// Devuelve { facturacion, terminados, clientes, atenciones, solicitudes, avisos }
+export function interpretar(XLSX, datos, nombreArchivo = "") {
+  // Los CSV se leen como texto, sin que la librería adivine fechas ni números.
+  const libro = /\.csv$/i.test(nombreArchivo)
+    ? XLSX.read(new TextDecoder("utf-8").decode(datos), { type: "string", raw: true })
+    : XLSX.read(datos, { type: "array" });
+  const salida = { facturacion: [], terminados: [], clientes: [], atenciones: [], solicitudes: [], avisos: [] };
 
   for (const nombre of libro.SheetNames) {
     const filas = XLSX.utils.sheet_to_json(libro.Sheets[nombre], { header: 1, raw: true, defval: null });
+    if (leerCartera(filas, salida)) continue;
     // La fila de títulos: la primera (entre las 15 de arriba) que se reconozca.
     let inicio = -1, tipo = null, cols = {};
     for (let i = 0; i < Math.min(filas.length, 15); i++) {

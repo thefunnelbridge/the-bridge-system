@@ -742,6 +742,121 @@ body[data-max="toque"] .estado-max { color: var(--texto); }
   font-size: 15px;
 }
 
+/* ---------- Oportunidades de hoy y cartera ---------- */
+
+.oportunidades { position: relative; z-index: 1; padding: 0 28px 20px; }
+
+.oportunidades-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.oportunidades-cabecera .titulo-seccion { margin: 0; font-size: 14px; color: var(--texto); }
+
+.buscador { position: relative; flex: 1 1 320px; max-width: 460px; }
+
+.buscador input {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: 999px;
+  background: var(--carbon);
+  color: var(--texto);
+  font-size: 16px;
+}
+
+.buscador input:focus { outline: none; border-color: #5a5f67; box-shadow: 0 0 0 3px rgba(255, 45, 26, 0.22); }
+
+.buscador-resultados {
+  position: absolute;
+  inset: calc(100% + 6px) 0 auto;
+  z-index: 5;
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--borde-fuerte);
+  border-radius: 14px;
+  background: #15171b;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+}
+
+.buscador-resultados button {
+  display: grid;
+  gap: 1px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: var(--texto);
+  text-align: left;
+  cursor: pointer;
+}
+
+.buscador-resultados button:hover,
+.buscador-resultados button:focus-visible { background: #23262b; }
+.buscador-resultados span { color: var(--texto-suave); font-size: 13px; }
+.buscador-resultados .vacio { padding: 9px 12px; color: var(--texto-tenue); }
+
+.oportunidades-columnas { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 20px; align-items: start; }
+
+.lista-op { list-style: none; margin: 6px 0 0; padding: 0; }
+.lista-op li { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--borde); }
+.lista-op li:last-child { border-bottom: 0; }
+.lista-op li.vacio { color: var(--texto-tenue); font-size: 15px; }
+
+.op-cuando { flex: none; width: 58px; display: grid; align-content: start; gap: 1px; text-align: center; }
+.op-cuando strong { font-family: var(--fuente-tablero); font-size: 19px; font-variant-numeric: tabular-nums; }
+.op-cuando span { color: var(--texto-tenue); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+.lista-op li.es-hoy .op-cuando span { color: var(--rojo-claro); }
+
+.op-cuerpo { flex: 1; min-width: 0; display: grid; gap: 4px; justify-items: start; }
+
+.op-nombre {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--texto);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.22);
+  text-underline-offset: 3px;
+}
+
+.op-nombre:hover { text-decoration-color: var(--rojo-claro); }
+.op-detalle { color: var(--texto-suave); font-size: 14px; }
+.lista-op li.vencida .op-detalle { color: #ffc2b8; }
+.op-campana { color: #ffd27a; font-size: 14px; }
+.op-comentario { color: var(--texto-tenue); font-size: 14px; font-style: italic; overflow-wrap: anywhere; }
+.op-sin { color: var(--texto-tenue); font-size: 14px; }
+
+.op-acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+a.boton-chico { display: inline-flex; align-items: center; text-decoration: none; }
+
+.dialogo-ficha { width: min(94vw, 620px); }
+#ficha-contenido { display: grid; gap: 12px; margin-top: 10px; }
+.ficha-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; }
+.ficha-dato { display: grid; gap: 1px; min-width: 0; }
+.ficha-dato span { color: var(--texto-suave); font-size: 13px; }
+.ficha-dato strong { font-weight: 500; overflow-wrap: anywhere; }
+
+.ficha-lista { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; }
+.ficha-lista li { display: grid; gap: 2px; padding: 8px 0; border-bottom: 1px solid var(--borde); font-size: 14px; }
+.ficha-lista li:last-child { border-bottom: 0; }
+.ficha-lista li.vacio { color: var(--texto-tenue); }
+.ficha-lista strong { font-family: var(--fuente-tablero); }
+.ficha-lista span { color: var(--texto-suave); }
+
 /* ---------- Barra para hablarle a Max ---------- */
 
 .barra-max {
@@ -996,6 +1111,9 @@ body[data-max="toque"] .estado-max { color: var(--texto); }
   .centro { order: -1; }
   .nucleo { width: min(100%, 420px); }
   .barra-superior { padding: 12px 16px; }
+  .oportunidades { padding: 0 16px 16px; }
+  .oportunidades-columnas { grid-template-columns: minmax(0, 1fr); }
+  .ficha-datos { grid-template-columns: 1fr; }
   .barra-max { padding: 10px 16px 14px; }
   .barra-form { padding-left: 16px; }
 }

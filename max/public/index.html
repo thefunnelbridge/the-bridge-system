@@ -90,6 +90,29 @@
     </section>
   </main>
 
+  <section class="oportunidades" aria-labelledby="t-oportunidades">
+    <div class="oportunidades-cabecera">
+      <h2 class="titulo-seccion" id="t-oportunidades">Oportunidades de hoy</h2>
+      <form class="buscador" id="form-buscar" role="search">
+        <label class="oculto" for="buscar">Buscar cliente</label>
+        <input id="buscar" type="search" autocomplete="off" placeholder="Buscar cliente por nombre, patente o RUT">
+        <ul class="buscador-resultados" id="buscar-resultados" hidden></ul>
+      </form>
+    </div>
+    <p class="aviso" id="aviso-cartera"></p>
+    <div class="oportunidades-columnas" id="oportunidades-columnas" hidden>
+      <div class="panel">
+        <h3 class="titulo-seccion">Citas <span class="contador" id="c-citas" hidden></span></h3>
+        <ul class="lista-op" id="op-citas"></ul>
+      </div>
+      <div class="panel">
+        <h3 class="titulo-seccion">Para llamar por mantención <span class="contador" id="c-llamar" hidden></span></h3>
+        <ul class="lista-op" id="op-llamar"></ul>
+        <button type="button" class="boton-enlace" id="op-ver-mas" hidden></button>
+      </div>
+    </div>
+  </section>
+
   <footer class="barra-max">
     <form class="barra-form" id="form-barra">
       <label class="oculto" for="entrada">Escríbele a Max</label>
@@ -141,10 +164,10 @@
         <button type="submit" class="boton-primario" id="dia-guardar">Guardar</button>
       </div>
     </form>
-    <div class="dialogo-separador"><span>o sube un Excel</span></div>
+    <div class="dialogo-separador"><span>o sube un archivo</span></div>
     <div class="dialogo-excel">
       <label class="boton-secundario boton-archivo">
-        Elegir Excel
+        Elegir Excel o CSV
         <input id="excel-archivo" class="oculto" type="file" accept=".xlsx,.xls,.csv">
       </label>
       <button type="button" class="boton-enlace" id="excel-plantilla">Descargar plantilla</button>
@@ -153,7 +176,7 @@
     <p class="dialogo-mensaje" id="excel-mensaje" role="alert"></p>
     <div class="dialogo-botones">
       <button type="button" class="boton-secundario" id="cargar-cerrar">Cerrar</button>
-      <button type="button" class="boton-primario" id="excel-confirmar" hidden>Guardar lo del Excel</button>
+      <button type="button" class="boton-primario" id="excel-confirmar" hidden>Guardar lo del archivo</button>
     </div>
   </dialog>
 
@@ -245,6 +268,13 @@
         <button type="submit" class="boton-primario">Guardar reglas</button>
       </div>
     </form>
+  </dialog>
+  <dialog class="dialogo dialogo-ficha" id="dialogo-ficha" aria-labelledby="t-ficha">
+    <h2 class="titulo-seccion" id="t-ficha">Cliente</h2>
+    <div id="ficha-contenido"></div>
+    <div class="dialogo-botones">
+      <button type="button" class="boton-primario" id="ficha-cerrar">Cerrar</button>
+    </div>
   </dialog>
 </body>
 </html>

@@ -83,12 +83,13 @@ export function prepararFormularios({ estado, alGuardar }) {
     try {
       if (archivo.size > 8 * 1024 * 1024) throw new Error("Ese archivo es muy grande (más de 8 MB).");
       const XLSX = await cargarLibreria();
-      const leido = interpretar(XLSX, new Uint8Array(await archivo.arrayBuffer()));
+      const leido = interpretar(XLSX, new Uint8Array(await archivo.arrayBuffer()), archivo.name);
       const hoy = estado().hoy;
       const futuras = leido.facturacion.filter((f) => f.fecha > hoy).length;
       leido.facturacion = leido.facturacion.filter((f) => f.fecha <= hoy);
-      if (!leido.facturacion.length && !leido.terminados.length) {
-        throw new Error("No encontré facturación ni terminados en ese archivo. Prueba con la plantilla.");
+      const deCartera = leido.clientes.length + leido.atenciones.length + leido.solicitudes.length;
+      if (!leido.facturacion.length && !leido.terminados.length && !deCartera) {
+        throw new Error("No reconocí lo que trae ese archivo. Sirven: facturación, terminados, clientes, atenciones o solicitudes de Toyota.");
       }
       pendiente = leido;
 
@@ -109,6 +110,9 @@ export function prepararFormularios({ estado, alGuardar }) {
       if (leido.terminados.length) {
         partes.push(linea(`${plural(leido.terminados.length, "trabajo terminado", "trabajos terminados")} sin facturar.`));
       }
+      if (leido.clientes.length) partes.push(linea(`${plural(leido.clientes.length, "cliente", "clientes")} para tu cartera. Reemplaza la lista de clientes anterior.`));
+      if (leido.atenciones.length) partes.push(linea(`${plural(leido.atenciones.length, "atención", "atenciones")} para el historial. Reemplaza el historial anterior.`));
+      if (leido.solicitudes.length) partes.push(linea(`${plural(leido.solicitudes.length, "solicitud", "solicitudes")} de Toyota. Reemplaza las solicitudes anteriores.`));
       if (futuras) partes.push(linea(`Dejé fuera ${plural(futuras, "día", "días")} con fecha futura.`, "excel-aviso"));
       for (const aviso of leido.avisos) partes.push(linea(aviso, "excel-aviso"));
       vista.replaceChildren(...partes);
@@ -136,8 +140,11 @@ export function prepararFormularios({ estado, alGuardar }) {
       if (pendiente.terminados.length) {
         await api("/api/terminados", { accion: "importar", filas: pendiente.terminados });
       }
+      for (const tipo of ["clientes", "atenciones", "solicitudes"]) {
+        if (pendiente[tipo].length) await api("/api/cartera", { accion: "importar", tipo, filas: pendiente[tipo] });
+      }
       dCargar.close();
-      await alGuardar("Listo. Guardé lo que venía en el Excel.");
+      await alGuardar("Listo. Guardé lo que venía en el archivo.");
     } catch (e) {
       mExcel.textContent = e.message;
     } finally {

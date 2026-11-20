@@ -7,6 +7,7 @@ import { api } from "./api.js";
 import { pintarTablero } from "./tablero.js";
 import { prepararFormularios } from "./carga.js";
 import { prepararMiMes } from "./mi-mes.js";
+import { prepararOportunidades } from "./oportunidades.js";
 
 const ZONA = "America/Santiago";
 const $ = (id) => document.getElementById(id);
@@ -80,6 +81,8 @@ async function saludar() {
   const resultado = await voz.decir(textoSaludo(hora, {
     hayDatos: Boolean(r && r.meta !== null && r.facturado !== null),
     terminados: tablero?.terminados.length ?? 0,
+    citas: oportunidades.datos()?.citas?.filter((c) => c.esHoy).length ?? 0,
+    llamar: oportunidades.datos()?.llamar?.length ?? 0,
   }));
   if (resultado === "bloqueado") {
     // El navegador solo deja hablar después de un toque en la página.
@@ -196,6 +199,7 @@ async function cargarActividad() {
 // ---------- Tablero: meta, gráfico y terminados ----------
 
 let tablero = null;
+const oportunidades = prepararOportunidades();
 
 async function refrescar() {
   try {
@@ -204,6 +208,7 @@ async function refrescar() {
   } catch (e) {
     if (e.message !== "sin sesión") $("aviso-meta").textContent = "No pude cargar los datos. Revisa la conexión.";
   }
+  await oportunidades.refrescar();
   cargarActividad();
 }
 

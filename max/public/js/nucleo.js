@@ -165,16 +165,25 @@ export function crearNucleo(contenedor) {
     avance.setAttribute("d", actual > 0.2 ? arco(R_AVANCE, INICIO, a) : "");
   }
 
+  // Mueve la aguja. Si otra orden la interrumpe, la promesa igual termina
+  // (con false), para que nadie se quede esperando un movimiento cancelado.
+  let soltar = null;
+
   function animar(hacia, ms) {
     cancelAnimationFrame(animacion);
+    if (soltar) soltar(false);
     const desde = actual;
     const inicio = performance.now();
     return new Promise((resolver) => {
+      soltar = resolver;
       const paso = (ahora) => {
         const t = Math.min(1, (ahora - inicio) / ms);
         pintar(desde + (hacia - desde) * suavizar(t));
         if (t < 1) animacion = requestAnimationFrame(paso);
-        else resolver();
+        else {
+          soltar = null;
+          resolver(true);
+        }
       };
       animacion = requestAnimationFrame(paso);
     });
@@ -228,7 +237,8 @@ export function crearNucleo(contenedor) {
       if (sinMovimiento) return pintar(destino);
       soltarOnda();
       this.nivel(0.9);
-      await animar(100, 850);
+      // Si llegan los datos a mitad del barrido, la aguja se va directo a su lugar.
+      if (!(await animar(100, 850))) return;
       await animar(limitar(destino), 950);
     },
     texto(principal, secundario = "") {

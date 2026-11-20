@@ -21,6 +21,7 @@ enciende, salen ondas y la luz tiñe toda la pantalla.
 | Voz | Saludo hablado según la hora, voz gratis de hombre (primero Lorenzo, Chile), resplandor al hablar, silencio, elegir y probar voz | Lista |
 | 2 | Meta del departamento, carga de datos (formulario y Excel), ajustes, gráfico por día, terminados sin facturar con alerta | Lista |
 | 3 | Mi mes: zona privada con PIN, autobloqueo a los 3 minutos, comisión, sueldo y proyección | Lista |
+| Cartera | Clientes, atenciones y solicitudes de Toyota; oportunidades de hoy (citas y a quién llamar), buscador y ficha del cliente | Lista |
 | 4 | Resumen hablado y barra para escribir o hablar (Claude) | Pendiente |
 | 5 | Cerebro y Radar diario | Pendiente |
 | 6 | Modo demo, estructura de Etapa 2 | Pendiente |
@@ -43,6 +44,14 @@ enciende, salen ondas y la luz tiñe toda la pantalla.
   proyección al cierre y cuánto suma cada millón extra. Las reglas de sueldo las
   define Javier ahí mismo. Se bloquea sola a los 3 minutos sin uso, al cerrarla
   o al cambiar de ventana, y Max nunca dice esos montos en voz alta.
+- **Cartera y oportunidades de hoy**: en "Cargar datos" se suben los archivos de
+  clientes, atenciones y solicitudes de Toyota (CSV o Excel); cada uno reemplaza
+  al anterior. Max muestra las citas de hoy y del próximo día hábil, y a quién
+  llamar porque su mantención anual venció hace menos de 90 días o vence en los
+  próximos 30 y todavía no tiene hora. Cada cliente trae botones para llamar,
+  WhatsApp y correo, y para marcarlo "Contactado" (30 días) o "Después" (7 días).
+  El buscador abre la ficha del cliente con su historial. Los archivos con datos
+  reales de clientes no van en GitHub: se cargan dentro de Max.
 - **Supuestos que se pueden cambiar**: días hábiles de lunes a viernes y montos
   tal como se ingresen (se recomienda netos, sin IVA, igual que la meta).
 
@@ -137,7 +146,7 @@ max/
 │   └── icons/
 ├── netlify/
 │   ├── edge-functions/guardia.js   sin sesión no se entrega ninguna página
-│   └── functions/                  login, logout, actividad, tablero, cargar, ajustes, terminados, mi-mes
+│   └── functions/                  login, logout, actividad, tablero, cargar, ajustes, terminados, mi-mes, cartera
 ├── lib/                       sesión, almacén, cálculos de días hábiles y meta, feriados, zona privada
 └── tests/                     pruebas automáticas
 ```

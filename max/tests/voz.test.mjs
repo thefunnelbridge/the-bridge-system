@@ -110,3 +110,10 @@ test("la alerta diaria de terminados va en el saludo, sin montos", () => {
   assert.doesNotMatch(textoSaludo(9, { hayDatos: true, terminados: 0 }), /Ojo/);
   assert.doesNotMatch(textoSaludo(9, { hayDatos: true, terminados: 3 }), /\$/);
 });
+
+test("el saludo cuenta citas y clientes para llamar, sin nombres", () => {
+  assert.match(textoSaludo(9, { hayDatos: true, citas: 2, llamar: 12 }), /Hoy tienes 2 citas y 12 clientes para llamar\./);
+  assert.match(textoSaludo(9, { citas: 1 }), /Hoy tienes una cita\./);
+  assert.match(textoSaludo(9, { llamar: 1 }), /Hoy tienes un cliente para llamar\./);
+  assert.doesNotMatch(textoSaludo(9, {}), /Hoy tienes/);
+});
