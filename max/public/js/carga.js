@@ -84,19 +84,20 @@ export function prepararFormularios({ estado, alGuardar, alRefrescar = async () 
     try {
       const XLSX = await cargarLibreria();
       // Se pueden elegir varios archivos de una vez: se juntan en una sola carga.
-      const leido = { facturacion: [], terminados: [], clientes: [], atenciones: [], solicitudes: [], avisos: [] };
+      const leido = { facturacion: [], terminados: [], clientes: [], atenciones: [], solicitudes: [], ot: [], avisos: [] };
       for (const uno of archivos) {
-        if (uno.size > 12 * 1024 * 1024) throw new Error(`"${uno.name}" es muy grande (más de 12 MB).`);
-        const parte = interpretar(XLSX, new Uint8Array(await uno.arrayBuffer()), uno.name);
+        if (uno.size > 30 * 1024 * 1024) throw new Error(`"${uno.name}" es muy grande (más de 30 MB).`);
+        const parte = interpretar(XLSX, new Uint8Array(await uno.arrayBuffer()), uno.name, { asesorOT: estado().ajustes.asesorOT });
         for (const clave of Object.keys(leido)) leido[clave].push(...parte[clave]);
       }
       const archivo = { name: archivos.map((a) => a.name).join(", ") };
       const hoy = estado().hoy;
       const futuras = leido.facturacion.filter((f) => f.fecha > hoy).length;
       leido.facturacion = leido.facturacion.filter((f) => f.fecha <= hoy);
-      const deCartera = leido.clientes.length + leido.atenciones.length + leido.solicitudes.length;
+      const deCartera = leido.clientes.length + leido.atenciones.length + leido.solicitudes.length + leido.ot.length;
+      leido.archivoOT = archivos.find((a) => /ot/i.test(a.name))?.name || archivo.name;
       if (!leido.facturacion.length && !leido.terminados.length && !deCartera) {
-        throw new Error("No reconocí lo que trae ese archivo. Sirven: facturación, terminados, clientes, atenciones o solicitudes de Toyota.");
+        throw new Error(leido.avisos[0] || "No reconocí lo que trae ese archivo. Sirven: facturación, terminados, clientes, atenciones, solicitudes de Toyota o el Excel de OT.");
       }
       pendiente = leido;
 
@@ -117,6 +118,7 @@ export function prepararFormularios({ estado, alGuardar, alRefrescar = async () 
       if (leido.terminados.length) {
         partes.push(linea(`${plural(leido.terminados.length, "trabajo terminado", "trabajos terminados")} sin facturar.`));
       }
+      if (leido.ot.length) partes.push(linea(`${plural(leido.ot.length, "OT abierta", "OT abiertas")}. Reemplaza la lista de OT anterior y la compara con ella.`));
       if (leido.clientes.length) partes.push(linea(`${plural(leido.clientes.length, "cliente", "clientes")} para tu cartera. Reemplaza la lista de clientes anterior.`));
       if (leido.atenciones.length) partes.push(linea(`${plural(leido.atenciones.length, "atención", "atenciones")} para el historial. Reemplaza el historial anterior.`));
       if (leido.solicitudes.length) partes.push(linea(`${plural(leido.solicitudes.length, "solicitud", "solicitudes")} de Toyota. Reemplaza las solicitudes anteriores.`));
@@ -147,6 +149,7 @@ export function prepararFormularios({ estado, alGuardar, alRefrescar = async () 
       if (pendiente.terminados.length) {
         await api("/api/terminados", { accion: "importar", filas: pendiente.terminados });
       }
+      if (pendiente.ot.length) await api("/api/cartera", { accion: "importar", tipo: "ot", filas: pendiente.ot, archivo: pendiente.archivoOT });
       for (const tipo of ["clientes", "atenciones", "solicitudes"]) {
         if (pendiente[tipo].length) await api("/api/cartera", { accion: "importar", tipo, filas: pendiente[tipo] });
       }
@@ -193,6 +196,7 @@ export function prepararFormularios({ estado, alGuardar, alRefrescar = async () 
     $("e-meta").textContent = `Meta de ${nombreMes(mes)} del departamento`;
     $("aj-meta").value = datos.resumen.meta ? datos.resumen.meta.toLocaleString("es-CL") : "";
     $("aj-sabado").value = datos.ajustes.sabado || "no";
+    $("aj-asesor").value = datos.ajustes.asesorOT || "";
     noHabiles = [...(datos.ajustes.noHabiles || [])];
     $("aj-dia").value = "";
     $("aj-feriados").textContent = datos.feriados.length
@@ -261,7 +265,8 @@ export function prepararFormularios({ estado, alGuardar, alRefrescar = async () 
     const meta = aMonto($("aj-meta").value);
     if (meta === 0) { mAjustes.textContent = "La meta tiene que ser mayor que cero."; return; }
     try {
-      await api("/api/ajustes", { meta, sabado: $("aj-sabado").value, noHabiles });
+      const asesorOT = $("aj-asesor").value.trim();
+      await api("/api/ajustes", { meta, sabado: $("aj-sabado").value, noHabiles, ...(asesorOT ? { asesorOT } : {}) });
       dAjustes.close();
       await alGuardar("Listo. Guardé los ajustes.");
     } catch (e) {

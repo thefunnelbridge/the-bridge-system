@@ -4,7 +4,8 @@ import { FERIADOS_CL } from "./feriados-cl.mjs";
 
 const ZONA = "America/Santiago";
 
-export const AJUSTES_POR_DEFECTO = { sabado: "no", noHabiles: [] };
+// asesorOT: cómo aparece el asesor en el Excel diario de OT (columna "Nombre Receptor").
+export const AJUSTES_POR_DEFECTO = { sabado: "no", noHabiles: [], asesorOT: "RIFFO" };
 
 // Fecha de hoy en Chile, como "2026-11-19".
 export function hoyChile(ahora = new Date()) {

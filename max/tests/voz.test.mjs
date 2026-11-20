@@ -117,3 +117,10 @@ test("el saludo cuenta citas y clientes para llamar, sin nombres", () => {
   assert.match(textoSaludo(9, { llamar: 1 }), /Hoy tienes un cliente para llamar\./);
   assert.doesNotMatch(textoSaludo(9, {}), /Hoy tienes/);
 });
+
+test("el saludo dice cuántas OT hay abiertas, solo con números", () => {
+  const texto = textoSaludo(9, { hayDatos: true, ot: { total: 115, enTaller: 9, garantias: 60 } });
+  assert.match(texto, /Tienes 115 OT abiertas: 9 en el taller y 60 garantías por enviar\./);
+  assert.doesNotMatch(textoSaludo(9, { ot: { total: 0, enTaller: 0, garantias: 0 } }), /OT/);
+  assert.match(textoSaludo(9, { ot: { total: 3, enTaller: 0, garantias: 0 } }), /Tienes 3 OT abiertas\./);
+});

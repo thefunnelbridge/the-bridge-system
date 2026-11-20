@@ -857,6 +857,45 @@ a.boton-chico { display: inline-flex; align-items: center; text-decoration: none
 .ficha-lista strong { font-family: var(--fuente-tablero); }
 .ficha-lista span { color: var(--texto-suave); }
 
+/* ---------- OT abiertas ---------- */
+
+.ordenes { position: relative; z-index: 1; padding: 0 28px 24px; }
+.ordenes-nota { margin: 0; color: var(--texto-tenue); font-size: 14px; }
+.ordenes-resumen { margin: 0 0 4px; color: var(--texto-suave); font-size: 15px; }
+
+.etapas { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 14px; }
+
+.etapa {
+  display: grid;
+  gap: 2px;
+  padding: 14px 16px;
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  background: var(--panel);
+  color: var(--texto);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.etapa strong { font-family: var(--fuente-tablero); font-size: 38px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.etapa-titulo { font-size: 15px; font-weight: 600; }
+.etapa-nota { color: var(--texto-tenue); font-size: 13px; min-height: 1.2em; }
+.etapa:hover { border-color: var(--borde-fuerte); }
+.etapa.activa { border-color: var(--rojo-vivo); background: rgba(225, 6, 0, 0.1); }
+.etapa-garantia_por_enviar strong,
+.etapa-terminada_por_facturar strong { color: #ffc2b8; }
+.etapa-en_taller strong { color: #8fe3b0; }
+
+.lista-ot { list-style: none; margin: 6px 0 0; padding: 0; }
+.lista-ot li { display: flex; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--borde); }
+.lista-ot li:last-child { border-bottom: 0; }
+
+.ot-dias { flex: none; width: 58px; display: grid; align-content: start; text-align: center; }
+.ot-dias strong { font-family: var(--fuente-tablero); font-size: 22px; font-variant-numeric: tabular-nums; }
+.ot-dias span { color: var(--texto-tenue); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+.lista-ot li.atrasada .ot-dias strong { color: var(--rojo-claro); }
+
 /* ---------- Barra para hablarle a Max ---------- */
 
 .barra-max {
@@ -1112,6 +1151,8 @@ a.boton-chico { display: inline-flex; align-items: center; text-decoration: none
   .nucleo { width: min(100%, 420px); }
   .barra-superior { padding: 12px 16px; }
   .oportunidades { padding: 0 16px 16px; }
+  .ordenes { padding: 0 16px 18px; }
+  .etapas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .oportunidades-columnas { grid-template-columns: minmax(0, 1fr); }
   .ficha-datos { grid-template-columns: 1fr; }
   .barra-max { padding: 10px 16px 14px; }

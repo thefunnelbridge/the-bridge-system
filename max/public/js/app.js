@@ -8,6 +8,7 @@ import { pintarTablero } from "./tablero.js";
 import { prepararFormularios } from "./carga.js";
 import { prepararMiMes } from "./mi-mes.js";
 import { prepararOportunidades } from "./oportunidades.js";
+import { prepararOT } from "./ot.js";
 
 const ZONA = "America/Santiago";
 const $ = (id) => document.getElementById(id);
@@ -83,6 +84,9 @@ async function saludar() {
     terminados: tablero?.terminados.length ?? 0,
     citas: oportunidades.datos()?.citas?.filter((c) => c.esHoy).length ?? 0,
     llamar: oportunidades.datos()?.llamar?.length ?? 0,
+    ot: ordenes.datos()?.hayOT
+      ? { total: ordenes.datos().total, enTaller: ordenes.datos().porEtapa.en_taller.cantidad, garantias: ordenes.datos().porEtapa.garantia_por_enviar.cantidad }
+      : null,
   }));
   if (resultado === "bloqueado") {
     // El navegador solo deja hablar después de un toque en la página.
@@ -200,6 +204,7 @@ async function cargarActividad() {
 
 let tablero = null;
 const oportunidades = prepararOportunidades();
+const ordenes = prepararOT();
 
 async function refrescar() {
   try {
@@ -208,7 +213,7 @@ async function refrescar() {
   } catch (e) {
     if (e.message !== "sin sesión") $("aviso-meta").textContent = "No pude cargar los datos. Revisa la conexión.";
   }
-  await oportunidades.refrescar();
+  await Promise.all([oportunidades.refrescar(), ordenes.refrescar()]);
   cargarActividad();
 }
 

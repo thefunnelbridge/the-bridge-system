@@ -90,6 +90,19 @@
     </section>
   </main>
 
+  <section class="ordenes" aria-labelledby="t-ordenes" id="seccion-ot" hidden>
+    <div class="oportunidades-cabecera">
+      <h2 class="titulo-seccion" id="t-ordenes">Tus OT abiertas <span class="contador" id="c-ot"></span></h2>
+      <p class="ordenes-nota" id="ot-nota"></p>
+    </div>
+    <div class="etapas" id="ot-etapas" role="tablist" aria-label="Etapas de las OT"></div>
+    <div class="panel">
+      <p class="ordenes-resumen" id="ot-resumen"></p>
+      <ul class="lista-ot" id="ot-lista"></ul>
+      <button type="button" class="boton-enlace" id="ot-ver-mas" hidden></button>
+    </div>
+  </section>
+
   <section class="oportunidades" aria-labelledby="t-oportunidades">
     <div class="oportunidades-cabecera">
       <h2 class="titulo-seccion" id="t-oportunidades">Oportunidades de hoy</h2>
@@ -204,6 +217,10 @@
         <ul class="chips" id="aj-dias"></ul>
         <p class="dialogo-nota" id="aj-feriados"></p>
       </div>
+      <label class="dialogo-campo">
+        <span>Tu nombre en el Excel diario de OT (columna "Nombre Receptor")</span>
+        <input id="aj-asesor" type="text" autocomplete="off" maxlength="60">
+      </label>
       <div class="dialogo-campo">
         <span>No contactar ni mostrar (nombre y apellido, o RUT)</span>
         <div class="dialogo-fila">
@@ -283,6 +300,13 @@
     <div id="ficha-contenido"></div>
     <div class="dialogo-botones">
       <button type="button" class="boton-primario" id="ficha-cerrar">Cerrar</button>
+    </div>
+  </dialog>
+  <dialog class="dialogo dialogo-ficha" id="dialogo-ot" aria-labelledby="t-ot">
+    <h2 class="titulo-seccion" id="t-ot">OT</h2>
+    <div id="ot-contenido"></div>
+    <div class="dialogo-botones">
+      <button type="button" class="boton-primario" id="ot-cerrar">Cerrar</button>
     </div>
   </dialog>
 </body>

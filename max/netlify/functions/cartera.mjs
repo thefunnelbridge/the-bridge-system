@@ -5,11 +5,14 @@
 //   POST { accion: "importar", tipo, filas } reemplaza clientes, atenciones o solicitudes
 //   POST { accion: "seguimiento", rut, ... } marca contactado o pospone
 //   GET  /api/cartera?vista=excluidos       lista "No contactar"
+//   GET  /api/cartera?vista=ot              OT abiertas por etapa
+//   POST { accion: "importar", tipo: "ot", filas, archivo }  OT del Excel diario
 //   POST { accion: "excluir", texto }       saca a una persona de todo Max
 //   POST { accion: "incluir", id }          la quita de esa lista
 import { json, error, entrada } from "../../lib/respuestas.mjs";
 import { tienda, leerJSON, registrarActividad } from "../../lib/almacen.mjs";
 import { leerAjustes } from "../../lib/datos.mjs";
+import { LIMITE_OT, normalizarOT, resumenOT, compararOT } from "../../lib/ot.mjs";
 import { hoyChile, textoLimpio } from "../../lib/calculos.mjs";
 import {
   LIMITES, claveRut, sumarDias, normalizarClientes, normalizarAtenciones, normalizarSolicitudes,
@@ -30,8 +33,9 @@ const MAX_EXCLUIDOS = 200;
 
 // Vuelve a pasar la lista "No contactar" por todo lo guardado y lo deja limpio.
 async function limpiarGuardado(excluidos) {
-  const [clientes, atenciones, solicitudes] = await Promise.all([leer("clientes", []), leer("atenciones", []), leer("solicitudes", [])]);
-  const limpio = aplicarExclusiones({ clientes, atenciones, solicitudes, excluidos });
+  const [clientes, atenciones, solicitudes, ot] = await Promise.all([leer("clientes", []), leer("atenciones", []), leer("solicitudes", []), leer("ot", null)]);
+  const limpio = aplicarExclusiones({ clientes, atenciones, solicitudes, ot: ot?.lista || [], excluidos });
+  if (ot) await cartera().setJSON("ot", { ...ot, lista: limpio.ot });
   await Promise.all([
     cartera().setJSON("clientes", limpio.clientes),
     cartera().setJSON("atenciones", limpio.atenciones),
@@ -50,6 +54,11 @@ export default async (request) => {
     const url = new URL(request.url);
     const clientes = await leer("clientes", []);
 
+    if (url.searchParams.get("vista") === "ot") {
+      const ot = await leer("ot", null);
+      if (!ot) return json({ ok: true, hayOT: false });
+      return json({ ok: true, hayOT: true, hoy, cargado: ot.cargado, archivo: ot.archivo, cambios: ot.cambios, ...resumenOT(ot.lista, hoy) });
+    }
     if (url.searchParams.get("vista") === "excluidos") {
       const excluidos = await leer("excluidos", []);
       return json({ ok: true, excluidos: excluidos.map((x) => ({ id: x.id, texto: x.texto })) });
@@ -67,6 +76,18 @@ export default async (request) => {
       return datos ? json({ ok: true, hoy, ...datos }) : error("No encontré a ese cliente.", 409);
     }
     return error("Consulta no válida.", 400);
+  }
+
+  if (cuerpo.accion === "importar" && cuerpo.tipo === "ot") {
+    if (!Array.isArray(cuerpo.filas) || !cuerpo.filas.length) return error("El archivo no trae OT.", 400);
+    if (cuerpo.filas.length > LIMITE_OT) return error(`Son demasiadas OT (máximo ${LIMITE_OT}). Revisa el nombre del asesor en Ajustes.`, 400);
+    const [anterior, excluidos] = await Promise.all([leer("ot", null), leer("excluidos", [])]);
+    const lista = aplicarExclusiones({ ot: normalizarOT(cuerpo.filas), excluidos }).ot;
+    if (!lista.length) return error("No pude leer ninguna OT de ese archivo.", 400);
+    const cambios = anterior ? { ...compararOT(anterior.lista, lista), desde: anterior.cargado } : null;
+    await cartera().setJSON("ot", { lista, cargado: hoy, archivo: textoLimpio(cuerpo.archivo, 80), cambios });
+    await registrarActividad(`Se cargaron ${lista.length} OT abiertas.`, "carga");
+    return json({ ok: true, guardadas: lista.length, cambios });
   }
 
   if (cuerpo.accion === "importar") {

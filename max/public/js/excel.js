@@ -90,16 +90,78 @@ function leerCartera(filas, salida) {
   return false;
 }
 
-// Devuelve { facturacion, terminados, clientes, atenciones, solicitudes, avisos }
-export function interpretar(XLSX, datos, nombreArchivo = "") {
+// ---------- OT abiertas: Excel diario de Control y Gestión ----------
+// Lee dos formatos: el Excel completo (hoja BASE, una fila por OT de todo el
+// país) y un archivo ya filtrado con las OT del asesor.
+
+const OT_CRUDO = {
+  receptor: /^nombre receptor/, ot: /^orden$/, fechaEntrada: /^fe\.? ?entrada/, dias: /^diasproc/, status: /^status$/,
+  statUsu: /^statusu/, clase: /^clase ot/, tipoTaller: /^agrupo tipo taller/, tipoCliente: /^tipo cliente/,
+  notificada: /ot no notificadas/, trabajo: /^texto breve/, marca: /^marca$/, modelo: /^modelo$/, patente: /^matric/,
+  vin: /^equipo$/, km: /^odometro/, cliente: /^nombre cliente/, rut: /^rut client/, costoReal: /^costes tot/,
+  ingresoReal: /^ingresos tot/, totalPlan: /^tota?l? general/, modificadoPor: /^modif/,
+};
+
+const OT_FILTRADO = {
+  ot: /^ot$/, fechaEntrada: /^fecha_entrada/, dias: /^dias_abierta/, status: /^status_reporte/, statUsu: /^status_usuario/,
+  clase: /^clase_ot/, tipoTaller: /^tipo_taller/, tipoCliente: /^tipo_cliente/, notificada: /^horas_tecnico/, trabajo: /^trabajo/,
+  marca: /^marca$/, modelo: /^modelo$/, patente: /^patente/, vin: /^vin$/, km: /^km$/, cliente: /^cliente$/, rut: /^rut_cliente/,
+  costoReal: /^costo_real/, ingresoReal: /^ingreso_real/, totalPlan: /^total_plan/, modificadoPor: /^ultima_modificacion/,
+};
+
+function leerOT(filas, salida, asesor) {
+  for (let i = 0; i < Math.min(filas.length, 10); i++) {
+    const enc = (filas[i] || []).map(normal);
+    const crudo = enc.some((e) => OT_CRUDO.receptor.test(e)) && enc.some((e) => OT_CRUDO.ot.test(e));
+    const filtrado = enc.some((e) => /^etapa_max$/.test(e)) || (enc.includes("ot") && enc.some((e) => /^dias_abierta/.test(e)));
+    if (!crudo && !filtrado) continue;
+    const mapa = crudo ? OT_CRUDO : OT_FILTRADO;
+    const indice = Object.fromEntries(Object.entries(mapa).map(([clave, patron]) => [clave, enc.findIndex((e) => patron.test(e))]));
+    const palabras = normal(asesor).split(/\s+/).filter(Boolean);
+    let total = 0;
+    for (const fila of filas.slice(i + 1)) {
+      if (!fila || fila[indice.ot] === null || fila[indice.ot] === "") continue;
+      total += 1;
+      if (crudo) {
+        const receptor = normal(fila[indice.receptor]);
+        if (!palabras.length || !palabras.every((p) => receptor.includes(p))) continue;
+      }
+      const dato = {};
+      for (const [clave, pos] of Object.entries(indice)) {
+        if (clave === "receptor") continue;
+        const valor = pos === -1 ? null : fila[pos];
+        dato[clave] = clave === "fechaEntrada" ? aFechaISO(valor) : valor === null ? "" : String(valor).trim();
+      }
+      salida.ot.push(dato);
+    }
+    if (crudo) {
+      salida.avisos.push(salida.ot.length
+        ? `El Excel trae ${total} OT de todo el país; me quedé con las ${salida.ot.length} de ${asesor}.`
+        : `El Excel trae ${total} OT, pero ninguna a nombre de "${asesor}". Revisa ese nombre en Ajustes.`);
+    }
+    return true;
+  }
+  return false;
+}
+
+// Devuelve { facturacion, terminados, clientes, atenciones, solicitudes, ot, avisos }
+export function interpretar(XLSX, datos, nombreArchivo = "", { asesorOT = "" } = {}) {
   // Los CSV se leen como texto, sin que la librería adivine fechas ni números.
-  const libro = /\.csv$/i.test(nombreArchivo)
-    ? XLSX.read(new TextDecoder("utf-8").decode(datos), { type: "string", raw: true })
-    : XLSX.read(datos, { type: "array" });
-  const salida = { facturacion: [], terminados: [], clientes: [], atenciones: [], solicitudes: [], avisos: [] };
+  let libro;
+  if (/\.csv$/i.test(nombreArchivo)) {
+    libro = XLSX.read(new TextDecoder("utf-8").decode(datos), { type: "string", raw: true });
+  } else {
+    // El Excel diario de OT pesa varios MB y tiene 17 hojas: solo se abre la hoja BASE.
+    const nombres = XLSX.read(datos, { type: "array", bookSheets: true }).SheetNames;
+    const base = nombres.find((n) => normal(n) === "base");
+    libro = XLSX.read(datos, base ? { type: "array", sheets: [base] } : { type: "array" });
+    if (base) libro.SheetNames = [base];
+  }
+  const salida = { facturacion: [], terminados: [], clientes: [], atenciones: [], solicitudes: [], ot: [], avisos: [] };
 
   for (const nombre of libro.SheetNames) {
     const filas = XLSX.utils.sheet_to_json(libro.Sheets[nombre], { header: 1, raw: true, defval: null });
+    if (leerOT(filas, salida, asesorOT)) continue;
     if (leerCartera(filas, salida)) continue;
     // La fila de títulos: la primera (entre las 15 de arriba) que se reconozca.
     let inicio = -1, tipo = null, cols = {};

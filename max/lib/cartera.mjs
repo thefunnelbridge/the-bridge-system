@@ -187,7 +187,7 @@ export function estaExcluido(cliente, excluidos = []) {
 
 // Saca a las personas excluidas de los tres conjuntos de datos y anota los RUT
 // que encontró para cada nombre. Devuelve los datos limpios y la lista al día.
-export function aplicarExclusiones({ clientes = [], atenciones = [], solicitudes = [], excluidos = [] }) {
+export function aplicarExclusiones({ clientes = [], atenciones = [], solicitudes = [], ot = [], excluidos = [] }) {
   const lista = excluidos.map((x) => ({ ...x, ruts: [...(x.ruts || [])] }));
   for (const cliente of clientes) {
     for (const x of lista) {
@@ -199,6 +199,8 @@ export function aplicarExclusiones({ clientes = [], atenciones = [], solicitudes
     clientes: clientes.filter((c) => !fuera.has(c.rut) && !estaExcluido(c, lista)),
     atenciones: atenciones.filter((a) => !fuera.has(a.rut)),
     solicitudes: solicitudes.filter((s) => !fuera.has(s.rut)),
+    // Las OT traen el nombre del cliente además del RUT.
+    ot: ot.filter((o) => !fuera.has(o.rut) && !lista.some((x) => x.nombre && coincideNombre(o.cliente, x.nombre))),
     excluidos: lista,
     quitados: clientes.filter((c) => fuera.has(c.rut) || estaExcluido(c, lista)).length,
   };

@@ -2,7 +2,7 @@
 import { json, error, entrada } from "../../lib/respuestas.mjs";
 import { leerAjustes, guardarAjustes, leerMes, guardarMes } from "../../lib/datos.mjs";
 import { registrarActividad } from "../../lib/almacen.mjs";
-import { hoyChile, mesDe, esFechaISO, montoValido } from "../../lib/calculos.mjs";
+import { hoyChile, mesDe, esFechaISO, montoValido, textoLimpio } from "../../lib/calculos.mjs";
 
 const SABADOS = ["no", "medio", "completo"];
 
@@ -24,7 +24,7 @@ export default async (request) => {
     }
   }
 
-  if (cuerpo.sabado !== undefined || cuerpo.noHabiles !== undefined) {
+  if (cuerpo.sabado !== undefined || cuerpo.noHabiles !== undefined || cuerpo.asesorOT !== undefined) {
     const ajustes = await leerAjustes();
     if (cuerpo.sabado !== undefined) {
       if (!SABADOS.includes(cuerpo.sabado)) return error("Opción de sábado no válida.", 400);
@@ -38,6 +38,12 @@ export default async (request) => {
       const lista = [...new Set(cuerpo.noHabiles)].sort();
       if (JSON.stringify(lista) !== JSON.stringify(ajustes.noHabiles || [])) cambios.push("los días sin trabajo");
       ajustes.noHabiles = lista;
+    }
+    if (cuerpo.asesorOT !== undefined) {
+      const asesor = textoLimpio(cuerpo.asesorOT, 60);
+      if (asesor.length < 3) return error("El nombre del asesor en el Excel de OT es muy corto.", 400);
+      if (ajustes.asesorOT !== asesor) cambios.push("el nombre del asesor para las OT");
+      ajustes.asesorOT = asesor;
     }
     await guardarAjustes(ajustes);
   }

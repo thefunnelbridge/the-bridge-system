@@ -22,6 +22,7 @@ enciende, salen ondas y la luz tiñe toda la pantalla.
 | 2 | Meta del departamento, carga de datos (formulario y Excel), ajustes, gráfico por día, terminados sin facturar con alerta | Lista |
 | 3 | Mi mes: zona privada con PIN, autobloqueo a los 3 minutos, comisión, sueldo y proyección | Lista |
 | Cartera | Clientes, atenciones y solicitudes de Toyota; oportunidades de hoy (citas y a quién llamar), buscador y ficha del cliente | Lista |
+| OT | Panel de OT abiertas por etapa desde el Excel diario, con comparación contra el día anterior | Lista |
 | 4 | Resumen hablado y barra para escribir o hablar (Claude) | Pendiente |
 | 5 | Cerebro y Radar diario | Pendiente |
 | 6 | Modo demo, estructura de Etapa 2 | Pendiente |
@@ -52,6 +53,13 @@ enciende, salen ondas y la luz tiñe toda la pantalla.
   WhatsApp y correo, y para marcarlo "Contactado" (30 días) o "Después" (7 días).
   El buscador abre la ficha del cliente con su historial. Los archivos con datos
   reales de clientes no van en GitHub: se cargan dentro de Max.
+- **OT abiertas**: en "Cargar datos" se sube el Excel diario de Control y Gestión
+  (`OT PROCESO Costo Real ...xlsx`; Max abre solo la hoja `BASE`) o un archivo ya
+  filtrado. Max se queda con las OT del asesor configurado en Ajustes y las separa
+  en garantías por enviar, terminadas por facturar, no liberadas y en el taller,
+  de la más antigua a la más nueva. Compara cada carga con la anterior. En la
+  lista no hay montos; el costo se ve solo en el detalle de cada OT. Pendiente de
+  confirmar con Javier: que el estado `NENV` significa "garantía no enviada".
 - **No contactar**: en Ajustes se anota un nombre y apellido, o un RUT. Esa persona
   desaparece de la cartera, las oportunidades, el buscador y el historial, y no
   vuelve aunque se carguen de nuevo los archivos. También se puede hacer desde la
