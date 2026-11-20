@@ -3,6 +3,8 @@
 
 [build]
   base = "max"
+  # Max no se compila. Este comando reemplaza cualquier otro que proponga Netlify.
+  command = "echo Max listo para publicar"
   publish = "public"
   functions = "netlify/functions"
   edge_functions = "netlify/edge-functions"
