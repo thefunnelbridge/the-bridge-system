@@ -233,6 +233,27 @@ export function prepararOportunidades() {
         partes.push(botonesSeguimiento(c.rut, () => dFicha.close()));
       }
 
+      // Baja del cliente: dos toques, para no hacerlo por error.
+      const baja = el("button", "boton-enlace", "No contactar más a este cliente");
+      baja.type = "button";
+      let armado = false;
+      baja.addEventListener("click", async () => {
+        if (!armado) {
+          armado = true;
+          baja.textContent = "¿Seguro? Desaparece de todo Max. Toca de nuevo para confirmar.";
+          return;
+        }
+        baja.disabled = true;
+        try {
+          await api("/api/cartera", { accion: "excluir", texto: c.rutTexto });
+          dFicha.close();
+          await refrescar();
+        } catch (e) {
+          baja.textContent = e.message;
+        }
+      });
+      partes.push(baja);
+
       partes.push(el("h3", "privado-subtitulo", `Solicitudes de Toyota (${f.solicitudes.length})`));
       const sol = el("ul", "ficha-lista");
       sol.append(...(f.solicitudes.length ? f.solicitudes.map((s) => {

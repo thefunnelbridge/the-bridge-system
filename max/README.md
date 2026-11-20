@@ -52,6 +52,12 @@ enciende, salen ondas y la luz tiñe toda la pantalla.
   WhatsApp y correo, y para marcarlo "Contactado" (30 días) o "Después" (7 días).
   El buscador abre la ficha del cliente con su historial. Los archivos con datos
   reales de clientes no van en GitHub: se cargan dentro de Max.
+- **No contactar**: en Ajustes se anota un nombre y apellido, o un RUT. Esa persona
+  desaparece de la cartera, las oportunidades, el buscador y el historial, y no
+  vuelve aunque se carguen de nuevo los archivos. También se puede hacer desde la
+  ficha de un cliente ("No contactar más").
+- **Varios archivos a la vez**: en "Cargar datos" se pueden elegir los tres
+  archivos de la cartera juntos.
 - **Supuestos que se pueden cambiar**: días hábiles de lunes a viernes y montos
   tal como se ingresen (se recomienda netos, sin IVA, igual que la meta).
 

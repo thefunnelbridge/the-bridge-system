@@ -154,3 +154,52 @@ export function ficha({ rut, clientes = [], atenciones = [], solicitudes = [], s
     seguimiento: seguimiento[rut] || null,
   };
 }
+
+// ---------- Lista "No contactar" ----------
+// Una persona de esta lista no aparece en ninguna parte de Max: ni en la
+// cartera, ni en las oportunidades, ni en el buscador, ni en el historial.
+// Cada entrada es un RUT o un nombre: { id, texto, rut, nombre, ruts: [] }.
+//   rut:    RUT exacto (si se excluyó por RUT)
+//   nombre: palabras del nombre, sin tildes (si se excluyó por nombre)
+//   ruts:   RUT encontrados para ese nombre al cargar clientes, para poder
+//           sacar también sus atenciones y solicitudes, que solo traen RUT.
+
+export function crearExclusion(texto, id) {
+  const limpio = textoLimpio(texto, 80);
+  const rut = claveRut(limpio);
+  const palabras = normal(limpio).split(/[^a-z0-9]+/).filter((p) => p.length >= 2);
+  const esRut = /^[\d.\s]+-?\s*[\dkK]$/.test(limpio) && rut.length >= 7;
+  if (esRut) return { entrada: { id, texto: limpio, rut, nombre: "", ruts: [] } };
+  // Por nombre se piden nombre y apellido, para no sacar a media cartera por error.
+  if (palabras.length < 2) return { error: "Escribe nombre y apellido, o el RUT completo." };
+  return { entrada: { id, texto: limpio, rut: "", nombre: palabras.join(" "), ruts: [] } };
+}
+
+function coincideNombre(nombreCliente, nombreExcluido) {
+  const palabras = new Set(normal(nombreCliente).split(/[^a-z0-9]+/));
+  return nombreExcluido.split(" ").every((p) => palabras.has(p));
+}
+
+export function estaExcluido(cliente, excluidos = []) {
+  return excluidos.some((x) =>
+    (x.rut && x.rut === cliente.rut) || x.ruts?.includes(cliente.rut) || (x.nombre && coincideNombre(cliente.nombre, x.nombre)));
+}
+
+// Saca a las personas excluidas de los tres conjuntos de datos y anota los RUT
+// que encontró para cada nombre. Devuelve los datos limpios y la lista al día.
+export function aplicarExclusiones({ clientes = [], atenciones = [], solicitudes = [], excluidos = [] }) {
+  const lista = excluidos.map((x) => ({ ...x, ruts: [...(x.ruts || [])] }));
+  for (const cliente of clientes) {
+    for (const x of lista) {
+      if (x.nombre && coincideNombre(cliente.nombre, x.nombre) && !x.ruts.includes(cliente.rut)) x.ruts.push(cliente.rut);
+    }
+  }
+  const fuera = new Set(lista.flatMap((x) => [x.rut, ...x.ruts]).filter(Boolean));
+  return {
+    clientes: clientes.filter((c) => !fuera.has(c.rut) && !estaExcluido(c, lista)),
+    atenciones: atenciones.filter((a) => !fuera.has(a.rut)),
+    solicitudes: solicitudes.filter((s) => !fuera.has(s.rut)),
+    excluidos: lista,
+    quitados: clientes.filter((c) => fuera.has(c.rut) || estaExcluido(c, lista)).length,
+  };
+}

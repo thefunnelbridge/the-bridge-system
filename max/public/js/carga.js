@@ -10,7 +10,8 @@ function cerrarCon(dialogo, ...botones) {
 }
 
 // `estado()` entrega los últimos datos del tablero; `alGuardar()` lo refresca.
-export function prepararFormularios({ estado, alGuardar }) {
+// `alRefrescar()` vuelve a pintar todo sin que Max hable.
+export function prepararFormularios({ estado, alGuardar, alRefrescar = async () => {} }) {
   // ---------- Facturación del día ----------
   const dCargar = $("dialogo-cargar");
   const mDia = $("dia-mensaje");
@@ -75,15 +76,21 @@ export function prepararFormularios({ estado, alGuardar }) {
   }
 
   $("excel-archivo").addEventListener("change", async (evento) => {
-    const archivo = evento.target.files?.[0];
-    if (!archivo) return;
+    const archivos = [...(evento.target.files || [])];
+    if (!archivos.length) return;
     mExcel.textContent = "";
     vista.hidden = true;
     confirmar.hidden = true;
     try {
-      if (archivo.size > 8 * 1024 * 1024) throw new Error("Ese archivo es muy grande (más de 8 MB).");
       const XLSX = await cargarLibreria();
-      const leido = interpretar(XLSX, new Uint8Array(await archivo.arrayBuffer()), archivo.name);
+      // Se pueden elegir varios archivos de una vez: se juntan en una sola carga.
+      const leido = { facturacion: [], terminados: [], clientes: [], atenciones: [], solicitudes: [], avisos: [] };
+      for (const uno of archivos) {
+        if (uno.size > 12 * 1024 * 1024) throw new Error(`"${uno.name}" es muy grande (más de 12 MB).`);
+        const parte = interpretar(XLSX, new Uint8Array(await uno.arrayBuffer()), uno.name);
+        for (const clave of Object.keys(leido)) leido[clave].push(...parte[clave]);
+      }
+      const archivo = { name: archivos.map((a) => a.name).join(", ") };
       const hoy = estado().hoy;
       const futuras = leido.facturacion.filter((f) => f.fecha > hoy).length;
       leido.facturacion = leido.facturacion.filter((f) => f.fecha <= hoy);
@@ -94,7 +101,7 @@ export function prepararFormularios({ estado, alGuardar }) {
       pendiente = leido;
 
       // Vista previa: qué se va a guardar, antes de guardar.
-      const partes = [linea(`Archivo: ${archivo.name}`, "excel-nombre")];
+      const partes = [linea(`${archivos.length === 1 ? "Archivo" : "Archivos"}: ${archivo.name}`, "excel-nombre")];
       if (leido.facturacion.length) {
         const fechas = leido.facturacion.map((f) => f.fecha).sort();
         const total = leido.facturacion.reduce((s, f) => s + (f.depto ?? 0), 0);
@@ -196,6 +203,49 @@ export function prepararFormularios({ estado, alGuardar }) {
     dAjustes.showModal();
   });
   cerrarCon(dAjustes, "aj-cerrar");
+
+  // Lista "No contactar": se aplica de inmediato.
+  async function pintarExcluidos() {
+    try {
+      const { excluidos } = await api("/api/cartera?vista=excluidos");
+      $("aj-excluidos").replaceChildren(...excluidos.map((x) => {
+        const li = document.createElement("li");
+        li.textContent = x.texto;
+        const quitar = document.createElement("button");
+        quitar.type = "button";
+        quitar.textContent = "Quitar";
+        quitar.addEventListener("click", async () => {
+          try {
+            await api("/api/cartera", { accion: "incluir", id: x.id });
+            mAjustes.textContent = "Listo. Volverá a aparecer cuando se carguen de nuevo los archivos de clientes.";
+          } catch (e) { mAjustes.textContent = e.message; }
+          await pintarExcluidos();
+        });
+        li.append(quitar);
+        return li;
+      }));
+    } catch { /* si no hay conexión, la lista queda como estaba */ }
+  }
+
+  $("btn-ajustes").addEventListener("click", () => { $("aj-excluir").value = ""; pintarExcluidos(); });
+
+  async function excluir() {
+    const texto = $("aj-excluir").value.trim();
+    if (!texto) return;
+    try {
+      const { quitados } = await api("/api/cartera", { accion: "excluir", texto });
+      $("aj-excluir").value = "";
+      mAjustes.textContent = quitados
+        ? `Listo. Saqué ${quitados === 1 ? "a 1 persona" : `a ${quitados} personas`} de la cartera.`
+        : "Listo. No estaba en la cartera, pero queda anotada para las próximas cargas.";
+      await pintarExcluidos();
+      await alRefrescar();
+    } catch (e) {
+      mAjustes.textContent = e.message;
+    }
+  }
+  $("aj-excluir-agregar").addEventListener("click", excluir);
+  $("aj-excluir").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); excluir(); } });
 
   $("aj-agregar").addEventListener("click", () => {
     const fecha = $("aj-dia").value;

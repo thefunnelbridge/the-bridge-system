@@ -227,7 +227,7 @@ async function alGuardar(frase) {
   voz.decir(frase);
 }
 
-prepararFormularios({ estado: () => tablero, alGuardar });
+prepararFormularios({ estado: () => tablero, alGuardar, alRefrescar: refrescar });
 
 // Mi mes: al abrirla, Max se calla. Lo que hay adentro nunca pasa por la voz.
 const miMes = prepararMiMes({ alAbrir: () => voz.callar() });

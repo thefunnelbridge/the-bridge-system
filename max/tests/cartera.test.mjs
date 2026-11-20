@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   claveRut, sumarDias, normalizarClientes, normalizarAtenciones, normalizarSolicitudes, tieneCampana,
-  proximoHabil, oportunidades, buscar, ficha,
+  proximoHabil, oportunidades, buscar, ficha, crearExclusion, aplicarExclusiones, estaExcluido,
 } from "../lib/cartera.mjs";
 
 // Datos inventados para las pruebas.
@@ -96,4 +96,40 @@ test("la ficha junta al cliente con su historial", () => {
   assert.deepEqual(f.atenciones.map((a) => a.ot), ["11", "10"]);
   assert.equal(f.solicitudes.length, 1);
   assert.equal(ficha({ rut: "000", clientes: CLIENTES }), null);
+});
+
+// ---------- Lista "No contactar" ----------
+
+test("se puede excluir por RUT o por nombre y apellido", () => {
+  assert.equal(crearExclusion("11.111.111-1", "a").entrada.rut, "111111111");
+  assert.equal(crearExclusion("Ána  Pruebá", "b").entrada.nombre, "ana prueba");
+  assert.ok(crearExclusion("Ana", "c").error);
+  assert.ok(crearExclusion("", "d").error);
+});
+
+test("una persona excluida desaparece de clientes, atenciones y solicitudes", () => {
+  const atenciones = normalizarAtenciones([{ ot: "1", rut: "11111111-1" }, { ot: "2", rut: "22222222-2" }]);
+  const excluidos = [crearExclusion("Prueba Uno Ana", "x").entrada]; // el orden de las palabras no importa
+  const limpio = aplicarExclusiones({ clientes: CLIENTES, atenciones, solicitudes: SOLICITUDES, excluidos });
+  assert.equal(limpio.quitados, 1);
+  assert.ok(!limpio.clientes.some((c) => c.nombre === "Ana Prueba Uno"));
+  assert.deepEqual(limpio.atenciones.map((a) => a.ot), ["2"]);
+  assert.ok(!limpio.solicitudes.some((s) => s.rut === "111111111"));
+  // Queda anotado su RUT, para sacar también lo que llegue después solo con RUT.
+  assert.deepEqual(limpio.excluidos[0].ruts, ["111111111"]);
+  const despues = aplicarExclusiones({ clientes: [], atenciones, solicitudes: [], excluidos: limpio.excluidos });
+  assert.deepEqual(despues.atenciones.map((a) => a.ot), ["2"]);
+});
+
+test("excluir por RUT no toca a nadie más, y un nombre parecido no se confunde", () => {
+  const limpio = aplicarExclusiones({ clientes: CLIENTES, excluidos: [crearExclusion("44444444-K", "x").entrada] });
+  assert.equal(limpio.clientes.length, CLIENTES.length - 1);
+  assert.equal(estaExcluido({ rut: "9", nombre: "Ana Pruebas Unos" }, [crearExclusion("Ana Prueba", "y").entrada]), false);
+  assert.equal(estaExcluido({ rut: "9", nombre: "PRUEBA UNO, ANA" }, [crearExclusion("Ana Prueba", "y").entrada]), true);
+});
+
+test("sin lista, no se quita a nadie", () => {
+  const limpio = aplicarExclusiones({ clientes: CLIENTES, solicitudes: SOLICITUDES, excluidos: [] });
+  assert.equal(limpio.clientes.length, CLIENTES.length);
+  assert.equal(limpio.quitados, 0);
 });

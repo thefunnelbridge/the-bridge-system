@@ -167,8 +167,8 @@
     <div class="dialogo-separador"><span>o sube un archivo</span></div>
     <div class="dialogo-excel">
       <label class="boton-secundario boton-archivo">
-        Elegir Excel o CSV
-        <input id="excel-archivo" class="oculto" type="file" accept=".xlsx,.xls,.csv">
+        Elegir archivos (Excel o CSV)
+        <input id="excel-archivo" class="oculto" type="file" accept=".xlsx,.xls,.csv" multiple>
       </label>
       <button type="button" class="boton-enlace" id="excel-plantilla">Descargar plantilla</button>
     </div>
@@ -203,6 +203,15 @@
         </div>
         <ul class="chips" id="aj-dias"></ul>
         <p class="dialogo-nota" id="aj-feriados"></p>
+      </div>
+      <div class="dialogo-campo">
+        <span>No contactar ni mostrar (nombre y apellido, o RUT)</span>
+        <div class="dialogo-fila">
+          <input id="aj-excluir" type="text" autocomplete="off" aria-label="Persona que no se debe contactar">
+          <button type="button" class="boton-secundario" id="aj-excluir-agregar">Agregar</button>
+        </div>
+        <ul class="chips" id="aj-excluidos"></ul>
+        <p class="dialogo-nota">Quien esté en esta lista no aparece en la cartera, las oportunidades, el buscador ni el historial. Se aplica al tiro, sin pulsar Guardar.</p>
       </div>
       <p class="dialogo-mensaje" id="aj-mensaje" role="alert"></p>
       <div class="dialogo-botones">
