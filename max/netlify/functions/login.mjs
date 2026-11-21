@@ -10,6 +10,20 @@ const BLOQUEO_MINUTOS = 15;
 
 const plural = (n, palabra) => `${n} ${palabra}${n === 1 ? "" : "s"}`;
 
+// "Basic base64(usuario:clave)" -> { usuario, clave }, o null si no viene o está mal formada.
+function leerBasica(cabecera) {
+  const m = /^Basic\s+([A-Za-z0-9+/=]+)$/i.exec(cabecera || "");
+  if (!m) return null;
+  try {
+    const texto = new TextDecoder().decode(Uint8Array.from(atob(m[1]), (c) => c.charCodeAt(0)));
+    const corte = texto.indexOf(":");
+    if (corte === -1) return null;
+    return { usuario: texto.slice(0, corte), clave: texto.slice(corte + 1) };
+  } catch {
+    return null;
+  }
+}
+
 export default async (request, context) => {
   if (request.method !== "POST") return error("Método no permitido.", 405);
   if (!mismoOrigen(request)) return error("Origen no permitido.", 403);
@@ -23,14 +37,20 @@ export default async (request, context) => {
     );
   }
 
-  let cuerpo;
-  try {
-    cuerpo = await request.json();
-  } catch {
-    return error("Solicitud inválida.", 400);
+  // Usuario y clave llegan en el formulario o, para herramientas de mantención,
+  // en la cabecera estándar "Authorization: Basic". Son los mismos datos y pasan
+  // por el mismo bloqueo de intentos.
+  let cuerpo = {};
+  const basica = leerBasica(request.headers.get("authorization"));
+  if (!basica) {
+    try {
+      cuerpo = await request.json();
+    } catch {
+      return error("Solicitud inválida.", 400);
+    }
   }
-  const clave = typeof cuerpo?.clave === "string" ? cuerpo.clave : "";
-  const usuario = typeof cuerpo?.usuario === "string" ? cuerpo.usuario.trim().toLowerCase() : "";
+  const clave = basica?.clave ?? (typeof cuerpo?.clave === "string" ? cuerpo.clave : "");
+  const usuario = (basica?.usuario ?? (typeof cuerpo?.usuario === "string" ? cuerpo.usuario : "")).trim().toLowerCase();
   const usuarioReal = (env("MAX_USER") || "javier").trim().toLowerCase();
 
   const seguridad = tienda("seguridad");
